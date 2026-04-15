@@ -67,77 +67,142 @@
         .extract-msg{color:var(--gold);font-size:1rem;font-weight:700;letter-spacing:1px;}
         .extract-sub{color:#8b949e;font-size:.82rem;max-width:380px;text-align:center;}
 
-        /* ── Preview wrapper ── */
-        #legal-preview{background:#525659;padding:30px;display:flex;flex-direction:column;align-items:center;gap:0;border-radius:8px;}
-
-        /* ── Print/export container ── */
-        #export-content{width:8.5in;display:flex;flex-direction:column;gap:0;background:transparent;}
-
-        /* ── Document page ── */
-        .document-page{
-            background:#fff;color:#000;
-            width:8.5in;
-            padding:1in 1.25in 1in 1.25in;
-            font-family:'Times New Roman',Times,serif;
-            font-size:11pt;line-height:1.65;
-            text-align:justify;
-            box-shadow:0 4px 15px rgba(0,0,0,.3);
-            position:relative;
-            overflow-wrap:break-word;word-wrap:break-word;
-            margin-bottom:0;
+        /* ══ PREVIEW WRAPPER ══ */
+        #legal-preview {
+            background: #525659;
+            padding: 40px 20px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
         }
 
-        /* ── Title block ── */
-        .doc-title-block{text-align:center;margin-bottom:18pt;}
-        .doc-title-main{font-size:13pt;font-weight:bold;text-transform:uppercase;font-family:'Times New Roman',Times,serif;display:block;line-height:1.5;}
-        .doc-title-of{font-size:12pt;font-weight:bold;text-transform:uppercase;display:block;line-height:1.5;margin:4pt 0;}
-        .doc-title-name{font-size:12pt;font-weight:bold;text-decoration:underline;display:block;line-height:1.4;}
-        .doc-title-amended{font-size:11pt;font-weight:bold;text-decoration:underline;display:block;line-height:1.4;margin-top:2pt;}
-
-        .document-page h3{text-align:center;font-size:12pt;text-transform:uppercase;margin:0 0 6pt 0;line-height:1.45;color:#000;font-family:'Times New Roman',Times,serif;}
-        .document-page p{margin:0 0 8pt 0;text-align:justify;}
-        .doc-numbered{margin:0 0 8pt 0;padding-left:0.35in;text-indent:-0.35in;text-align:justify;}
-        .doc-indent{margin:0 0 6pt 0;padding-left:0.5in;text-align:justify;}
-        .doc-deep-indent{margin:0 0 6pt 0;padding-left:0.75in;text-align:justify;}
-        .doc-center{text-align:center!important;}
-
-        /* Article I name display in body — centered bold underline */
-        .art1-name-block{text-align:center;margin:8pt 0;}
-        .art1-name-text{font-weight:bold;text-decoration:underline;font-size:12pt;display:block;}
-        .art1-amended-tag{font-size:10.5pt;text-decoration:underline;font-weight:bold;display:block;margin-top:2pt;}
-
-        /* Inline "As amended on" — bold underline, NOT italic */
-        .inline-amended{font-size:10.5pt;text-decoration:underline;font-weight:bold;font-style:normal;}
-
-        .res-header{text-align:center;font-weight:bold;margin:12pt 0 6pt 0;font-size:11pt;}
-        .avoid-break{page-break-inside:avoid;break-inside:avoid;orphans:3;widows:3;}
-        table.lt{width:100%;border-collapse:collapse;margin:8pt 0 10pt 0;font-size:10.5pt;page-break-inside:avoid;break-inside:avoid;}
-        table.lt th,table.lt td{border:1px solid #000;padding:5pt 8pt;vertical-align:top;text-align:left;}
-        table.lt th{background:#f0f0f0;font-weight:bold;text-align:center;}
-        .sig-grid{display:grid;grid-template-columns:1fr 1fr;gap:30pt 40pt;margin-top:20pt;}
-        .sig-box{text-align:center;}
-        .sig-line{border-top:1px solid #000;padding-top:3pt;font-weight:bold;text-transform:uppercase;margin-top:40pt;font-size:10pt;font-family:'Times New Roman',Times,serif;}
-        .sig-role{font-size:9.5pt;font-weight:normal;font-style:italic;}
-        .sig-tin{font-size:9pt;}
-        .notary-block{margin-top:30pt;font-size:10pt;page-break-inside:avoid;break-inside:avoid;}
-        .notary-sig{width:50%;border-top:1px solid #000;padding-top:3pt;font-weight:bold;text-align:center;margin-top:40pt;}
-        .notary-table{display:grid;grid-template-columns:1fr 1fr;gap:4pt;margin-top:8pt;font-size:10pt;}
-
-        /* Page break between cert and AOI */
-        .page-break{
-            display:block;
-            width:8.5in;
-            height:0;
-            page-break-after:always;
-            break-after:page;
+        /* ══ EXPORT CONTAINER ══ */
+        #export-content {
+            width: 816px; /* 8.5in @ 96dpi */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+            background: transparent;
         }
 
-        @media print{
-            nav,.btn,#export-bar{display:none!important;}
-            .main-view{padding:0!important;}
-            #legal-preview{padding:0;background:none;}
-            .document-page{box-shadow:none;margin:0;page-break-after:always;break-after:page;}
-            .document-page:last-child{page-break-after:auto;break-after:auto;}
+        /* ══ DOCUMENT PAGE ══
+           Each page = US Legal sheet (8.5 × 14in).
+           Padding = 1in top/bottom + 1.25in left/right.
+           Min-height keeps a page from collapsing but does NOT force exactly one page —
+           content flows naturally and page-break-inside: avoid prevents mid-block splits.
+        */
+        .document-page {
+            background: #fff;
+            color: #000;
+            width: 816px;           /* 8.5in @ 96dpi */
+            min-height: 1008px;     /* 10.5in — leaves room for 1in top+bottom padding */
+            padding: 96px 120px;    /* 1in top/bottom, 1.25in left/right @ 96dpi */
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 11pt;
+            line-height: 1.65;
+            text-align: justify;
+            box-shadow: 0 4px 18px rgba(0,0,0,.35);
+            position: relative;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            /* Each document page forces a new printed page */
+            page-break-before: always;
+            break-before: page;
+            /* Never let content run into the next page mid-block at the bottom */
+            page-break-inside: auto;
+        }
+        /* First document page does NOT need a forced page break before it */
+        .document-page:first-child {
+            page-break-before: auto;
+            break-before: auto;
+        }
+
+        /* Visual spacer between pages in preview — hidden in print */
+        .page-spacer {
+            width: 816px;
+            height: 32px;
+            background: transparent;
+            flex-shrink: 0;
+        }
+
+        /* ══ TITLE BLOCK ══ */
+        .doc-title-block { text-align: center; margin-bottom: 18pt; }
+        .doc-title-main  { font-size: 13pt; font-weight: bold; text-transform: uppercase; display: block; line-height: 1.5; }
+        .doc-title-of    { font-size: 12pt; font-weight: bold; text-transform: uppercase; display: block; line-height: 1.5; margin: 4pt 0; }
+        .doc-title-name  { font-size: 12pt; font-weight: bold; text-decoration: underline; display: block; line-height: 1.4; }
+        .doc-title-amended { font-size: 11pt; font-weight: bold; text-decoration: underline; display: block; line-height: 1.4; margin-top: 2pt; }
+
+        .document-page h3 { text-align: center; font-size: 12pt; text-transform: uppercase; margin: 0 0 6pt 0; line-height: 1.45; color: #000; font-family: 'Times New Roman', Times, serif; }
+        .document-page p  { margin: 0 0 8pt 0; text-align: justify; }
+        .doc-numbered     { margin: 0 0 8pt 0; padding-left: 0.35in; text-indent: -0.35in; text-align: justify; }
+        .doc-indent       { margin: 0 0 6pt 0; padding-left: 0.5in; text-align: justify; }
+        .doc-deep-indent  { margin: 0 0 6pt 0; padding-left: 0.75in; text-align: justify; }
+        .doc-center       { text-align: center !important; }
+
+        /* Article I name block */
+        .art1-name-block  { text-align: center; margin: 8pt 0; }
+        .art1-name-text   { font-weight: bold; text-decoration: underline; font-size: 12pt; display: block; }
+        .art1-amended-tag { font-size: 10.5pt; text-decoration: underline; font-weight: bold; display: block; margin-top: 2pt; }
+
+        /* Inline amendment tag */
+        .inline-amended { font-size: 10.5pt; text-decoration: underline; font-weight: bold; font-style: normal; }
+
+        .res-header { text-align: center; font-weight: bold; margin: 12pt 0 6pt 0; font-size: 11pt; }
+
+        /* Block-level avoid-break — keeps a logical section together */
+        .avoid-break {
+            page-break-inside: avoid;
+            break-inside: avoid;
+            orphans: 3;
+            widows: 3;
+        }
+
+        /* Tables */
+        table.lt { width: 100%; border-collapse: collapse; margin: 8pt 0 10pt 0; font-size: 10.5pt; page-break-inside: avoid; break-inside: avoid; }
+        table.lt th, table.lt td { border: 1px solid #000; padding: 5pt 8pt; vertical-align: top; text-align: left; }
+        table.lt th { background: #f0f0f0; font-weight: bold; text-align: center; }
+
+        /* Signature grid */
+        .sig-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30pt 40pt; margin-top: 20pt; page-break-inside: avoid; break-inside: avoid; }
+        .sig-box  { text-align: center; }
+        .sig-line { border-top: 1px solid #000; padding-top: 3pt; font-weight: bold; text-transform: uppercase; margin-top: 40pt; font-size: 10pt; font-family: 'Times New Roman', Times, serif; }
+        .sig-role { font-size: 9.5pt; font-weight: normal; font-style: italic; }
+        .sig-tin  { font-size: 9pt; }
+
+        /* Notary block */
+        .notary-block { margin-top: 30pt; font-size: 10pt; page-break-inside: avoid; break-inside: avoid; }
+        .notary-sig   { width: 50%; border-top: 1px solid #000; padding-top: 3pt; font-weight: bold; text-align: center; margin-top: 40pt; }
+        .notary-table { display: grid; grid-template-columns: 1fr 1fr; gap: 4pt; margin-top: 8pt; font-size: 10pt; }
+
+        /* ══ PRINT STYLES ══ */
+        @page {
+            size: 8.5in 14in;       /* US Legal */
+            margin: 1in 1.25in;    /* safe zone — keeps content away from printer header/footer */
+        }
+
+        @media print {
+            * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            nav, .btn, #export-bar { display: none !important; }
+            .main-view { padding: 0 !important; overflow: visible !important; }
+            body { height: auto; overflow: visible; background: #fff; }
+            #legal-preview { padding: 0; background: none; border-radius: 0; }
+            #export-content { width: 100%; align-items: stretch; }
+            .page-spacer { display: none; }
+            .document-page {
+                width: 100%;
+                min-height: auto;
+                padding: 0;         /* @page margin handles the safe zone */
+                box-shadow: none;
+                page-break-before: always;
+                break-before: page;
+            }
+            .document-page:first-child {
+                page-break-before: auto;
+                break-before: auto;
+            }
         }
     </style>
 </head>
@@ -192,10 +257,9 @@
             </div>
             <div class="full">
                 <label class="field-label">Article I — Prior Amendment Date (if previously amended)</label>
-                <input type="date" id="base-art1-amended-date" title="Prior amendment date for Article I — shows as 'As amended on' under the company name">
+                <input type="date" id="base-art1-amended-date">
             </div>
         </div>
-        <p style="font-size:.75rem;color:#666;margin:8px 0 0 0;">If the name in the uploaded AOI was previously amended, the AI will auto-fill the amendment date above. You may also edit it manually.</p>
     </div>
 
     <div class="card">
@@ -240,14 +304,11 @@
 
     <div class="card">
         <h3>Article V — Incorporators</h3>
-        <p style="font-size:.8rem;color:#8b949e;margin:0 0 8px 0;">All incorporators as reflected in the current AOI.</p>
         <table class="data-table">
             <thead><tr><th style="width:40%">Name</th><th style="width:20%">Nationality</th><th style="width:35%">Residence</th><th style="width:40px"></th></tr></thead>
             <tbody id="base-incorp-body"></tbody>
         </table>
-        <div class="table-actions">
-            <button class="btn btn-sm" onclick="addRow('base-incorp-body',baseIncorpCols)">+ Add Row</button>
-        </div>
+        <div class="table-actions"><button class="btn btn-sm" onclick="addRow('base-incorp-body',baseIncorpCols)">+ Add Row</button></div>
     </div>
 
     <div class="card">
@@ -258,14 +319,12 @@
             <div><label class="field-label">Article VI — Prior Amendment Date</label>
             <input type="date" id="base-art6-amended-date"></div>
         </div>
-        <label class="field-label" style="margin-top:14px;">Director Roster (Name, Nationality, Residence only)</label>
+        <label class="field-label" style="margin-top:14px;">Director Roster</label>
         <table class="data-table">
             <thead><tr><th style="width:40%">Name</th><th style="width:20%">Nationality</th><th style="width:35%">Residence</th><th style="width:40px"></th></tr></thead>
             <tbody id="base-dir-body"></tbody>
         </table>
-        <div class="table-actions">
-            <button class="btn btn-sm" onclick="addRow('base-dir-body',baseDirCols)">+ Add Row</button>
-        </div>
+        <div class="table-actions"><button class="btn btn-sm" onclick="addRow('base-dir-body',baseDirCols)">+ Add Row</button></div>
     </div>
 
     <div class="card">
@@ -287,9 +346,7 @@
             <thead><tr><th>Name of Subscriber</th><th>Citizenship</th><th>No. of Shares Subscribed</th><th>Amount Subscribed (₱)</th><th>Amount Paid (₱)</th><th style="width:40px"></th></tr></thead>
             <tbody id="base-subs-body"></tbody>
         </table>
-        <div class="table-actions">
-            <button class="btn btn-sm" onclick="addRow('base-subs-body',baseSubsCols)">+ Add Row</button>
-        </div>
+        <div class="table-actions"><button class="btn btn-sm" onclick="addRow('base-subs-body',baseSubsCols)">+ Add Row</button></div>
     </div>
 
     <div class="card">
@@ -322,29 +379,14 @@
         </div>
     </div>
 
-    <!-- ═══ SIGNATORIES SECTION ═══ -->
     <div class="card" style="border-color:var(--gold);">
         <h3 style="color:var(--gold);">📝 Document Signatories</h3>
-        <p style="font-size:.8rem;color:#8b949e;margin:0 0 12px 0;">
-            These are the persons who will physically sign both the <b>Directors' Certificate</b> and the <b>Amended AOI</b>. 
-            Extracted automatically from the signature block of the uploaded AOI. Edit as needed.
-            <br><span style="color:#c9a651;">Note: These signatories are independent from the directors roster above.</span>
-        </p>
+        <p style="font-size:.8rem;color:#8b949e;margin:0 0 12px 0;">These are the persons who will physically sign both the Directors' Certificate and the Amended AOI. Extracted automatically from the signature block of the uploaded AOI.</p>
         <table class="data-table">
-            <thead>
-                <tr>
-                    <th style="width:38%">Full Name (ALL CAPS)</th>
-                    <th style="width:28%">Role / Title</th>
-                    <th style="width:25%">TIN</th>
-                    <th style="width:40px"></th>
-                </tr>
-            </thead>
+            <thead><tr><th style="width:38%">Full Name (ALL CAPS)</th><th style="width:28%">Role / Title</th><th style="width:25%">TIN</th><th style="width:40px"></th></tr></thead>
             <tbody id="signatories-body"></tbody>
         </table>
-        <div class="table-actions">
-            <button class="btn btn-sm" onclick="addRow('signatories-body', signatoryCols)">+ Add Signatory</button>
-        </div>
-        <p style="font-size:.73rem;color:#555;margin:10px 0 0 0;">Signatories appear in the IN WITNESS WHEREOF block of both documents. The Corporate Secretary and President should always be included.</p>
+        <div class="table-actions"><button class="btn btn-sm" onclick="addRow('signatories-body', signatoryCols)">+ Add Signatory</button></div>
     </div>
 
     <button class="btn" onclick="goTab('tab-amend',document.querySelectorAll('.nav-links button')[1])">Next: Select Amendments →</button>
@@ -366,7 +408,6 @@
 
     <div class="card">
         <h3>Select Articles to Amend</h3>
-        <p style="font-size:.8rem;color:#8b949e;margin:0 0 12px 0;">Check each article you wish to amend. Only checked articles will show FROM/TO resolutions in the Directors' Certificate.</p>
         <div class="article-selector">
             <label class="art-chip" id="chip-1"><input type="checkbox" value="1" onchange="toggleArt(1,this)"> Art. I — Name</label>
             <label class="art-chip" id="chip-2"><input type="checkbox" value="2" onchange="toggleArt(2,this)"> Art. II — Purpose</label>
@@ -381,7 +422,6 @@
         </div>
     </div>
 
-    <!-- Art I -->
     <div id="form-art1" class="form-block card" style="display:none;">
         <h3 style="color:var(--gold);">Article I — Change of Corporate Name</h3>
         <p style="font-size:.8rem;color:#8b949e;margin:0 0 8px 0;">Current name: <b id="prev-name-display">—</b></p>
@@ -389,10 +429,8 @@
         <input type="text" id="new-name" placeholder="e.g. RIZAL POULTRY INTEGRATED FOOD CORPORATION" oninput="this.value=this.value.toUpperCase()">
     </div>
 
-    <!-- Art II -->
     <div id="form-art2" class="form-block card" style="display:none;">
         <h3 style="color:var(--gold);">Article II — Change of Purpose</h3>
-        <p style="font-size:.8rem;color:#8b949e;margin:0 0 12px 0;">Search and select from the SEC-approved purpose library, or type a custom purpose below.</p>
         <label class="field-label">New Primary Purpose</label>
         <input type="text" id="purpose-search-primary" class="purpose-search" placeholder="Search primary purpose..." oninput="filterPurposes('primary')">
         <div class="purpose-list" id="purpose-list-primary"></div>
@@ -401,38 +439,34 @@
         <input type="text" id="purpose-search-secondary" class="purpose-search" placeholder="Search secondary purposes..." oninput="filterPurposes('secondary')">
         <div class="purpose-list" id="purpose-list-secondary"></div>
         <div class="selected-purposes" id="selected-secondary"></div>
-        <label class="field-label" style="margin-top:16px;">Or type a custom primary purpose (overrides selection above):</label>
+        <label class="field-label" style="margin-top:16px;">Or type a custom primary purpose:</label>
         <textarea id="new-custom-purpose" placeholder="Type full custom primary purpose text here..." rows="3"></textarea>
     </div>
 
-    <!-- Art III -->
     <div id="form-art3" class="form-block card" style="display:none;">
         <h3 style="color:var(--gold);">Article III — Change of Principal Office</h3>
         <div class="input-grid">
-            <div class="full"><label class="field-label">No. / Street (leave blank if not applicable)</label>
+            <div class="full"><label class="field-label">No. / Street</label>
             <input type="text" id="new-street" placeholder="e.g. 293 General Ordonez Street"></div>
-            <div><label class="field-label">Barangay / District / Heights</label>
-            <input type="text" id="new-brgy" placeholder="e.g. Marikina Heights (Concepcion)"></div>
+            <div><label class="field-label">Barangay / District</label>
+            <input type="text" id="new-brgy"></div>
             <div><label class="field-label">City / Municipality</label>
-            <input type="text" id="new-city" placeholder="e.g. City of Marikina"></div>
+            <input type="text" id="new-city"></div>
             <div><label class="field-label">Province / Region</label>
-            <input type="text" id="new-prov" placeholder="e.g. National Capital Region (NCR)"></div>
+            <input type="text" id="new-prov"></div>
             <div><label class="field-label">ZIP Code (optional)</label>
-            <input type="text" id="new-zip" placeholder="e.g. 1810"></div>
+            <input type="text" id="new-zip"></div>
         </div>
     </div>
 
-    <!-- Art IV -->
     <div id="form-art4" class="form-block card" style="display:none;">
         <h3 style="color:var(--gold);">Article IV — Change of Corporate Term</h3>
         <div class="input-grid">
-            <div><label class="field-label">New Term (in years — enter 0 for perpetual)</label>
+            <div><label class="field-label">New Term (years — enter 0 for perpetual)</label>
             <input type="number" id="new-term" placeholder="e.g. 50 or 0 for perpetual" min="0" max="50"></div>
         </div>
-        <p style="font-size:.78rem;color:#8b949e;margin-top:8px;">Under the Revised Corporation Code (R.A. 11232), corporations may exist perpetually or for a specific term not exceeding fifty (50) years.</p>
     </div>
 
-    <!-- Art V -->
     <div id="form-art5" class="form-block card" style="display:none;">
         <h3 style="color:var(--gold);">Article V — Change of Incorporators</h3>
         <table class="data-table"><thead><tr><th>Name</th><th>Nationality</th><th>Residence</th><th style="width:40px"></th></tr></thead>
@@ -440,35 +474,32 @@
         <div class="table-actions"><button class="btn btn-sm" onclick="addRow('new-incorp-body',newIncorpCols)">+ Add Row</button></div>
     </div>
 
-    <!-- Art VI -->
     <div id="form-art6" class="form-block card" style="display:none;">
         <h3 style="color:var(--gold);">Article VI — Change in Board of Directors</h3>
         <div class="input-grid">
             <div><label class="field-label">New Number of Directors</label>
             <input type="number" id="new-dir-count" placeholder="e.g. 7" min="1" max="15"></div>
         </div>
-        <label class="field-label" style="margin-top:14px;">New Director Roster (Name, Nationality, Residence)</label>
+        <label class="field-label" style="margin-top:14px;">New Director Roster</label>
         <table class="data-table"><thead><tr><th>Name</th><th>Nationality</th><th>Residence</th><th style="width:40px"></th></tr></thead>
         <tbody id="new-dir-body"></tbody></table>
         <div class="table-actions"><button class="btn btn-sm" onclick="addRow('new-dir-body',newDirCols)">+ Add Row</button></div>
     </div>
 
-    <!-- Art VII -->
     <div id="form-art7" class="form-block card" style="display:none;">
         <h3 style="color:var(--gold);">Article VII — Change of Authorized Capital Stock</h3>
         <div class="input-grid">
             <div class="full"><label class="field-label">New Authorized Capital Stock (in words, ALL CAPS)</label>
-            <input type="text" id="new-acs-words" placeholder="e.g. FIFTY MILLION"></div>
+            <input type="text" id="new-acs-words"></div>
             <div><label class="field-label">Amount (₱)</label>
-            <input type="text" id="new-acs-amount" placeholder="e.g. 50,000,000.00"></div>
+            <input type="text" id="new-acs-amount"></div>
             <div><label class="field-label">No. of Shares</label>
-            <input type="text" id="new-shares" placeholder="e.g. 5,000,000"></div>
+            <input type="text" id="new-shares"></div>
             <div><label class="field-label">Par Value per Share (₱)</label>
-            <input type="text" id="new-par" placeholder="e.g. 10.00"></div>
+            <input type="text" id="new-par"></div>
         </div>
     </div>
 
-    <!-- Art VIII/IX -->
     <div id="form-art89" class="form-block card" style="display:none;">
         <h3 style="color:var(--gold);">Articles VIII &amp; IX — Subscription &amp; Payment</h3>
         <table class="data-table"><thead><tr><th>Name of Subscriber</th><th>Citizenship</th><th>No. of Shares Subscribed</th><th>Amount Subscribed (₱)</th><th>Amount Paid (₱)</th><th style="width:40px"></th></tr></thead>
@@ -476,25 +507,22 @@
         <div class="table-actions"><button class="btn btn-sm" onclick="addRow('new-subs-body',newSubsCols)">+ Add Row</button></div>
     </div>
 
-    <!-- Art X -->
     <div id="form-art10" class="form-block card" style="display:none;">
         <h3 style="color:var(--gold);">Article X — Change of Treasurer-in-Trust</h3>
         <div class="input-grid">
             <div><label class="field-label">New Treasurer Name</label>
-            <input type="text" id="new-treasurer" placeholder="Full name of new Treasurer"></div>
+            <input type="text" id="new-treasurer"></div>
             <div><label class="field-label">New Treasurer TIN</label>
-            <input type="text" id="new-treasurer-tin" placeholder="e.g. 106-265-745"></div>
+            <input type="text" id="new-treasurer-tin"></div>
         </div>
     </div>
 
-    <!-- Art XI -->
     <div id="form-art11" class="form-block card" style="display:none;">
         <h3 style="color:var(--gold);">Article XI — Amendment Clause</h3>
-        <label class="field-label">Amendment Provision</label>
         <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px;">
             <label style="display:flex;align-items:flex-start;gap:10px;font-size:.83rem;cursor:pointer;">
                 <input type="radio" name="comp-clause" value="standard" style="width:auto;margin-top:3px;" checked>
-                <span><b>Standard (Default):</b> That the corporation manifests its willingness to change its corporate name in the event another person, firm, or entity has acquired a prior right to use the said firm name or one deceptively or confusingly similar to it.</span>
+                <span><b>Standard:</b> That the corporation manifests its willingness to change its corporate name in the event another person, firm, or entity has acquired a prior right to use the said firm name or one deceptively or confusingly similar to it.</span>
             </label>
             <label style="display:flex;align-items:flex-start;gap:10px;font-size:.83rem;cursor:pointer;">
                 <input type="radio" name="comp-clause" value="custom" style="width:auto;margin-top:3px;">
@@ -513,7 +541,10 @@
 <div id="tab-preview" class="page-content">
     <div id="export-bar" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px;">
         <h2 style="margin:0;">Document Preview</h2>
-        <button class="btn btn-gold" onclick="exportPDF()">⬇ Export Print-Ready PDF (Legal)</button>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn" onclick="window.print()">🖨 Print</button>
+            <button class="btn btn-gold" onclick="exportPDF()">⬇ Export PDF</button>
+        </div>
     </div>
     <div id="legal-preview">
         <p style="color:#888;text-align:center;padding:40px;" id="preview-placeholder">Generate documents from Step 2 to see the preview.</p>
@@ -523,7 +554,6 @@
 
 </div><!-- end .main-view -->
 
-<!-- html2pdf loaded dynamically to avoid blocking -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script>
 /* ─── Column definitions ─── */
@@ -542,31 +572,16 @@ const PURPOSE_DB = [
   {name:"Activities of Employment Agency Activities", text:"To operate, manage and engage into a private employment agency (PEA) which facilitates the recruitment and placement of workers, both locally and overseas, for a fee charged to either the worker, the employer, or both."},
   {name:"Advertising", text:"To engage in the business of general advertising as principal, proponent, consultant, partner, and or agent providing services such as but not limited to conceptualization, development, design, arrangement, promotion and implementation of such advertisements thru multi-media such as billboards, print, TV, radio, web, and any other digital infrastructure and social platforms available. to provide also ancillary services such as branding and trade marking of institutions and products."},
   {name:"Agriculture", text:"To develop, manage, own, lease and operate agricultural lands, farms, pasture, lands, ranches, foreshore lands with or without concessions and/or to engage in the planting and cultivation of other farm products and in general undertake or carry out on all kinds of studies, experiments, cultivation, storage and wholesale and retail trading in all kinds of agricultural products and its by-products in the Philippines or elsewhere."},
-  {name:"Air Transportation", text:"To operate, manage, and engage in the business of domestic air transport, scheduled or non-scheduled, including the operating, carrying, transportation of passengers and forwarding of goods, wares, merchandise, valuables and any packages or parcels of any description whatsoever."},
   {name:"Business Process Outsourcing", text:"To operate, manage, and engage in the business of data processing, web hosting and related activities by providing infrastructure for these activities as well as provision of search facilities and other portals activities for the internet subject to the provisions of the Data Privacy Act of 2012 (R.A. 10173). Provided that the corporation shall not provide services to offshore gaming activities and will only engage in activities within the limits allowed by law."},
   {name:"Computer Programming", text:"To engage in computer programming activities, including the design, development, modification, testing, implementation, and support of systems software, software applications, databases, and web pages; to customize and configure existing applications to function within client-specific information system environments, as permitted by applicable laws, rules, and regulations."},
   {name:"Construction", text:"To engage in general construction and other allied activities including the constructing, enlarging, repairing, removing, developing or otherwise engaging in any work upon buildings, roads, highways, manufacturing plants, bridges, airfields, piers, docks, mines, shafts, waterworks, railroads, railway structures, all iron, wood, masonry and earth constructions, and to make, execute, bid for and take or receive any contracts or assignments of contract therefore, or in relation thereto, or connected therewith and to manufacture and furnish building materials and supplies connected therewith. Provided that the corporation shall not engage in the construction of defense-related structures and locally funded government projects."},
-  {name:"Electric Power Generation, Transmission and Distribution", text:"To operate, manage, and engage in the business of electric power generation, transmission and distribution that includes operation of generation facilities, transmission and distribution systems as well as electricity and transmission capacity exchanges for sale of electricity to its end users except production of electricity through incineration of waste."},
-  {name:"Funeral and Related Activities", text:"To provide funeral-related services including burial and cremation of human and animal remains; to prepare the deceased for burial or cremation through embalming and mortuary care; to offer rental of equipped spaces within funeral parlors; to sell or lease grave sites; to maintain graves and mausoleums; and to perform all related services, acts, and activities necessary or incidental to the accomplishment of the foregoing corporate purposes, as permitted by applicable laws, rules, and regulations."},
-  {name:"Gas Station", text:"To engage in the business of marketing, distributing, trading import and export of petroleum and other related products including services, and operation of convenient store supplementary to the operation of gasoline station."},
-  {name:"Hospital", text:"To establish, own, operate, maintain and manage diagnostics, dental and ambulatory clinic including facilities such as pharmacy, medical laboratory, cafeteria and other allied services. It shall provide surgical, nursing, therapeutic, paramedics and related medical services."},
-  {name:"Hotel", text:"To engage in and carry on the business of hotel and resort; to operate and maintain any and all services and facilities thereto such as but not limited to the management, operation and maintenance of clubhouse, restaurant exclusively for its customers, bar, music lounge and other related activities including conference rooms, function rooms, training rooms and other facilities like gym and wellness center, except pension houses."},
-  {name:"IT Software Applications", text:"To engage in the business of information technology products and services, such as but not limited to the research, software development, production, management, and operation of software and hardware technology, and other information technology applications, and to do all activities directly or indirectly connected therewith or incident thereto."},
-  {name:"Land Transportation", text:"To operate, manage, and engage in the business of land transportation including the operating, carrying, transportation of passengers and forwarding of goods, wares, merchandise, valuables and any packages or parcels of any description whatsoever."},
-  {name:"Logistics / Courier Services", text:"To operate, manage, and engage in the business of courier activities that includes pickup, sorting, transport and delivery (domestic or international) of letter-post and (mail-type) parcels and packages by firms not operating under a universal service obligation either self-owned (private) transport or via public transport."},
-  {name:"Management Consultancy", text:"To act as managers or managing agency of persons, firms, associations, corporations, partnerships and other entities; to provide management and technical advice for commercial, industrial, manufacturing and other kinds of enterprises; and to undertake, carry on, assist or participate in the promotion, organization, management, liquidation or reorganizations or corporations, partnerships and other entities, except the management of funds, securities, portfolio or similar assets of the managed entities or corporations."},
-  {name:"Manufacturing (Garment and Textile Business)", text:"To engage in the business of manufacturing, processing, cutting, sewing, assembling, finishing, packaging, and distributing garments, apparel, and textile products, including but not limited to woven and knitted fabrics, clothing accessories, uniforms, fashion wear, and industrial textile goods."},
-  {name:"Mining", text:"To carry on the business of mining, operating, prospecting, exploration and milling, concentrating, converting smelting, treating, refining, preparing for market manufacturing, buying, selling, exchanging and otherwise producing and dealing in all other kinds of ores, metal and other types of stones and minerals."},
-  {name:"Poultry and Livestock Production", text:"To engage in, operate, conduct, and maintain the business of producing, manufacturing, importing, exporting, buying, selling or otherwise dealing in, at wholesale and retail such goods as: eggs, grains, animal feeds, feed ingredients, poultry and other livestock and agricultural goods of raw nature, and any and all equipment, materials, supplies used or employed in or related to the manufacture of such finished products, except for the manufacture of foods, drugs and cosmetics."},
-  {name:"Printing and Publishing", text:"To engage in printing, publishing, and distribution of books, periodicals, newspapers, magazines, and other printed materials; to produce, design, and sell printed or digital media content; and to perform all related services necessary or incidental to the accomplishment of the foregoing corporate purposes, as permitted by applicable laws, rules, and regulations; provided, that the corporation shall not operate as a mass media entity, pursuant to DOJ Opinion No. 40, Series of 1998."},
   {name:"Real Estate", text:"To purchase or otherwise acquire, own, hold, use, sell, assign, transfer, mortgage, pledge, exchange or otherwise dispose of real property and while the owner or holder of any such real property, to receive, collect and dispose of the interest, dividends and income arising from such property, and to possess and exercise in receipt thereof all the rights, powers and privileges of ownership including all voting powers on any stock so owned."},
   {name:"Real Estate Development", text:"To engage in general construction and real estate development, to acquire by purchase, lease or otherwise, and to own, use, improve, develop, subdivide, sell, exchange, lease and hold for investment or otherwise, real estate of all kinds, whether improved or unimproved, and wheresoever situated."},
   {name:"Restaurant", text:"To establish and maintain restaurants, coffee shops, refreshment parlors, cocktail lounges; make, cook, arrange, serve and cater goods, drinks, refreshments, and other foods commonly served in such establishments, and to offer such other services to the public in connection with the operation of the restaurant and eatery enterprises."},
   {name:"Retail Trading of Goods", text:"To engage in, conduct and carry on the business of buying, selling, distributing, marketing on retail basis insofar as may be permitted by law, all kinds of goods, wares and merchandise of every kind and description, and enter into all kinds of contracts for export, import, purchase, acquisition sale on retail basis and other disposition for its own account as principal or in representative capacity as main distributor, manufacturer's representative, merchandise broker, indentor, commission, merchant, factors or agents, upon consignment of all kinds of goods, services, merchandise or products whether natural or artificial, without engaging in investment solicitation nor investment taking activity from public investors."},
-  {name:"Security Agency", text:"To engage in the business of a security agency by contracting, recruiting, posting of security guards, and to provide highly specialized security and investigation services like gangway security, catering security, passenger profiling, baggage examination, providing security onboard public utility transportation, or other security needs that the Philippine National Police may approve."},
-  {name:"Travel Agency", text:"To engage in land, sea and air transport, whether schedule, non-schedule or chartered, and whether domestic or foreign; to arrange, package and sell tours, inbound or outbound and to represent foreign tour operators in connection with the tours in the Philippines."},
-  {name:"Waste Collection / Disposal / Management", text:"To engage in the business of providing sustainable and environmentally responsible solid waste management solutions that promote the health and safety of communities and contribute to environmental preservation by minimizing waste generation, maximizing resource recovery, and ensuring the proper and compliant disposal of solid waste."},
   {name:"Wholesale and Retail Trading", text:"To engage in, conduct and carry on the business of buying, selling, distributing, marketing on wholesale and retail basis insofar as may be permitted by law, all kinds of goods, wares and merchandise of every kind and description, and enter into all kinds of contracts for export, import, purchase, acquisition sale on wholesale and retail basis and other disposition for its own account as principal or in representative capacity as main distributor, manufacturer's representative, merchandise broker, indentor, commission, merchant, factors or agents, upon consignment of all kinds of goods, services, merchandise or products whether natural or artificial, without engaging in investment solicitation nor investment taking activity from public investors."},
+  {name:"Management Consultancy", text:"To act as managers or managing agency of persons, firms, associations, corporations, partnerships and other entities; to provide management and technical advice for commercial, industrial, manufacturing and other kinds of enterprises; and to undertake, carry on, assist or participate in the promotion, organization, management, liquidation or reorganizations or corporations, partnerships and other entities, except the management of funds, securities, portfolio or similar assets of the managed entities or corporations."},
+  {name:"IT Software Applications", text:"To engage in the business of information technology products and services, such as but not limited to the research, software development, production, management, and operation of software and hardware technology, and other information technology applications, and to do all activities directly or indirectly connected therewith or incident thereto."},
 ];
 
 let selectedPrimary = null;
@@ -580,16 +595,16 @@ function goTab(tabId, btn) {
     if (btn) btn.classList.add('active');
 }
 
-function setStatus(msg, type = 'info') {
+function setStatus(msg, type='info') {
     const el = document.getElementById('extractStatus');
-    const icon = type === 'ok' ? '✓' : type === 'err' ? '✗' : '⟳';
-    const color = type === 'ok' ? '#4caf50' : type === 'err' ? '#f44336' : '#c9a651';
+    const icon = type==='ok'?'✓':type==='err'?'✗':'⟳';
+    const color = type==='ok'?'#4caf50':type==='err'?'#f44336':'#c9a651';
     el.innerHTML = `<span style="color:${color};font-weight:700;">${icon}</span> <span style="color:${type==='err'?'#f44336':'#ccc'}">${msg}</span>`;
 }
 
 function showOverlay(msg, sub) {
     document.getElementById('extract-overlay').classList.add('show');
-    document.getElementById('overlay-msg').textContent = '🤖 ' + msg;
+    document.getElementById('overlay-msg').textContent = '🤖 '+msg;
     if (sub) document.getElementById('overlay-sub').textContent = sub;
 }
 function hideOverlay() { document.getElementById('extract-overlay').classList.remove('show'); }
@@ -597,274 +612,252 @@ function hideOverlay() { document.getElementById('extract-overlay').classList.re
 /* ─── Date formatter ─── */
 function formatDate(d) {
     if (!d) return '[DATE NOT SET]';
-    const dt = new Date(d + 'T12:00:00');
-    return dt.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    const dt = new Date(d+'T12:00:00');
+    return dt.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
 }
 
 /* ─── Number to words ─── */
 function numToWords(n) {
-    const ones = ['','ONE','TWO','THREE','FOUR','FIVE','SIX','SEVEN','EIGHT','NINE',
+    const ones=['','ONE','TWO','THREE','FOUR','FIVE','SIX','SEVEN','EIGHT','NINE',
         'TEN','ELEVEN','TWELVE','THIRTEEN','FOURTEEN','FIFTEEN','SIXTEEN','SEVENTEEN','EIGHTEEN','NINETEEN'];
-    const tens = ['','','TWENTY','THIRTY','FORTY','FIFTY','SIXTY','SEVENTY','EIGHTY','NINETY'];
-    if (n === 0) return 'ZERO';
-    if (n < 20) return ones[n];
-    if (n < 100) return tens[Math.floor(n/10)] + (n % 10 ? ' ' + ones[n % 10] : '');
-    if (n < 1000) return ones[Math.floor(n/100)] + ' HUNDRED' + (n % 100 ? ' ' + numToWords(n % 100) : '');
+    const tens=['','','TWENTY','THIRTY','FORTY','FIFTY','SIXTY','SEVENTY','EIGHTY','NINETY'];
+    if(n===0)return 'ZERO';
+    if(n<20)return ones[n];
+    if(n<100)return tens[Math.floor(n/10)]+(n%10?' '+ones[n%10]:'');
+    if(n<1000)return ones[Math.floor(n/100)]+' HUNDRED'+(n%100?' '+numToWords(n%100):'');
     return n.toString();
 }
-
 function numToWordsMixed(n) {
-    // Returns "Seven (7)" style for body text
-    if (!n || isNaN(n)) return '[N]';
-    const w = numToWords(parseInt(n));
-    return w.charAt(0) + w.slice(1).toLowerCase() + ' (' + n + ')';
+    if(!n||isNaN(n))return '[N]';
+    const w=numToWords(parseInt(n));
+    return w.charAt(0)+w.slice(1).toLowerCase()+' ('+n+')';
 }
 
 /* ─── Table row builder ─── */
-function addRow(tbodyId, cols, vals = []) {
+function addRow(tbodyId, cols, vals=[]) {
     const tbody = document.getElementById(tbodyId);
     const tr = document.createElement('tr');
-    cols.forEach((col, i) => {
+    cols.forEach((col,i) => {
         const td = document.createElement('td');
         const inp = document.createElement('input');
-        inp.type = 'text';
-        inp.placeholder = col;
-        inp.value = vals[i] || '';
-        td.appendChild(inp);
-        tr.appendChild(td);
+        inp.type='text'; inp.placeholder=col; inp.value=vals[i]||'';
+        td.appendChild(inp); tr.appendChild(td);
     });
     const tdDel = document.createElement('td');
     const btnDel = document.createElement('button');
-    btnDel.textContent = '✕'; btnDel.className = 'btn btn-sm btn-danger';
-    btnDel.onclick = () => tr.remove();
+    btnDel.textContent='✕'; btnDel.className='btn btn-sm btn-danger';
+    btnDel.onclick = ()=>tr.remove();
     tdDel.appendChild(btnDel); tr.appendChild(tdDel);
     tbody.appendChild(tr);
 }
 
 function getTableData(tbodyId, cols) {
-    const rows = [];
-    document.querySelectorAll(`#${tbodyId} tr`).forEach(tr => {
-        const cells = tr.querySelectorAll('td input, td select');
-        const row = {};
-        cols.forEach((col, i) => { row[col] = cells[i] ? cells[i].value.trim() : ''; });
+    const rows=[];
+    document.querySelectorAll(`#${tbodyId} tr`).forEach(tr=>{
+        const cells=tr.querySelectorAll('td input, td select');
+        const row={};
+        cols.forEach((col,i)=>{row[col]=cells[i]?cells[i].value.trim():'';});
         rows.push(row);
     });
     return rows;
 }
 
 function setField(id, val) {
-    const el = document.getElementById(id);
-    if (el && val !== undefined && val !== null && String(val).trim() !== '') el.value = String(val).trim();
+    const el=document.getElementById(id);
+    if(el&&val!==undefined&&val!==null&&String(val).trim()!=='') el.value=String(val).trim();
 }
 
 /* ─── File upload ─── */
 async function handleFileUpload(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    if (!/\.pdf$/i.test(file.name)) {
-        setStatus('Unsupported file type. Please upload a PDF.', 'err'); return;
-    }
-    showOverlay('Reading AOI Document...', `Processing "${file.name}" — extracting all fields. Please wait.`);
+    const file=event.target.files[0];
+    if(!file) return;
+    if(!/\.pdf$/i.test(file.name)){setStatus('Unsupported file type. Please upload a PDF.','err');return;}
+    showOverlay('Reading AOI Document...', `Processing "${file.name}" — extracting all fields.`);
     setStatus(`Reading ${file.name}…`);
     try {
-        const extracted = await callExtractAPI(file);
+        const extracted=await callExtractAPI(file);
         populateAllFields(extracted);
         showExtractionSummary(extracted);
-        setStatus(`AI extraction complete — "${file.name}" processed successfully.`, 'ok');
-    } catch (err) {
-        setStatus('Extraction failed: ' + err.message, 'err');
-    } finally {
-        hideOverlay();
-    }
+        setStatus(`AI extraction complete — "${file.name}" processed successfully.`,'ok');
+    } catch(err){
+        setStatus('Extraction failed: '+err.message,'err');
+    } finally { hideOverlay(); }
 }
 
 async function callExtractAPI(file) {
-    const formData = new FormData();
-    formData.append('file', file);
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 120000);
+    const formData=new FormData();
+    formData.append('file',file);
+    const controller=new AbortController();
+    const timeout=setTimeout(()=>controller.abort(),120000);
     try {
-        const response = await fetch('/api/extract', { method:'POST', body:formData, signal:controller.signal });
-        if (!response.ok) {
-            let errMsg = `Server error ${response.status}`;
-            try { const e = await response.json(); errMsg = e.detail || errMsg; } catch {}
+        const response=await fetch('/api/extract',{method:'POST',body:formData,signal:controller.signal});
+        if(!response.ok){
+            let errMsg=`Server error ${response.status}`;
+            try{const e=await response.json();errMsg=e.detail||errMsg;}catch{}
             throw new Error(errMsg);
         }
         return await response.json();
-    } catch (err) {
-        if (err.name === 'AbortError') throw new Error('Request timed out. Please try again.');
+    } catch(err){
+        if(err.name==='AbortError') throw new Error('Request timed out. Please try again.');
         throw err;
-    } finally { clearTimeout(timeout); }
+    } finally{clearTimeout(timeout);}
 }
 
-function isLikelyStreet(val) {
-    if (!val) return false;
-    const v = val.trim();
-    return /^\d/.test(v) ||
-        /\b(street|st\.|avenue|ave\.?|road|rd\.?|blvd|boulevard|drive|dr\.?|lane|ln\.?|highway|hwy|ext\.?|extension)\b/i.test(v);
+function isLikelyStreet(val){
+    if(!val)return false;
+    const v=val.trim();
+    return /^\d/.test(v)||/\b(street|st\.|avenue|ave\.?|road|rd\.?|blvd|boulevard|drive|dr\.?|lane|ln\.?|highway|hwy|ext\.?|extension)\b/i.test(v);
 }
 
 function populateAllFields(data) {
-    setField('base-name', data.corporateName);
-    setField('base-purpose', data.primaryPurpose);
-    setField('base-sec-purpose', data.secondaryPurposes);
-
-    // Amendment dates — auto-populate from extraction
-    // documentAmendedDate feeds Article I if no specific article1AmendedDate
-    const art1Date = data.article1AmendedDate || data.documentAmendedDate || '';
-    if (art1Date && /^\d{4}-\d{2}-\d{2}$/.test(art1Date)) setField('base-art1-amended-date', art1Date);
-    if (data.article2AmendedDate && /^\d{4}-\d{2}-\d{2}$/.test(data.article2AmendedDate)) setField('base-purpose-amended-date', data.article2AmendedDate);
-    if (data.article3AmendedDate && /^\d{4}-\d{2}-\d{2}$/.test(data.article3AmendedDate)) setField('base-art3-amended-date', data.article3AmendedDate);
-    if (data.article4AmendedDate && /^\d{4}-\d{2}-\d{2}$/.test(data.article4AmendedDate)) setField('base-art4-amended-date', data.article4AmendedDate);
-    if (data.article6AmendedDate && /^\d{4}-\d{2}-\d{2}$/.test(data.article6AmendedDate)) setField('base-art6-amended-date', data.article6AmendedDate);
-    if (data.article7AmendedDate && /^\d{4}-\d{2}-\d{2}$/.test(data.article7AmendedDate)) setField('base-art7-amended-date', data.article7AmendedDate);
-
-    if (data.street && isLikelyStreet(data.street)) setField('base-street', data.street);
-    if (data.barangay) setField('base-brgy', data.barangay);
-    setField('base-city', data.city);
-    setField('base-prov', data.province);
-    if (data.zip) setField('base-zip', data.zip);
-    setField('base-term', data.term);
-    setField('base-dir-count', data.numberOfDirectors);
-    setField('base-acs-words', data.acsWords);
-    setField('base-acs-amount', data.acsAmount);
-    setField('base-shares', data.numberOfShares);
-    setField('base-par', data.parValue);
-    setField('base-treasurer', data.treasurer);
-    setField('base-treasurer-tin', data.treasurerTIN);
-    setField('base-treasurer-address', data.treasurerAddress);
-    setField('base-treasurer-citizenship', data.treasurerCitizenship);
-    setField('base-sec', data.secRegistrationNo);
-    if (data.dateOfRegistration && /^\d{4}-\d{2}-\d{2}$/.test(data.dateOfRegistration))
-        setField('base-reg-date', data.dateOfRegistration);
-
-    if (Array.isArray(data.incorporators) && data.incorporators.length > 0) {
-        document.getElementById('base-incorp-body').innerHTML = '';
-        data.incorporators.forEach(inc => addRow('base-incorp-body', baseIncorpCols, [inc.name||'', inc.nationality||'', inc.residence||'']));
+    setField('base-name',data.corporateName);
+    setField('base-purpose',data.primaryPurpose);
+    setField('base-sec-purpose',data.secondaryPurposes);
+    const art1Date=data.article1AmendedDate||data.documentAmendedDate||'';
+    if(art1Date&&/^\d{4}-\d{2}-\d{2}$/.test(art1Date)) setField('base-art1-amended-date',art1Date);
+    if(data.article2AmendedDate&&/^\d{4}-\d{2}-\d{2}$/.test(data.article2AmendedDate)) setField('base-purpose-amended-date',data.article2AmendedDate);
+    if(data.article3AmendedDate&&/^\d{4}-\d{2}-\d{2}$/.test(data.article3AmendedDate)) setField('base-art3-amended-date',data.article3AmendedDate);
+    if(data.article4AmendedDate&&/^\d{4}-\d{2}-\d{2}$/.test(data.article4AmendedDate)) setField('base-art4-amended-date',data.article4AmendedDate);
+    if(data.article6AmendedDate&&/^\d{4}-\d{2}-\d{2}$/.test(data.article6AmendedDate)) setField('base-art6-amended-date',data.article6AmendedDate);
+    if(data.article7AmendedDate&&/^\d{4}-\d{2}-\d{2}$/.test(data.article7AmendedDate)) setField('base-art7-amended-date',data.article7AmendedDate);
+    if(data.street&&isLikelyStreet(data.street)) setField('base-street',data.street);
+    if(data.barangay) setField('base-brgy',data.barangay);
+    setField('base-city',data.city);
+    setField('base-prov',data.province);
+    if(data.zip) setField('base-zip',data.zip);
+    setField('base-term',data.term);
+    setField('base-dir-count',data.numberOfDirectors);
+    setField('base-acs-words',data.acsWords);
+    setField('base-acs-amount',data.acsAmount);
+    setField('base-shares',data.numberOfShares);
+    setField('base-par',data.parValue);
+    setField('base-treasurer',data.treasurer);
+    setField('base-treasurer-tin',data.treasurerTIN);
+    setField('base-treasurer-address',data.treasurerAddress);
+    setField('base-treasurer-citizenship',data.treasurerCitizenship);
+    setField('base-sec',data.secRegistrationNo);
+    if(data.dateOfRegistration&&/^\d{4}-\d{2}-\d{2}$/.test(data.dateOfRegistration)) setField('base-reg-date',data.dateOfRegistration);
+    if(Array.isArray(data.incorporators)&&data.incorporators.length>0){
+        document.getElementById('base-incorp-body').innerHTML='';
+        data.incorporators.forEach(inc=>addRow('base-incorp-body',baseIncorpCols,[inc.name||'',inc.nationality||'',inc.residence||'']));
     }
-    if (Array.isArray(data.directors) && data.directors.length > 0) {
-        document.getElementById('base-dir-body').innerHTML = '';
-        data.directors.forEach(dir => addRow('base-dir-body', baseDirCols, [dir.name||'', dir.nationality||'', dir.residence||'']));
-        if (!data.numberOfDirectors) setField('base-dir-count', data.directors.length.toString());
+    if(Array.isArray(data.directors)&&data.directors.length>0){
+        document.getElementById('base-dir-body').innerHTML='';
+        data.directors.forEach(dir=>addRow('base-dir-body',baseDirCols,[dir.name||'',dir.nationality||'',dir.residence||'']));
+        if(!data.numberOfDirectors) setField('base-dir-count',data.directors.length.toString());
     }
-    if (Array.isArray(data.subscribers) && data.subscribers.length > 0) {
-        document.getElementById('base-subs-body').innerHTML = '';
-        data.subscribers.forEach(sub => addRow('base-subs-body', baseSubsCols, [sub.name||'', sub.citizenship||'', sub.sharesSubscribed||'', sub.amountSubscribed||'', sub.amountPaid||'']));
+    if(Array.isArray(data.subscribers)&&data.subscribers.length>0){
+        document.getElementById('base-subs-body').innerHTML='';
+        data.subscribers.forEach(sub=>addRow('base-subs-body',baseSubsCols,[sub.name||'',sub.citizenship||'',sub.sharesSubscribed||'',sub.amountSubscribed||'',sub.amountPaid||'']));
     }
-
-    // Populate signatories from signature block extraction
-    if (Array.isArray(data.signatories) && data.signatories.length > 0) {
-        document.getElementById('signatories-body').innerHTML = '';
-        data.signatories.forEach(sig => addRow('signatories-body', signatoryCols, [sig.name||'', sig.role||'', sig.tin||'']));
+    if(Array.isArray(data.signatories)&&data.signatories.length>0){
+        document.getElementById('signatories-body').innerHTML='';
+        data.signatories.forEach(sig=>addRow('signatories-body',signatoryCols,[sig.name||'',sig.role||'',sig.tin||'']));
     }
 }
 
 function showExtractionSummary(data) {
-    document.getElementById('extractSummary').style.display = 'block';
-    const art1Date = data.article1AmendedDate || data.documentAmendedDate || '';
-    const checks = [
-        ['Corporate Name', data.corporateName],
-        ['Document Amended Date', art1Date ? formatDate(art1Date) : ''],
-        ['Primary Purpose', data.primaryPurpose ? data.primaryPurpose.substring(0,60)+'…' : ''],
-        ['Address', [data.street, data.city].filter(Boolean).join(', ')],
-        ['Term', data.term ? (data.term==='0'?'Perpetual':data.term+' years') : ''],
-        ['No. of Directors', data.numberOfDirectors],
-        ['Auth. Capital Stock', data.acsAmount],
-        ['Treasurer', data.treasurer],
-        ['SEC Reg. No.', data.secRegistrationNo],
-        ['Incorporators', Array.isArray(data.incorporators) ? data.incorporators.length+' row(s)' : ''],
-        ['Directors', Array.isArray(data.directors) ? data.directors.length+' row(s)' : ''],
-        ['Subscribers', Array.isArray(data.subscribers) ? data.subscribers.length+' row(s)' : ''],
-        ['Signatories', Array.isArray(data.signatories) ? data.signatories.length+' row(s)' : ''],
+    document.getElementById('extractSummary').style.display='block';
+    const art1Date=data.article1AmendedDate||data.documentAmendedDate||'';
+    const checks=[
+        ['Corporate Name',data.corporateName],
+        ['Document Amended Date',art1Date?formatDate(art1Date):''],
+        ['Primary Purpose',data.primaryPurpose?data.primaryPurpose.substring(0,60)+'…':''],
+        ['Address',[data.street,data.city].filter(Boolean).join(', ')],
+        ['Term',data.term?(data.term==='0'?'Perpetual':data.term+' years'):''],
+        ['No. of Directors',data.numberOfDirectors],
+        ['Auth. Capital Stock',data.acsAmount],
+        ['Treasurer',data.treasurer],
+        ['SEC Reg. No.',data.secRegistrationNo],
+        ['Incorporators',Array.isArray(data.incorporators)?data.incorporators.length+' row(s)':''],
+        ['Directors',Array.isArray(data.directors)?data.directors.length+' row(s)':''],
+        ['Subscribers',Array.isArray(data.subscribers)?data.subscribers.length+' row(s)':''],
+        ['Signatories',Array.isArray(data.signatories)?data.signatories.length+' row(s)':''],
     ];
-    document.getElementById('extractSummaryContent').innerHTML = checks.map(([label, val]) => {
-        const ok = val && String(val).trim() !== '';
-        return `<span style="color:${ok?'#4caf50':'#f44336'};margin-right:16px;">${ok?'✓':'✗'} <b>${label}:</b> ${ok ? val : 'Not found'}</span><br>`;
+    document.getElementById('extractSummaryContent').innerHTML=checks.map(([label,val])=>{
+        const ok=val&&String(val).trim()!=='';
+        return `<span style="color:${ok?'#4caf50':'#f44336'};margin-right:16px;">${ok?'✓':'✗'} <b>${label}:</b> ${ok?val:'Not found'}</span><br>`;
     }).join('');
 }
 
 /* ─── Article toggle ─── */
 function toggleArt(artNum, cb) {
-    const formId = artNum === 89 ? 'form-art89' : `form-art${artNum}`;
-    const form = document.getElementById(formId);
-    const chip = document.getElementById(`chip-${artNum}`);
-    if (cb.checked) {
-        form.style.display = 'block';
-        chip.classList.add('checked');
-        if (artNum === 1) document.getElementById('prev-name-display').textContent = document.getElementById('base-name').value || '—';
-        if (artNum === 2) renderPurposeLists();
+    const formId=artNum===89?'form-art89':`form-art${artNum}`;
+    const form=document.getElementById(formId);
+    const chip=document.getElementById(`chip-${artNum}`);
+    if(cb.checked){
+        form.style.display='block'; chip.classList.add('checked');
+        if(artNum===1) document.getElementById('prev-name-display').textContent=document.getElementById('base-name').value||'—';
+        if(artNum===2) renderPurposeLists();
     } else {
-        form.style.display = 'none';
-        chip.classList.remove('checked');
+        form.style.display='none'; chip.classList.remove('checked');
     }
 }
 
 /* ─── Purpose list ─── */
-function renderPurposeLists() { renderPurposeList('primary',''); renderPurposeList('secondary',''); }
-function filterPurposes(type) { renderPurposeList(type, document.getElementById(`purpose-search-${type}`).value); }
-function renderPurposeList(type, query) {
-    const listEl = document.getElementById(`purpose-list-${type}`);
-    const filtered = PURPOSE_DB.filter(p => !query ||
-        p.name.toLowerCase().includes(query.toLowerCase()) ||
-        p.text.toLowerCase().includes(query.toLowerCase()));
-    listEl.innerHTML = '';
-    filtered.forEach(p => {
-        const div = document.createElement('div');
-        const isSel = type==='primary' ? (selectedPrimary&&selectedPrimary.name===p.name) : selectedSecondary.some(s=>s.name===p.name);
-        div.className = 'purpose-item' + (isSel?' selected':'');
-        div.innerHTML = `<div class="p-name">${p.name}</div><div class="p-text">${p.text}</div>`;
-        div.onclick = () => selectPurpose(type, p);
+function renderPurposeLists(){renderPurposeList('primary','');renderPurposeList('secondary','');}
+function filterPurposes(type){renderPurposeList(type,document.getElementById(`purpose-search-${type}`).value);}
+function renderPurposeList(type,query){
+    const listEl=document.getElementById(`purpose-list-${type}`);
+    const filtered=PURPOSE_DB.filter(p=>!query||p.name.toLowerCase().includes(query.toLowerCase())||p.text.toLowerCase().includes(query.toLowerCase()));
+    listEl.innerHTML='';
+    filtered.forEach(p=>{
+        const div=document.createElement('div');
+        const isSel=type==='primary'?(selectedPrimary&&selectedPrimary.name===p.name):selectedSecondary.some(s=>s.name===p.name);
+        div.className='purpose-item'+(isSel?' selected':'');
+        div.innerHTML=`<div class="p-name">${p.name}</div><div class="p-text">${p.text}</div>`;
+        div.onclick=()=>selectPurpose(type,p);
         listEl.appendChild(div);
     });
 }
-function selectPurpose(type, p) {
-    if (type==='primary') { selectedPrimary=p; renderSelectedPrimary(); }
-    else { if (!selectedSecondary.some(s=>s.name===p.name)) selectedSecondary.push(p); renderSelectedSecondary(); }
-    renderPurposeList(type, document.getElementById(`purpose-search-${type}`).value);
+function selectPurpose(type,p){
+    if(type==='primary'){selectedPrimary=p;renderSelectedPrimary();}
+    else{if(!selectedSecondary.some(s=>s.name===p.name))selectedSecondary.push(p);renderSelectedSecondary();}
+    renderPurposeList(type,document.getElementById(`purpose-search-${type}`).value);
 }
-function renderSelectedPrimary() {
-    const el = document.getElementById('selected-primary');
-    if (!selectedPrimary) { el.innerHTML=''; return; }
-    el.innerHTML = `<div class="sel-purpose-tag"><span><b>${selectedPrimary.name}:</b> ${selectedPrimary.text}</span><button onclick="selectedPrimary=null;renderSelectedPrimary();renderPurposeList('primary','')">✕</button></div>`;
+function renderSelectedPrimary(){
+    const el=document.getElementById('selected-primary');
+    if(!selectedPrimary){el.innerHTML='';return;}
+    el.innerHTML=`<div class="sel-purpose-tag"><span><b>${selectedPrimary.name}:</b> ${selectedPrimary.text}</span><button onclick="selectedPrimary=null;renderSelectedPrimary();renderPurposeList('primary','')">✕</button></div>`;
 }
-function renderSelectedSecondary() {
-    const el = document.getElementById('selected-secondary');
-    el.innerHTML = '';
-    selectedSecondary.forEach((p,i) => {
-        const div = document.createElement('div');
+function renderSelectedSecondary(){
+    const el=document.getElementById('selected-secondary');
+    el.innerHTML='';
+    selectedSecondary.forEach((p,i)=>{
+        const div=document.createElement('div');
         div.className='sel-purpose-tag';
         div.innerHTML=`<span><b>${p.name}:</b> ${p.text}</span><button onclick="selectedSecondary.splice(${i},1);renderSelectedSecondary();renderPurposeList('secondary','')">✕</button>`;
         el.appendChild(div);
     });
 }
 
-/* ─── Inline "As amended on" tag — bold underline, NOT italic ─── */
-function inlineAmended(dateStr) {
-    if (!dateStr) return '';
+/* ─── Inline "As amended on" tag ─── */
+function inlineAmended(dateStr){
+    if(!dateStr)return '';
     return ` <span class="inline-amended">(As amended on ${formatDate(dateStr)})</span>`;
 }
 
-/* ─── Build person table (Name/Nationality/Residence only) ─── */
-function buildPersonTable(rows, cols) {
-    if (!rows || rows.length === 0)
+/* ─── Build person table ─── */
+function buildPersonTable(rows,cols){
+    if(!rows||rows.length===0)
         return `<div class="avoid-break"><table class="lt"><tr><th colspan="${cols.length}">[No data provided — REQUIRES CLIENT INPUT]</th></tr></table></div>`;
     return `<div class="avoid-break"><table class="lt"><tr>${cols.map(c=>`<th>${c.toUpperCase()}</th>`).join('')}</tr>${rows.map(r=>`<tr>${cols.map(c=>`<td>${r[c]||''}</td>`).join('')}</tr>`).join('')}</table></div>`;
 }
 
 /* ─── Build cert resolution FROM/TO block ─── */
-function buildCertRes(rn, title, resolved, from, to) {
+function buildCertRes(rn,title,resolved,from,to){
     return `<div class="avoid-break"><p class="res-header">${rn}. ${title}</p><p>${resolved}</p><p class="doc-indent"><b>FROM:</b></p><p class="doc-deep-indent">${from}</p><p class="doc-indent"><b>TO:</b></p><p class="doc-deep-indent">${to}</p></div>`;
 }
 
-/* ─── Build signatories block (from the Signatories section) ─── */
-function buildSignatoryBlock(sigs) {
-    if (!sigs || sigs.length === 0) {
+/* ─── Build signatories block ─── */
+function buildSignatoryBlock(sigs){
+    if(!sigs||sigs.length===0){
         return `<div class="sig-grid">
             <div class="sig-box"><div class="sig-line">PRESIDENT AND DIRECTOR<br><span class="sig-role">Director and President</span><br><span class="sig-tin">TIN No. _______________</span></div></div>
             <div class="sig-box"><div class="sig-line">CORPORATE SECRETARY<br><span class="sig-role">Corporate Secretary</span><br><span class="sig-tin">TIN No. _______________</span></div></div>
         </div>`;
     }
-    return `<div class="sig-grid">${sigs.map(s => `
+    return `<div class="sig-grid">${sigs.map(s=>`
         <div class="sig-box">
             <div class="sig-line">${(s['Name']||'').toUpperCase()}</div>
             <div class="sig-role">${s['Role']||''}</div>
@@ -876,303 +869,256 @@ function buildSignatoryBlock(sigs) {
    MAIN DOCUMENT GENERATOR
 ══════════════════════════════════════════════════ */
 function generateDocs() {
-    document.getElementById('preview-placeholder').style.display = 'none';
+    document.getElementById('preview-placeholder').style.display='none';
 
-    /* ── Collect baseline ── */
-    const bSt   = document.getElementById('base-street').value.trim();
-    const bBrgy = document.getElementById('base-brgy').value.trim();
-    const bCity = document.getElementById('base-city').value.trim();
-    const bProv = document.getElementById('base-prov').value.trim();
-    const bZip  = document.getElementById('base-zip').value.trim();
-    const baseAddrParts = [bSt, bBrgy, bCity, bProv].filter(Boolean);
-    if (bZip) baseAddrParts.push(bZip);
-    const baseFullAddress = baseAddrParts.join(', ');
+    const bSt=document.getElementById('base-street').value.trim();
+    const bBrgy=document.getElementById('base-brgy').value.trim();
+    const bCity=document.getElementById('base-city').value.trim();
+    const bProv=document.getElementById('base-prov').value.trim();
+    const bZip=document.getElementById('base-zip').value.trim();
+    const baseAddrParts=[bSt,bBrgy,bCity,bProv].filter(Boolean);
+    if(bZip) baseAddrParts.push(bZip);
+    const baseFullAddress=baseAddrParts.join(', ');
 
-    const b = {
-        name             : document.getElementById('base-name').value.trim() || '[CORPORATION NAME — REQUIRES CLIENT INPUT]',
-        art1AmendedDate  : document.getElementById('base-art1-amended-date').value,
-        purpose          : document.getElementById('base-purpose').value.trim(),
-        purposeAmdDate   : document.getElementById('base-purpose-amended-date').value,
-        secPurp          : document.getElementById('base-sec-purpose').value.trim(),
-        secPurpAmdDate   : document.getElementById('base-sec-purpose-amended-date').value,
-        art3AmendedDate  : document.getElementById('base-art3-amended-date').value,
-        art4AmendedDate  : document.getElementById('base-art4-amended-date').value,
-        art6AmendedDate  : document.getElementById('base-art6-amended-date').value,
-        art7AmendedDate  : document.getElementById('base-art7-amended-date').value,
-        address          : baseFullAddress || '[ADDRESS — REQUIRES CLIENT INPUT]',
-        term             : document.getElementById('base-term').value,
-        dirCount         : document.getElementById('base-dir-count').value || '[N]',
-        acsWords         : document.getElementById('base-acs-words').value.trim(),
-        acsAmt           : document.getElementById('base-acs-amount').value.trim(),
-        shares           : document.getElementById('base-shares').value.trim(),
-        par              : document.getElementById('base-par').value.trim(),
-        treasurer        : document.getElementById('base-treasurer').value.trim(),
-        treasurerTin     : document.getElementById('base-treasurer-tin').value.trim(),
-        ninth            : document.getElementById('base-ninth').value.trim(),
-        sec              : document.getElementById('base-sec').value.trim() || '[SEC REG NO — REQUIRES CLIENT INPUT]',
-        regDate          : document.getElementById('base-reg-date').value,
-        baseIncorp       : getTableData('base-incorp-body', baseIncorpCols),
-        baseDirs         : getTableData('base-dir-body', baseDirCols),
-        baseSubs         : getTableData('base-subs-body', baseSubsCols),
+    const b={
+        name:            document.getElementById('base-name').value.trim()||'[CORPORATION NAME — REQUIRES CLIENT INPUT]',
+        art1AmendedDate: document.getElementById('base-art1-amended-date').value,
+        purpose:         document.getElementById('base-purpose').value.trim(),
+        purposeAmdDate:  document.getElementById('base-purpose-amended-date').value,
+        secPurp:         document.getElementById('base-sec-purpose').value.trim(),
+        secPurpAmdDate:  document.getElementById('base-sec-purpose-amended-date').value,
+        art3AmendedDate: document.getElementById('base-art3-amended-date').value,
+        art4AmendedDate: document.getElementById('base-art4-amended-date').value,
+        art6AmendedDate: document.getElementById('base-art6-amended-date').value,
+        art7AmendedDate: document.getElementById('base-art7-amended-date').value,
+        address:         baseFullAddress||'[ADDRESS — REQUIRES CLIENT INPUT]',
+        term:            document.getElementById('base-term').value,
+        dirCount:        document.getElementById('base-dir-count').value||'[N]',
+        acsWords:        document.getElementById('base-acs-words').value.trim(),
+        acsAmt:          document.getElementById('base-acs-amount').value.trim(),
+        shares:          document.getElementById('base-shares').value.trim(),
+        par:             document.getElementById('base-par').value.trim(),
+        treasurer:       document.getElementById('base-treasurer').value.trim(),
+        ninth:           document.getElementById('base-ninth').value.trim(),
+        sec:             document.getElementById('base-sec').value.trim()||'[SEC REG NO — REQUIRES CLIENT INPUT]',
+        regDate:         document.getElementById('base-reg-date').value,
+        baseIncorp:      getTableData('base-incorp-body',baseIncorpCols),
+        baseDirs:        getTableData('base-dir-body',baseDirCols),
+        baseSubs:        getTableData('base-subs-body',baseSubsCols),
     };
 
-    const signatories = getTableData('signatories-body', signatoryCols);
+    const signatories=getTableData('signatories-body',signatoryCols);
+    const mtgDate=formatDate(document.getElementById('meeting-date').value);
+    const mtgDateRaw=document.getElementById('meeting-date').value;
+    const mtgPlace=document.getElementById('meeting-place').value.trim()||'[MEETING PLACE — REQUIRES CLIENT INPUT]';
+    const isArt=n=>document.querySelector(`input[value="${n}"]`)?.checked||false;
 
-    const mtgDate    = formatDate(document.getElementById('meeting-date').value);
-    const mtgDateRaw = document.getElementById('meeting-date').value;
-    const mtgPlace   = document.getElementById('meeting-place').value.trim() || '[MEETING PLACE — REQUIRES CLIENT INPUT]';
+    let finalName=b.name;
+    let finalAddressSt=bSt,finalAddressBrgy=bBrgy,finalAddressCity=bCity,finalAddressProv=bProv,finalAddressZip=bZip;
+    let finalTerm=b.term;
+    let finalDirCount=b.dirCount;
+    let finalDirs=b.baseDirs;
+    let finalIncorp=b.baseIncorp;
+    let finalAcsWords=b.acsWords,finalAcsAmt=b.acsAmt,finalShares=b.shares,finalPar=b.par;
+    let finalTreasurer=b.treasurer;
+    let finalSubs=b.baseSubs;
+    let finalNinth=b.ninth;
+    let finalCompClause='That the corporation manifests its willingness to change its corporate name in the event another person, firm, or entity has acquired a prior right to use the said firm name or one deceptively or confusingly similar to it.';
 
-    const isArt = n => document.querySelector(`input[value="${n}"]`)?.checked || false;
+    let certResolutions='';
 
-    /* ── Resolve final values ── */
-    let finalName        = b.name;
-    let finalAddressSt   = bSt, finalAddressBrgy = bBrgy, finalAddressCity = bCity;
-    let finalAddressProv = bProv, finalAddressZip = bZip;
-    let finalTerm        = b.term;
-    let finalDirCount    = b.dirCount;
-    let finalDirs        = b.baseDirs;
-    let finalIncorp      = b.baseIncorp;
-    let finalAcsWords    = b.acsWords, finalAcsAmt = b.acsAmt;
-    let finalShares      = b.shares,   finalPar    = b.par;
-    let finalTreasurer   = b.treasurer, finalTreasurerTin = b.treasurerTin;
-    let finalSubs        = b.baseSubs;
-    let finalNinth       = b.ninth;
-    let finalCompClause  = 'That the corporation manifests its willingness to change its corporate name in the event another person, firm, or entity has acquired a prior right to use the said firm name or one deceptively or confusingly similar to it.';
-
-    let certResolutions = '';
-
-    /* ──── Article I ──── */
-    if (isArt(1)) {
-        const nn = document.getElementById('new-name').value.trim() || '[NEW NAME — REQUIRES CLIENT INPUT]';
-        certResolutions += buildCertRes(
-            'I', 'CHANGE OF REGISTERED NAME OF THE CORPORATION',
+    /* Article I */
+    if(isArt(1)){
+        const nn=document.getElementById('new-name').value.trim()||'[NEW NAME — REQUIRES CLIENT INPUT]';
+        certResolutions+=buildCertRes('I','CHANGE OF REGISTERED NAME OF THE CORPORATION',
             'RESOLVED, that the Board hereby approves the change of the registered name of the Corporation and the corresponding amendment of the First Article of its Articles of Incorporation:',
             `FIRST: That the name of the said corporation shall be ${b.name}`,
-            `FIRST: That the name of the said corporation shall be ${nn}`
-        );
-        finalName = nn;
+            `FIRST: That the name of the said corporation shall be ${nn}`);
+        finalName=nn;
     }
 
-    /* ──── Article II ──── */
-    let finalPurposeHTML = '';
-    const purposeAmended = isArt(2);
-    if (purposeAmended) {
-        const cp = document.getElementById('new-custom-purpose').value.trim();
-        const newPrimaryText = cp || (selectedPrimary ? selectedPrimary.text : '');
-        const newSecondaryList = selectedSecondary;
-        const primaryChanged   = !!newPrimaryText;
-        const secondaryChanged = newSecondaryList.length > 0;
-
-        finalPurposeHTML = `<p><b>SECOND:</b> That the purposes for which such corporation is incorporated are:</p>`;
-        finalPurposeHTML += `<p class="doc-indent"><b>A. Primary Purpose:</b><br>${newPrimaryText || '[PRIMARY PURPOSE — REQUIRES CLIENT INPUT]'}`;
-        if (primaryChanged) finalPurposeHTML += inlineAmended(mtgDateRaw);
-        finalPurposeHTML += `</p>`;
-
-        if (secondaryChanged) {
-            finalPurposeHTML += `<p class="doc-indent"><b>B. Secondary Purpose(s):</b></p>`;
-            newSecondaryList.forEach((sp, i) => {
-                finalPurposeHTML += `<p class="doc-deep-indent">${i+1}. ${sp.text}${inlineAmended(mtgDateRaw)}</p>`;
+    /* Article II */
+    let finalPurposeHTML='';
+    const purposeAmended=isArt(2);
+    if(purposeAmended){
+        const cp=document.getElementById('new-custom-purpose').value.trim();
+        const newPrimaryText=cp||(selectedPrimary?selectedPrimary.text:'');
+        const newSecondaryList=selectedSecondary;
+        finalPurposeHTML=`<p><b>SECOND:</b> That the purposes for which such corporation is incorporated are:</p>`;
+        finalPurposeHTML+=`<p class="doc-indent"><b>A. Primary Purpose:</b><br>${newPrimaryText||'[PRIMARY PURPOSE — REQUIRES CLIENT INPUT]'}${inlineAmended(mtgDateRaw)}</p>`;
+        if(newSecondaryList.length>0){
+            finalPurposeHTML+=`<p class="doc-indent"><b>B. Secondary Purpose(s):</b></p>`;
+            newSecondaryList.forEach((sp,i)=>{
+                finalPurposeHTML+=`<p class="doc-deep-indent">${i+1}. ${sp.text}${inlineAmended(mtgDateRaw)}</p>`;
             });
-            finalPurposeHTML += `<p class="doc-indent"><b>C.</b> That the corporation shall have all the express powers of a corporation as provided for under Section 36 of the Revised Corporation Code of the Philippines.</p>`;
+            finalPurposeHTML+=`<p class="doc-indent"><b>C.</b> That the corporation shall have all the express powers of a corporation as provided for under Section 36 of the Revised Corporation Code of the Philippines.</p>`;
+        } else if(b.secPurp){
+            finalPurposeHTML+=`<p class="doc-indent"><b>B. Secondary Purpose(s):</b><br>${b.secPurp}${b.secPurpAmdDate?inlineAmended(b.secPurpAmdDate):''}</p>`;
+            finalPurposeHTML+=`<p class="doc-indent"><b>C.</b> That the corporation shall have all the express powers of a corporation as provided for under Section 36 of the Revised Corporation Code of the Philippines.</p>`;
         } else {
-            if (b.secPurp) {
-                finalPurposeHTML += `<p class="doc-indent"><b>B. Secondary Purpose(s):</b><br>${b.secPurp}`;
-                if (b.secPurpAmdDate) finalPurposeHTML += inlineAmended(b.secPurpAmdDate);
-                finalPurposeHTML += `</p>`;
-                finalPurposeHTML += `<p class="doc-indent"><b>C.</b> That the corporation shall have all the express powers of a corporation as provided for under Section 36 of the Revised Corporation Code of the Philippines.</p>`;
-            } else {
-                finalPurposeHTML += `<p class="doc-indent"><b>B.</b> That the corporation shall have all the express powers of a corporation as provided for under Section 36 of the Revised Corporation Code of the Philippines.</p>`;
-            }
+            finalPurposeHTML+=`<p class="doc-indent"><b>B.</b> That the corporation shall have all the express powers of a corporation as provided for under Section 36 of the Revised Corporation Code of the Philippines.</p>`;
         }
-
-        certResolutions += buildCertRes(
-            'II', 'AMENDMENT OF THE SECOND ARTICLE (PURPOSE)',
+        certResolutions+=buildCertRes('II','AMENDMENT OF THE SECOND ARTICLE (PURPOSE)',
             'RESOLVED, that the Board hereby approves the amendment of the Second Article of the Articles of Incorporation:',
-            `SECOND: Primary Purpose: ${(b.purpose || '[previous purpose]').substring(0,200)}…`,
-            `SECOND: Primary Purpose: ${(newPrimaryText || '[NEW PURPOSE — REQUIRES CLIENT INPUT]').substring(0,200)}…`
-        );
+            `SECOND: Primary Purpose: ${(b.purpose||'[previous purpose]').substring(0,200)}…`,
+            `SECOND: Primary Purpose: ${(newPrimaryText||'[NEW PURPOSE — REQUIRES CLIENT INPUT]').substring(0,200)}…`);
     } else {
-        finalPurposeHTML = `<p><b>SECOND:</b> That the purposes for which such corporation is incorporated are:</p>`;
-        finalPurposeHTML += `<p class="doc-indent"><b>A. Primary Purpose:</b><br>${b.purpose || '[PRIMARY PURPOSE — REQUIRES CLIENT INPUT]'}`;
-        if (b.purposeAmdDate) finalPurposeHTML += inlineAmended(b.purposeAmdDate);
-        finalPurposeHTML += `</p>`;
-        if (b.secPurp) {
-            finalPurposeHTML += `<p class="doc-indent"><b>B. Secondary Purpose(s):</b><br>${b.secPurp}`;
-            if (b.secPurpAmdDate) finalPurposeHTML += inlineAmended(b.secPurpAmdDate);
-            finalPurposeHTML += `</p>`;
-            finalPurposeHTML += `<p class="doc-indent"><b>C.</b> That the corporation shall have all the express powers of a corporation as provided for under Section 36 of the Revised Corporation Code of the Philippines.</p>`;
+        finalPurposeHTML=`<p><b>SECOND:</b> That the purposes for which such corporation is incorporated are:</p>`;
+        finalPurposeHTML+=`<p class="doc-indent"><b>A. Primary Purpose:</b><br>${b.purpose||'[PRIMARY PURPOSE — REQUIRES CLIENT INPUT]'}${b.purposeAmdDate?inlineAmended(b.purposeAmdDate):''}</p>`;
+        if(b.secPurp){
+            finalPurposeHTML+=`<p class="doc-indent"><b>B. Secondary Purpose(s):</b><br>${b.secPurp}${b.secPurpAmdDate?inlineAmended(b.secPurpAmdDate):''}</p>`;
+            finalPurposeHTML+=`<p class="doc-indent"><b>C.</b> That the corporation shall have all the express powers of a corporation as provided for under Section 36 of the Revised Corporation Code of the Philippines.</p>`;
         } else {
-            finalPurposeHTML += `<p class="doc-indent"><b>B.</b> That the corporation shall have all the express powers of a corporation as provided for under Section 36 of the Revised Corporation Code of the Philippines.</p>`;
+            finalPurposeHTML+=`<p class="doc-indent"><b>B.</b> That the corporation shall have all the express powers of a corporation as provided for under Section 36 of the Revised Corporation Code of the Philippines.</p>`;
         }
     }
 
-    /* ──── Article III ──── */
-    if (isArt(3)) {
-        finalAddressSt   = document.getElementById('new-street').value.trim();
-        finalAddressBrgy = document.getElementById('new-brgy').value.trim();
-        finalAddressCity = document.getElementById('new-city').value.trim();
-        finalAddressProv = document.getElementById('new-prov').value.trim();
-        finalAddressZip  = document.getElementById('new-zip').value.trim();
-        const newAddrParts = [finalAddressSt, finalAddressBrgy, finalAddressCity, finalAddressProv].filter(Boolean);
-        if (finalAddressZip) newAddrParts.push(finalAddressZip);
-        certResolutions += buildCertRes(
-            'III', 'AMENDMENT OF THE THIRD ARTICLE (PRINCIPAL OFFICE)',
+    /* Article III */
+    if(isArt(3)){
+        finalAddressSt=document.getElementById('new-street').value.trim();
+        finalAddressBrgy=document.getElementById('new-brgy').value.trim();
+        finalAddressCity=document.getElementById('new-city').value.trim();
+        finalAddressProv=document.getElementById('new-prov').value.trim();
+        finalAddressZip=document.getElementById('new-zip').value.trim();
+        const newAddrParts=[finalAddressSt,finalAddressBrgy,finalAddressCity,finalAddressProv].filter(Boolean);
+        if(finalAddressZip) newAddrParts.push(finalAddressZip);
+        certResolutions+=buildCertRes('III','AMENDMENT OF THE THIRD ARTICLE (PRINCIPAL OFFICE)',
             'RESOLVED, that the Board hereby approves the amendment of the Third Article of the Articles of Incorporation:',
             `THIRD: That the principal office of the corporation is located in ${b.address}`,
-            `THIRD: That the principal office of the corporation is located in ${newAddrParts.join(', ') || '[NEW ADDRESS — REQUIRES CLIENT INPUT]'}`
-        );
+            `THIRD: That the principal office of the corporation is located in ${newAddrParts.join(', ')||'[NEW ADDRESS — REQUIRES CLIENT INPUT]'}`);
     }
 
-    const finalAddrParts = [finalAddressSt, finalAddressBrgy, finalAddressCity, finalAddressProv].filter(Boolean);
-    if (finalAddressZip) finalAddrParts.push(finalAddressZip);
-    const finalAddressFull = finalAddrParts.join(', ') || '[ADDRESS — REQUIRES CLIENT INPUT]';
-    const finalAddressDisplay = `<strong><u>${finalAddressFull.toUpperCase()}</u></strong>`;
+    const finalAddrParts=[finalAddressSt,finalAddressBrgy,finalAddressCity,finalAddressProv].filter(Boolean);
+    if(finalAddressZip) finalAddrParts.push(finalAddressZip);
+    const finalAddressFull=finalAddrParts.join(', ')||'[ADDRESS — REQUIRES CLIENT INPUT]';
+    const finalAddressDisplay=`<strong><u>${finalAddressFull.toUpperCase()}</u></strong>`;
 
-    /* ──── Article IV ──── */
-    let termText = '';
-    if (isArt(4)) {
-        const nt = document.getElementById('new-term').value;
-        const isPerpetual = !nt || nt === '0';
-        finalTerm = isPerpetual ? 'perpetual' : nt;
-        certResolutions += buildCertRes(
-            'IV', 'AMENDMENT OF THE FOURTH ARTICLE (CORPORATE TERM)',
+    /* Article IV */
+    let termText='';
+    if(isArt(4)){
+        const nt=document.getElementById('new-term').value;
+        const isPerpetual=!nt||nt==='0';
+        finalTerm=isPerpetual?'perpetual':nt;
+        if(isPerpetual){
+            termText=`The corporation shall have perpetual existence.${inlineAmended(mtgDateRaw)}`;
+        } else {
+            termText=`That the term for which said corporation is to exist is ${numToWordsMixed(parseInt(nt))} years from and after the date of issuance of the certificate of incorporation.${inlineAmended(mtgDateRaw)}`;
+        }
+        certResolutions+=buildCertRes('IV','AMENDMENT OF THE FOURTH ARTICLE (CORPORATE TERM)',
             'RESOLVED, that the Board hereby approves the amendment of the Fourth Article of the Articles of Incorporation:',
-            `FOURTH: Term is ${b.term && b.term !== '0' ? b.term + ' years' : 'perpetual'}.`,
-            isPerpetual ? 'FOURTH: The corporation shall have perpetual existence.' : `FOURTH: The term is ${numToWordsMixed(parseInt(nt))} years.`
-        );
-        if (isPerpetual) {
-            termText = `The corporation shall have perpetual existence.${inlineAmended(mtgDateRaw)}`;
-        } else {
-            termText = `That the term for which said corporation is to exist is ${numToWordsMixed(parseInt(nt))} years from and after the date of issuance of the certificate of incorporation.${inlineAmended(mtgDateRaw)}`;
-        }
+            `FOURTH: Term is ${b.term&&b.term!=='0'?b.term+' years':'perpetual'}.`,
+            isPerpetual?'FOURTH: The corporation shall have perpetual existence.':`FOURTH: The term is ${numToWordsMixed(parseInt(nt))} years.`);
     } else {
-        const bt = parseInt(b.term);
-        if (!b.term || b.term === '0' || bt === 0) {
-            termText = 'The corporation shall have perpetual existence.';
-            if (b.art4AmendedDate) termText += inlineAmended(b.art4AmendedDate);
-        } else if (!isNaN(bt)) {
-            termText = `That the term for which said corporation is to exist is ${numToWordsMixed(bt)} years from and after the date of issuance of the certificate of incorporation.`;
-            if (b.art4AmendedDate) termText += inlineAmended(b.art4AmendedDate);
+        const bt=parseInt(b.term);
+        if(!b.term||b.term==='0'||bt===0){
+            termText='The corporation shall have perpetual existence.'+(b.art4AmendedDate?inlineAmended(b.art4AmendedDate):'');
+        } else if(!isNaN(bt)){
+            termText=`That the term for which said corporation is to exist is ${numToWordsMixed(bt)} years from and after the date of issuance of the certificate of incorporation.`+(b.art4AmendedDate?inlineAmended(b.art4AmendedDate):'');
         } else {
-            termText = '[CORPORATE TERM — REQUIRES CLIENT INPUT]';
+            termText='[CORPORATE TERM — REQUIRES CLIENT INPUT]';
         }
     }
 
-    /* ──── Article V ──── */
-    if (isArt(5)) {
-        finalIncorp = getTableData('new-incorp-body', newIncorpCols);
-        certResolutions += buildCertRes(
-            'V', 'AMENDMENT OF THE FIFTH ARTICLE (INCORPORATORS)',
+    /* Article V */
+    if(isArt(5)){
+        finalIncorp=getTableData('new-incorp-body',newIncorpCols);
+        certResolutions+=buildCertRes('V','AMENDMENT OF THE FIFTH ARTICLE (INCORPORATORS)',
             'RESOLVED, that the Board hereby approves the amendment of the Fifth Article of the Articles of Incorporation.',
             'FIFTH: Incorporators as previously stated in the original Articles of Incorporation.',
-            'FIFTH: Incorporators as amended per the updated roster herein.'
-        );
+            'FIFTH: Incorporators as amended per the updated roster herein.');
     }
 
-    /* ──── Article VI ──── */
-    let sixthAmendedTag = '';
-    if (isArt(6)) {
-        const nc = document.getElementById('new-dir-count').value || '[N]';
-        finalDirs     = getTableData('new-dir-body', newDirCols);
-        finalDirCount = nc;
-        sixthAmendedTag = inlineAmended(mtgDateRaw);
-        certResolutions += `<div class="avoid-break">
+    /* Article VI */
+    let sixthAmendedTag='';
+    if(isArt(6)){
+        const nc=document.getElementById('new-dir-count').value||'[N]';
+        finalDirs=getTableData('new-dir-body',newDirCols);
+        finalDirCount=nc;
+        sixthAmendedTag=inlineAmended(mtgDateRaw);
+        certResolutions+=`<div class="avoid-break">
             <p class="res-header">VI. AMENDMENT OF THE SIXTH ARTICLE (BOARD OF DIRECTORS)</p>
             <p>RESOLVED, that the Board hereby approves the change in the number of directors and the corresponding amendment of the Sixth Article of the Articles of Incorporation:</p>
             <p class="doc-indent"><b>FROM:</b></p>
             <p class="doc-indent">SIXTH: Number of directors: ${b.dirCount}</p>
-            ${buildPersonTable(b.baseDirs, ['Name','Nationality','Residence'])}
+            ${buildPersonTable(b.baseDirs,['Name','Nationality','Residence'])}
             <p class="doc-indent"><b>TO:</b></p>
             <p class="doc-indent">SIXTH: Number of directors: ${nc}</p>
-            ${buildPersonTable(finalDirs, ['Name','Nationality','Residence'])}
+            ${buildPersonTable(finalDirs,['Name','Nationality','Residence'])}
         </div>`;
-    } else if (b.art6AmendedDate) {
-        sixthAmendedTag = inlineAmended(b.art6AmendedDate);
+    } else if(b.art6AmendedDate){
+        sixthAmendedTag=inlineAmended(b.art6AmendedDate);
     }
 
-    /* ──── Article VII ──── */
-    let seventhAmendedTag = '';
-    if (isArt(7)) {
-        finalAcsWords = document.getElementById('new-acs-words').value.trim() || b.acsWords;
-        finalAcsAmt   = document.getElementById('new-acs-amount').value.trim() || b.acsAmt;
-        finalShares   = document.getElementById('new-shares').value.trim() || b.shares;
-        finalPar      = document.getElementById('new-par').value.trim() || b.par;
-        seventhAmendedTag = inlineAmended(mtgDateRaw);
-        certResolutions += buildCertRes(
-            'VII', 'AMENDMENT OF THE SEVENTH ARTICLE (AUTHORIZED CAPITAL STOCK)',
+    /* Article VII */
+    let seventhAmendedTag='';
+    if(isArt(7)){
+        finalAcsWords=document.getElementById('new-acs-words').value.trim()||b.acsWords;
+        finalAcsAmt=document.getElementById('new-acs-amount').value.trim()||b.acsAmt;
+        finalShares=document.getElementById('new-shares').value.trim()||b.shares;
+        finalPar=document.getElementById('new-par').value.trim()||b.par;
+        seventhAmendedTag=inlineAmended(mtgDateRaw);
+        certResolutions+=buildCertRes('VII','AMENDMENT OF THE SEVENTH ARTICLE (AUTHORIZED CAPITAL STOCK)',
             'RESOLVED, that the Board hereby approves the amendment of the Seventh Article of the Articles of Incorporation:',
             `SEVENTH: Authorized capital stock is ${b.acsWords} (₱${b.acsAmt}), divided into ${b.shares} shares at ₱${b.par} par value per share.`,
-            `SEVENTH: Authorized capital stock is ${finalAcsWords} (₱${finalAcsAmt}), divided into ${finalShares} shares at ₱${finalPar} par value per share.`
-        );
-    } else if (b.art7AmendedDate) {
-        seventhAmendedTag = inlineAmended(b.art7AmendedDate);
+            `SEVENTH: Authorized capital stock is ${finalAcsWords} (₱${finalAcsAmt}), divided into ${finalShares} shares at ₱${finalPar} par value per share.`);
+    } else if(b.art7AmendedDate){
+        seventhAmendedTag=inlineAmended(b.art7AmendedDate);
     }
 
-    /* ──── Articles VIII/IX ──── */
-    if (isArt(89)) {
-        finalSubs = getTableData('new-subs-body', newSubsCols);
-        certResolutions += buildCertRes(
-            'VIII/IX', 'AMENDMENT OF ARTICLES VIII AND IX (SUBSCRIPTIONS AND PAYMENT)',
+    /* Articles VIII/IX */
+    if(isArt(89)){
+        finalSubs=getTableData('new-subs-body',newSubsCols);
+        certResolutions+=buildCertRes('VIII/IX','AMENDMENT OF ARTICLES VIII AND IX (SUBSCRIPTIONS AND PAYMENT)',
             'RESOLVED, that the Board hereby approves the amendment of Articles VIII and IX of the Articles of Incorporation.',
             'EIGHTH/NINTH: Previous subscription and payment schedule as stated in the original Articles of Incorporation.',
-            'EIGHTH/NINTH: Amended subscription and payment schedule as reflected in the updated table herein.'
-        );
+            'EIGHTH/NINTH: Amended subscription and payment schedule as reflected in the updated table herein.');
     }
 
-    /* ──── Article X ──── */
-    if (isArt(10)) {
-        finalTreasurer    = document.getElementById('new-treasurer').value.trim() || b.treasurer;
-        finalTreasurerTin = document.getElementById('new-treasurer-tin').value.trim() || b.treasurerTin;
-        certResolutions += buildCertRes(
-            'X', 'AMENDMENT OF THE TENTH ARTICLE (TREASURER-IN-TRUST)',
+    /* Article X */
+    if(isArt(10)){
+        finalTreasurer=document.getElementById('new-treasurer').value.trim()||b.treasurer;
+        const newTreasurerTin=document.getElementById('new-treasurer-tin').value.trim();
+        certResolutions+=buildCertRes('X','AMENDMENT OF THE TENTH ARTICLE (TREASURER-IN-TRUST)',
             'RESOLVED, that the Board hereby approves the amendment of the Tenth Article of the Articles of Incorporation:',
-            `TENTH: ${b.treasurer || '[Current Treasurer]'} has been elected Treasurer-in-Trust of the Corporation.`,
-            `TENTH: ${finalTreasurer || '[NEW TREASURER — REQUIRES CLIENT INPUT]'} has been elected Treasurer-in-Trust of the Corporation.`
-        );
+            `TENTH: ${b.treasurer||'[Current Treasurer]'} has been elected Treasurer-in-Trust of the Corporation.`,
+            `TENTH: ${finalTreasurer||'[NEW TREASURER — REQUIRES CLIENT INPUT]'} has been elected Treasurer-in-Trust of the Corporation.`);
     }
 
-    /* ──── Article XI ──── */
-    if (isArt(11)) {
-        const cc = document.getElementById('new-comp-clause').value.trim();
-        const chosen = [...document.querySelectorAll('input[name="comp-clause"]')].find(r => r.checked);
-        if (chosen && chosen.value === 'custom' && cc) finalCompClause = cc;
-        certResolutions += buildCertRes(
-            'XI', 'AMENDMENT OF THE ELEVENTH ARTICLE',
+    /* Article XI */
+    if(isArt(11)){
+        const cc=document.getElementById('new-comp-clause').value.trim();
+        const chosen=[...document.querySelectorAll('input[name="comp-clause"]')].find(r=>r.checked);
+        if(chosen&&chosen.value==='custom'&&cc) finalCompClause=cc;
+        certResolutions+=buildCertRes('XI','AMENDMENT OF THE ELEVENTH ARTICLE',
             'RESOLVED, that the Board hereby approves the amendment of the Eleventh Article of the Articles of Incorporation.',
             'ELEVENTH: [Previous amendment clause provision]',
-            `ELEVENTH: ${finalCompClause}`
-        );
+            `ELEVENTH: ${finalCompClause}`);
     }
 
-    if (!certResolutions) certResolutions = '<p style="text-align:center;font-style:italic;">[No amendments were selected.]</p>';
+    if(!certResolutions) certResolutions='<p style="text-align:center;font-style:italic;">[No amendments were selected.]</p>';
 
-    /* ──── Subscription table ──── */
-    const acsAmtNum = parseFloat(String(finalAcsAmt || '0').replace(/,/g, '')) || 0;
-    let subsTableHTML = '';
-    if (finalSubs.length > 0) {
-        let totalShares = 0, totalSubscribed = 0, totalPaid = 0;
-        finalSubs.forEach(r => {
-            totalShares     += parseFloat(String(r['No. of Shares Subscribed'] || 0).replace(/,/g,'')) || 0;
-            totalSubscribed += parseFloat(String(r['Amount Subscribed (₱)'] || 0).replace(/,/g,'')) || 0;
-            totalPaid       += parseFloat(String(r['Amount Paid (₱)'] || 0).replace(/,/g,'')) || 0;
+    /* Subscription table */
+    const acsAmtNum=parseFloat(String(finalAcsAmt||'0').replace(/,/g,''))||0;
+    let subsTableHTML='';
+    if(finalSubs.length>0){
+        let totalShares=0,totalSubscribed=0,totalPaid=0;
+        finalSubs.forEach(r=>{
+            totalShares+=parseFloat(String(r['No. of Shares Subscribed']||0).replace(/,/g,''))||0;
+            totalSubscribed+=parseFloat(String(r['Amount Subscribed (₱)']||0).replace(/,/g,''))||0;
+            totalPaid+=parseFloat(String(r['Amount Paid (₱)']||0).replace(/,/g,''))||0;
         });
-        const pct = acsAmtNum > 0 ? Math.round((totalSubscribed / acsAmtNum) * 100) : 25;
-        subsTableHTML = `<div class="avoid-break">
+        const pct=acsAmtNum>0?Math.round((totalSubscribed/acsAmtNum)*100):25;
+        subsTableHTML=`<div class="avoid-break">
             <p><b>EIGHTH:</b> That at least ${pct}% of the authorized capital stock has been subscribed and at least twenty-five percent (25%) of the total subscription has been fully paid to the Treasurer-in-Trust, as follows:</p>
             <table class="lt">
-                <tr>
-                    <th>Name of Subscriber</th><th>Citizenship</th>
-                    <th>No. of Shares Subscribed</th><th>Amount Subscribed (₱)</th><th>Amount Paid (₱)</th>
-                </tr>
-                ${finalSubs.map(r => `<tr>
-                    <td>${r['Name of Subscriber']||''}</td>
-                    <td>${r['Citizenship']||''}</td>
+                <tr><th>Name of Subscriber</th><th>Citizenship</th><th>No. of Shares Subscribed</th><th>Amount Subscribed (₱)</th><th>Amount Paid (₱)</th></tr>
+                ${finalSubs.map(r=>`<tr>
+                    <td>${r['Name of Subscriber']||''}</td><td>${r['Citizenship']||''}</td>
                     <td style="text-align:right">${r['No. of Shares Subscribed']||''}</td>
                     <td style="text-align:right">${r['Amount Subscribed (₱)']||''}</td>
                     <td style="text-align:right">${r['Amount Paid (₱)']||''}</td>
                 </tr>`).join('')}
-                <tr>
-                    <td colspan="2"><b>TOTAL</b></td>
+                <tr><td colspan="2"><b>TOTAL</b></td>
                     <td style="text-align:right"><b>${totalShares.toLocaleString()}</b></td>
                     <td style="text-align:right"><b>${totalSubscribed.toLocaleString('en-US',{minimumFractionDigits:2})}</b></td>
                     <td style="text-align:right"><b>${totalPaid.toLocaleString('en-US',{minimumFractionDigits:2})}</b></td>
@@ -1180,34 +1126,31 @@ function generateDocs() {
             </table>
         </div>`;
     } else {
-        subsTableHTML = `<p><b>EIGHTH:</b> That at least twenty-five percent (25%) of the authorized capital stock has been subscribed and at least twenty-five percent (25%) of the total subscription has been fully paid to the Treasurer-in-Trust. [REQUIRES CLIENT INPUT — subscription table is empty]</p>`;
+        subsTableHTML=`<p><b>EIGHTH:</b> That at least twenty-five percent (25%) of the authorized capital stock has been subscribed and at least twenty-five percent (25%) of the total subscription has been fully paid to the Treasurer-in-Trust. [REQUIRES CLIENT INPUT — subscription table is empty]</p>`;
     }
 
-    /* ──── Signatories block ──── */
-    const sigBlock = buildSignatoryBlock(signatories);
+    const sigBlock=buildSignatoryBlock(signatories);
 
-    /* ──── Article I display block ──── */
-    // Per the reference image: FIRST text says "That the name of said corporation shall be:"
-    // then the name is centered bold on next line, with "As amended on" below it (bold underline, not italic)
-    let firstArticleBlock = '';
-    const art1AmdDate = isArt(1) ? mtgDateRaw : b.art1AmendedDate;
-    firstArticleBlock = `<p><b>FIRST:</b> That the name of said corporation shall be:</p>
+    /* Article I display */
+    const art1AmdDate=isArt(1)?mtgDateRaw:b.art1AmendedDate;
+    const firstArticleBlock=`<p><b>FIRST:</b> That the name of said corporation shall be:</p>
     <div class="art1-name-block">
         <span class="art1-name-text">${finalName.toUpperCase()}</span>
-        ${art1AmdDate ? `<span class="art1-amended-tag">(As amended on ${formatDate(art1AmdDate)})</span>` : ''}
+        ${art1AmdDate?`<span class="art1-amended-tag">(As amended on ${formatDate(art1AmdDate)})</span>`:''}
     </div>`;
 
-    /* ──── Article III amended tag ──── */
-    const thirdAmendedTag = isArt(3) ? inlineAmended(mtgDateRaw) : (b.art3AmendedDate ? inlineAmended(b.art3AmendedDate) : '');
+    const thirdAmendedTag=isArt(3)?inlineAmended(mtgDateRaw):(b.art3AmendedDate?inlineAmended(b.art3AmendedDate):'');
+    const dirTableHTML=buildPersonTable(finalDirs,['Name','Nationality','Residence']);
+    const incorpTableHTML=buildPersonTable(finalIncorp,['Name','Nationality','Residence']);
 
-    /* ──── Director table (Name/Nationality/Residence only) ──── */
-    const dirTableHTML = buildPersonTable(finalDirs, ['Name','Nationality','Residence']);
-    const incorpTableHTML = buildPersonTable(finalIncorp, ['Name','Nationality','Residence']);
-
-    /* ══════════ BUILD HTML ══════════ */
+    /* ══ BUILD HTML ══
+       Two .document-page divs.
+       The second one has class="document-page" which carries page-break-before: always.
+       A .page-spacer between them provides the visual gap in preview only.
+    */
     document.getElementById('export-content').innerHTML = `
 
-    <!-- ══ DIRECTORS' CERTIFICATE ══ -->
+    <!-- ══ DIRECTORS CERTIFICATE ══ -->
     <div class="document-page" id="page-cert">
         <p>REPUBLIC OF THE PHILIPPINES)</p>
         <p style="padding-left:1.2in;">S.S.</p>
@@ -1218,7 +1161,7 @@ function generateDocs() {
         <br>
         <p><b>DO HEREBY CERTIFY THAT:</b></p>
         <br>
-        <p class="doc-numbered">1.&nbsp;&nbsp;&nbsp;&nbsp;<b>${b.name}</b> is a domestic stock corporation duly registered with the Securities and Exchange Commission ("SEC"), registered on ${b.regDate ? formatDate(b.regDate) : '[DATE OF REGISTRATION — REQUIRES CLIENT INPUT]'} with SEC Registration No. <b>${b.sec}</b>;</p>
+        <p class="doc-numbered">1.&nbsp;&nbsp;&nbsp;&nbsp;<b>${b.name}</b> is a domestic stock corporation duly registered with the Securities and Exchange Commission ("SEC"), registered on ${b.regDate?formatDate(b.regDate):'[DATE OF REGISTRATION — REQUIRES CLIENT INPUT]'} with SEC Registration No. <b>${b.sec}</b>;</p>
         <p class="doc-numbered">2.&nbsp;&nbsp;&nbsp;&nbsp;By a majority of the Board of Directors and Stockholders representing at least two-thirds (2/3) of the outstanding capital stock at a joint meeting duly held on <b>${mtgDate}</b> at <b>${mtgPlace}</b>, the following resolutions were unanimously adopted:</p>
         <br>
         ${certResolutions}
@@ -1241,10 +1184,13 @@ function generateDocs() {
         </div>
     </div>
 
-    <!-- ══ PAGE BREAK ══ -->
-    <div style="page-break-after:always;break-after:page;height:0;display:block;"></div>
+    <!-- ══ VISUAL SPACER (preview only, hidden in print/pdf) ══ -->
+    <div class="page-spacer"></div>
 
-    <!-- ══ AMENDED AOI ══ -->
+    <!-- ══ AMENDED AOI ══
+         .document-page carries page-break-before: always so this always starts on a new page,
+         regardless of how much white space remains at the bottom of the cert page.
+    -->
     <div class="document-page" id="page-aoi">
         <div class="doc-title-block">
             <span class="doc-title-main">AMENDED ARTICLES OF INCORPORATION</span>
@@ -1277,13 +1223,13 @@ function generateDocs() {
             ${dirTableHTML}
         </div>
 
-        <p><b>SEVENTH:</b> That the authorized capital stock of the Corporation is ${finalAcsWords || '[REQUIRES CLIENT INPUT]'} (${finalAcsAmt ? '₱' + finalAcsAmt : '[AMOUNT]'}) pesos in lawful money of the Philippines, divided into ${finalShares || '[SHARES]'} shares with the par value of ${finalPar ? '₱' + finalPar : '[PAR]'} pesos per share.${seventhAmendedTag}</p>
+        <p><b>SEVENTH:</b> That the authorized capital stock of the Corporation is ${finalAcsWords||'[REQUIRES CLIENT INPUT]'} (${finalAcsAmt?'₱'+finalAcsAmt:'[AMOUNT]'}) pesos in lawful money of the Philippines, divided into ${finalShares||'[SHARES]'} shares with the par value of ${finalPar?'₱'+finalPar:'[PAR]'} pesos per share.${seventhAmendedTag}</p>
 
         ${subsTableHTML}
 
-        <p><b>NINTH:</b> ${finalNinth || '[NINTH ARTICLE PROVISION — REQUIRES CLIENT INPUT]'}</p>
+        <p><b>NINTH:</b> ${finalNinth||'[NINTH ARTICLE PROVISION — REQUIRES CLIENT INPUT]'}</p>
 
-        <p><b>TENTH:</b> That <b>${finalTreasurer || '[TREASURER — REQUIRES CLIENT INPUT]'}</b> has been elected by the subscribers as Treasurer of the Corporation to act as such until his/her successor is duly elected and qualified in accordance with the by-laws, and that as such Treasurer, he/she has been authorized to receive for and in the name and for the benefit of the Corporation all subscriptions paid by the subscribers.</p>
+        <p><b>TENTH:</b> That <b>${finalTreasurer||'[TREASURER — REQUIRES CLIENT INPUT]'}</b> has been elected by the subscribers as Treasurer of the Corporation to act as such until his/her successor is duly elected and qualified in accordance with the by-laws, and that as such Treasurer, he/she has been authorized to receive for and in the name and for the benefit of the Corporation all subscriptions paid by the subscribers.</p>
 
         <p><b>ELEVENTH:</b> ${finalCompClause}</p>
         <br>
@@ -1308,32 +1254,63 @@ function generateDocs() {
     goTab('tab-preview', document.querySelectorAll('.nav-links button')[2]);
 }
 
-/* ─── PDF export — proper legal-size, page-faithful rendering ─── */
+/* ══════════════════════════════════════════════════
+   PDF EXPORT — fixed implementation
+   Uses html2pdf.js to render #export-content to a
+   US Legal (8.5 × 14in) PDF.  Page breaks are driven
+   by the CSS page-break-before: always on .document-page.
+══════════════════════════════════════════════════ */
 function exportPDF() {
     const element = document.getElementById('export-content');
+    if (!element || !element.innerHTML.trim()) {
+        alert('Please generate the documents first (Step 2) before exporting.');
+        return;
+    }
+
+    /* Temporarily hide the page spacer so html2pdf doesn't render it */
+    const spacers = element.querySelectorAll('.page-spacer');
+    spacers.forEach(s => s.style.display = 'none');
+
     const opt = {
-        margin       : 0,
-        filename     : `Amended_AOI_${new Date().toISOString().split('T')[0]}.pdf`,
-        image        : { type: 'jpeg', quality: 1.0 },
-        html2canvas  : {
-            scale        : 2,
-            useCORS      : true,
-            letterRendering : true,
-            windowWidth  : 816,   // 8.5in @ 96dpi
+        margin: 0,
+        filename: `Amended_AOI_${new Date().toISOString().split('T')[0]}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: {
+            scale: 2,
+            useCORS: true,
+            letterRendering: true,
+            windowWidth: 816,      /* 8.5in @ 96dpi — matches .document-page width */
+            scrollX: 0,
+            scrollY: 0,
         },
-        jsPDF        : {
-            unit        : 'in',
-            format      : 'legal',   // 8.5 x 14
-            orientation : 'portrait',
-            compress    : false,
+        jsPDF: {
+            unit: 'in',
+            format: [8.5, 14],    /* US Legal */
+            orientation: 'portrait',
+            compress: true,
         },
-        pagebreak    : {
-            mode   : ['css', 'legacy'],
-            before : '#page-aoi',
-            avoid  : ['.avoid-break', 'table', '.sig-grid', '.notary-block'],
+        pagebreak: {
+            mode: ['css', 'legacy'],
+            before: '#page-aoi',          /* hard break before AOI page */
+            avoid: ['.avoid-break', '.sig-grid', '.notary-block', 'table.lt'],
         },
     };
-  }
+
+    html2pdf()
+        .set(opt)
+        .from(element)
+        .save()
+        .then(() => {
+            /* Restore spacers */
+            spacers.forEach(s => s.style.display = '');
+        })
+        .catch(err => {
+            spacers.forEach(s => s.style.display = '');
+            console.error('PDF export error:', err);
+            alert('PDF export failed. Try using the Print button instead.');
+        });
+}
+
 /* ─── Init ─── */
 document.addEventListener('DOMContentLoaded', () => {
     ['base-incorp-body','base-dir-body','base-subs-body','signatories-body'].forEach(id => {
