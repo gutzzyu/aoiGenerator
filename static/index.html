@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>STLAF AOI Generator</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root{--bg:#0f1215;--sidebar:#161b22;--gold:#c9a651;--white:#ffffff;--border:#30363d;--card:#1c2128;--accent:#238636;--danger:#da3633;}
         *{box-sizing:border-box;}
@@ -67,19 +66,33 @@
         @keyframes spin{to{transform:rotate(360deg)}}
         .extract-msg{color:var(--gold);font-size:1rem;font-weight:700;letter-spacing:1px;}
         .extract-sub{color:#8b949e;font-size:.82rem;max-width:380px;text-align:center;}
-        #legal-preview{background:#525659;padding:30px;display:flex;flex-direction:column;align-items:center;gap:35px;border-radius:8px;}
-        #export-content{width:8.5in;display:flex;flex-direction:column;gap:0;background:#fff;}
 
-        /* ── Document page styles ── */
-        .document-page{background:#fff;color:#000;width:8.5in;min-height:13in;padding:1in 1.25in 1in 1.25in;font-family:'Times New Roman',Times,serif;font-size:11pt;line-height:1.65;text-align:justify;box-shadow:0 4px 15px rgba(0,0,0,.3);position:relative;overflow-wrap:break-word;word-wrap:break-word;page-break-after:always;break-after:page;}
-        .document-page:last-child{page-break-after:auto;break-after:auto;}
+        /* ── Preview wrapper ── */
+        #legal-preview{background:#525659;padding:30px;display:flex;flex-direction:column;align-items:center;gap:0;border-radius:8px;}
 
-        /* Title block */
+        /* ── Print/export container ── */
+        #export-content{width:8.5in;display:flex;flex-direction:column;gap:0;background:transparent;}
+
+        /* ── Document page ── */
+        .document-page{
+            background:#fff;color:#000;
+            width:8.5in;
+            padding:1in 1.25in 1in 1.25in;
+            font-family:'Times New Roman',Times,serif;
+            font-size:11pt;line-height:1.65;
+            text-align:justify;
+            box-shadow:0 4px 15px rgba(0,0,0,.3);
+            position:relative;
+            overflow-wrap:break-word;word-wrap:break-word;
+            margin-bottom:0;
+        }
+
+        /* ── Title block ── */
         .doc-title-block{text-align:center;margin-bottom:18pt;}
         .doc-title-main{font-size:13pt;font-weight:bold;text-transform:uppercase;font-family:'Times New Roman',Times,serif;display:block;line-height:1.5;}
         .doc-title-of{font-size:12pt;font-weight:bold;text-transform:uppercase;display:block;line-height:1.5;margin:4pt 0;}
         .doc-title-name{font-size:12pt;font-weight:bold;text-decoration:underline;display:block;line-height:1.4;}
-        .doc-title-amended{font-size:11pt;font-style:italic;text-decoration:underline;display:block;line-height:1.4;margin-top:2pt;}
+        .doc-title-amended{font-size:11pt;font-weight:bold;text-decoration:underline;display:block;line-height:1.4;margin-top:2pt;}
 
         .document-page h3{text-align:center;font-size:12pt;text-transform:uppercase;margin:0 0 6pt 0;line-height:1.45;color:#000;font-family:'Times New Roman',Times,serif;}
         .document-page p{margin:0 0 8pt 0;text-align:justify;}
@@ -88,8 +101,13 @@
         .doc-deep-indent{margin:0 0 6pt 0;padding-left:0.75in;text-align:justify;}
         .doc-center{text-align:center!important;}
 
-        /* "As amended on" — inline, NOT bold, underline only */
-        .inline-amended{font-size:10.5pt;text-decoration:underline;font-style:italic;font-weight:normal;}
+        /* Article I name display in body — centered bold underline */
+        .art1-name-block{text-align:center;margin:8pt 0;}
+        .art1-name-text{font-weight:bold;text-decoration:underline;font-size:12pt;display:block;}
+        .art1-amended-tag{font-size:10.5pt;text-decoration:underline;font-weight:bold;display:block;margin-top:2pt;}
+
+        /* Inline "As amended on" — bold underline, NOT italic */
+        .inline-amended{font-size:10.5pt;text-decoration:underline;font-weight:bold;font-style:normal;}
 
         .res-header{text-align:center;font-weight:bold;margin:12pt 0 6pt 0;font-size:11pt;}
         .avoid-break{page-break-inside:avoid;break-inside:avoid;orphans:3;widows:3;}
@@ -99,19 +117,35 @@
         .sig-grid{display:grid;grid-template-columns:1fr 1fr;gap:30pt 40pt;margin-top:20pt;}
         .sig-box{text-align:center;}
         .sig-line{border-top:1px solid #000;padding-top:3pt;font-weight:bold;text-transform:uppercase;margin-top:40pt;font-size:10pt;font-family:'Times New Roman',Times,serif;}
-        .sig-role{font-size:9.5pt;font-weight:normal;text-transform:none;}
+        .sig-role{font-size:9.5pt;font-weight:normal;font-style:italic;}
         .sig-tin{font-size:9pt;}
         .notary-block{margin-top:30pt;font-size:10pt;page-break-inside:avoid;break-inside:avoid;}
         .notary-sig{width:50%;border-top:1px solid #000;padding-top:3pt;font-weight:bold;text-align:center;margin-top:40pt;}
         .notary-table{display:grid;grid-template-columns:1fr 1fr;gap:4pt;margin-top:8pt;font-size:10pt;}
-        @media print{nav,.btn,#export-bar{display:none!important;}.main-view{padding:0!important;}#legal-preview{padding:0;background:none;}.document-page{box-shadow:none;}}
+
+        /* Page break between cert and AOI */
+        .page-break{
+            display:block;
+            width:8.5in;
+            height:0;
+            page-break-after:always;
+            break-after:page;
+        }
+
+        @media print{
+            nav,.btn,#export-bar{display:none!important;}
+            .main-view{padding:0!important;}
+            #legal-preview{padding:0;background:none;}
+            .document-page{box-shadow:none;margin:0;page-break-after:always;break-after:page;}
+            .document-page:last-child{page-break-after:auto;break-after:auto;}
+        }
     </style>
 </head>
 <body>
 
 <div id="extract-overlay">
     <div class="extract-spinner"></div>
-    <div class="extract-msg">🤖 AI Extracting Document...</div>
+    <div class="extract-msg" id="overlay-msg">🤖 AI Extracting Document...</div>
     <div class="extract-sub" id="overlay-sub">Reading your AOI with Legal AI Engine. This may take 15–30 seconds.</div>
 </div>
 
@@ -140,7 +174,7 @@
     <div class="card">
         <h3>📂 Upload Existing AOI — AI Auto-Extraction</h3>
         <p style="font-size:.8rem;color:#8b949e;margin:0 0 10px 0;">Upload the company's current AOI (PDF). The AI will read the document and fill all fields automatically. You can edit any field after extraction.</p>
-        <input type="file" id="filePicker" accept=".pdf,.docx" onchange="handleFileUpload(event)" style="margin-bottom:8px;">
+        <input type="file" id="filePicker" accept=".pdf" onchange="handleFileUpload(event)" style="margin-bottom:8px;">
         <div id="extractStatus" style="font-size:.82rem;margin-top:8px;min-height:20px;"></div>
         <div id="extractSummary" style="display:none;margin-top:12px;background:#0d1117;border-radius:6px;padding:12px;border:1px solid var(--border);">
             <p style="color:var(--gold);font-weight:700;font-size:.82rem;margin:0 0 6px 0;">✅ Extraction Complete — Fields Populated:</p>
@@ -157,11 +191,11 @@
                 <input type="text" id="base-name" placeholder="REQUIRES CLIENT INPUT">
             </div>
             <div class="full">
-                <label class="field-label">Date Originally Incorporated (for "As amended on" reference)</label>
-                <input type="date" id="base-orig-date" title="Original incorporation date — used only if Article I was previously amended">
+                <label class="field-label">Article I — Prior Amendment Date (if previously amended)</label>
+                <input type="date" id="base-art1-amended-date" title="Prior amendment date for Article I — shows as 'As amended on' under the company name">
             </div>
         </div>
-        <p style="font-size:.75rem;color:#666;margin:8px 0 0 0;">If the name in the uploaded AOI was previously amended, enter the date of that prior amendment above.</p>
+        <p style="font-size:.75rem;color:#666;margin:8px 0 0 0;">If the name in the uploaded AOI was previously amended, the AI will auto-fill the amendment date above. You may also edit it manually.</p>
     </div>
 
     <div class="card">
@@ -189,6 +223,8 @@
             <input type="text" id="base-prov" placeholder="e.g. National Capital Region (NCR)"></div>
             <div><label class="field-label">ZIP Code (optional)</label>
             <input type="text" id="base-zip" placeholder="e.g. 1810"></div>
+            <div><label class="field-label">Article III — Prior Amendment Date</label>
+            <input type="date" id="base-art3-amended-date"></div>
         </div>
     </div>
 
@@ -197,6 +233,8 @@
         <div class="input-grid">
             <div><label class="field-label">Term (years — enter 0 for perpetual)</label>
             <input type="number" id="base-term" placeholder="e.g. 50 or 0 for perpetual" min="0"></div>
+            <div><label class="field-label">Article IV — Prior Amendment Date</label>
+            <input type="date" id="base-art4-amended-date"></div>
         </div>
     </div>
 
@@ -217,10 +255,12 @@
         <div class="input-grid">
             <div><label class="field-label">Number of Directors</label>
             <input type="number" id="base-dir-count" placeholder="e.g. 7" min="1"></div>
+            <div><label class="field-label">Article VI — Prior Amendment Date</label>
+            <input type="date" id="base-art6-amended-date"></div>
         </div>
-        <label class="field-label" style="margin-top:14px;">Director Roster</label>
+        <label class="field-label" style="margin-top:14px;">Director Roster (Name, Nationality, Residence only)</label>
         <table class="data-table">
-            <thead><tr><th style="width:28%">Name</th><th style="width:15%">Nationality</th><th style="width:25%">Residence</th><th style="width:14%">TIN</th><th style="width:12%">Role</th><th style="width:40px"></th></tr></thead>
+            <thead><tr><th style="width:40%">Name</th><th style="width:20%">Nationality</th><th style="width:35%">Residence</th><th style="width:40px"></th></tr></thead>
             <tbody id="base-dir-body"></tbody>
         </table>
         <div class="table-actions">
@@ -239,6 +279,8 @@
             <input type="text" id="base-shares" placeholder="e.g. 2,000,000"></div>
             <div><label class="field-label">Par Value per Share (₱)</label>
             <input type="text" id="base-par" placeholder="e.g. 10.00"></div>
+            <div><label class="field-label">Article VII — Prior Amendment Date</label>
+            <input type="date" id="base-art7-amended-date"></div>
         </div>
         <label class="field-label" style="margin-top:14px;">Subscription Table (Articles VIII / IX)</label>
         <table class="data-table">
@@ -267,8 +309,7 @@
     <div class="card">
         <h3>Article IX — Filipino Ownership Restriction Clause</h3>
         <label class="field-label">Ninth Article Provision</label>
-        <textarea id="base-ninth" rows="3" placeholder="REQUIRES CLIENT INPUT — Enter the ownership restriction or other lawful provision for the Ninth Article.">No transfer of stock or interest which would reduce the stock ownership of Filipino citizens to less than the required percentage of the capital stock as provided by existing laws shall be allowed or permitted to be recorded in the proper books of the corporation, and this restriction shall be indicated in all stock certificates issued by the corporation.</textarea>
-        <p style="font-size:.75rem;color:#666;margin:6px 0 0 0;">Default text shown above. Modify if the client requires a different provision.</p>
+        <textarea id="base-ninth" rows="3">No transfer of stock or interest which would reduce the stock ownership of Filipino citizens to less than the required percentage of the capital stock as provided by existing laws shall be allowed or permitted to be recorded in the proper books of the corporation, and this restriction shall be indicated in all stock certificates issued by the corporation.</textarea>
     </div>
 
     <div class="card">
@@ -279,6 +320,31 @@
             <div><label class="field-label">Date of Registration</label>
             <input type="date" id="base-reg-date"></div>
         </div>
+    </div>
+
+    <!-- ═══ SIGNATORIES SECTION ═══ -->
+    <div class="card" style="border-color:var(--gold);">
+        <h3 style="color:var(--gold);">📝 Document Signatories</h3>
+        <p style="font-size:.8rem;color:#8b949e;margin:0 0 12px 0;">
+            These are the persons who will physically sign both the <b>Directors' Certificate</b> and the <b>Amended AOI</b>. 
+            Extracted automatically from the signature block of the uploaded AOI. Edit as needed.
+            <br><span style="color:#c9a651;">Note: These signatories are independent from the directors roster above.</span>
+        </p>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th style="width:38%">Full Name (ALL CAPS)</th>
+                    <th style="width:28%">Role / Title</th>
+                    <th style="width:25%">TIN</th>
+                    <th style="width:40px"></th>
+                </tr>
+            </thead>
+            <tbody id="signatories-body"></tbody>
+        </table>
+        <div class="table-actions">
+            <button class="btn btn-sm" onclick="addRow('signatories-body', signatoryCols)">+ Add Signatory</button>
+        </div>
+        <p style="font-size:.73rem;color:#555;margin:10px 0 0 0;">Signatories appear in the IN WITNESS WHEREOF block of both documents. The Corporate Secretary and President should always be included.</p>
     </div>
 
     <button class="btn" onclick="goTab('tab-amend',document.querySelectorAll('.nav-links button')[1])">Next: Select Amendments →</button>
@@ -337,7 +403,6 @@
         <div class="selected-purposes" id="selected-secondary"></div>
         <label class="field-label" style="margin-top:16px;">Or type a custom primary purpose (overrides selection above):</label>
         <textarea id="new-custom-purpose" placeholder="Type full custom primary purpose text here..." rows="3"></textarea>
-        <p style="font-size:.75rem;color:#555;margin:6px 0 0 0;">Note: The "As amended on [meeting date]" tag will be appended inline after the amended purpose text in the document.</p>
     </div>
 
     <!-- Art III -->
@@ -382,8 +447,8 @@
             <div><label class="field-label">New Number of Directors</label>
             <input type="number" id="new-dir-count" placeholder="e.g. 7" min="1" max="15"></div>
         </div>
-        <label class="field-label" style="margin-top:14px;">New Director Roster</label>
-        <table class="data-table"><thead><tr><th>Name</th><th>Nationality</th><th>Residence</th><th>TIN</th><th>Role</th><th style="width:40px"></th></tr></thead>
+        <label class="field-label" style="margin-top:14px;">New Director Roster (Name, Nationality, Residence)</label>
+        <table class="data-table"><thead><tr><th>Name</th><th>Nationality</th><th>Residence</th><th style="width:40px"></th></tr></thead>
         <tbody id="new-dir-body"></tbody></table>
         <div class="table-actions"><button class="btn btn-sm" onclick="addRow('new-dir-body',newDirCols)">+ Add Row</button></div>
     </div>
@@ -458,14 +523,17 @@
 
 </div><!-- end .main-view -->
 
+<!-- html2pdf loaded dynamically to avoid blocking -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script>
 /* ─── Column definitions ─── */
 const baseIncorpCols = ['Name','Nationality','Residence'];
-const baseDirCols    = ['Name','Nationality','Residence','TIN','Role'];
+const baseDirCols    = ['Name','Nationality','Residence'];
 const baseSubsCols   = ['Name of Subscriber','Citizenship','No. of Shares Subscribed','Amount Subscribed (₱)','Amount Paid (₱)'];
 const newIncorpCols  = ['Name','Nationality','Residence'];
-const newDirCols     = ['Name','Nationality','Residence','TIN','Role'];
+const newDirCols     = ['Name','Nationality','Residence'];
 const newSubsCols    = ['Name of Subscriber','Citizenship','No. of Shares Subscribed','Amount Subscribed (₱)','Amount Paid (₱)'];
+const signatoryCols  = ['Name','Role','TIN'];
 
 /* ─── Purpose database ─── */
 const PURPOSE_DB = [
@@ -474,18 +542,15 @@ const PURPOSE_DB = [
   {name:"Activities of Employment Agency Activities", text:"To operate, manage and engage into a private employment agency (PEA) which facilitates the recruitment and placement of workers, both locally and overseas, for a fee charged to either the worker, the employer, or both."},
   {name:"Advertising", text:"To engage in the business of general advertising as principal, proponent, consultant, partner, and or agent providing services such as but not limited to conceptualization, development, design, arrangement, promotion and implementation of such advertisements thru multi-media such as billboards, print, TV, radio, web, and any other digital infrastructure and social platforms available. to provide also ancillary services such as branding and trade marking of institutions and products."},
   {name:"Agriculture", text:"To develop, manage, own, lease and operate agricultural lands, farms, pasture, lands, ranches, foreshore lands with or without concessions and/or to engage in the planting and cultivation of other farm products and in general undertake or carry out on all kinds of studies, experiments, cultivation, storage and wholesale and retail trading in all kinds of agricultural products and its by-products in the Philippines or elsewhere."},
-  {name:"Agriculture, Forestry and Fishing (Operation of Fishpond – A)", text:"To develop, manage, own, lease and operate agricultural lands, farms, pasture, lands, ranches, foreshore lands with or without concessions and/or to engage in the planting and cultivation of other farm products and in general undertake or carry out on all kinds of studies, experiments, cultivation, storage and wholesale and retail trading in all kinds of agricultural products and its by-products in the Philippines or elsewhere."},
   {name:"Air Transportation", text:"To operate, manage, and engage in the business of domestic air transport, scheduled or non-scheduled, including the operating, carrying, transportation of passengers and forwarding of goods, wares, merchandise, valuables and any packages or parcels of any description whatsoever."},
-  {name:"Business Process Outsourcing (Data Processing, Hosting and Related Activities; Web Portals)", text:"To operate, manage, and engage in the business of data processing, web hosting and related activities by providing infrastructure for these activities as well as provision of search facilities and other portals activities for the internet subject to the provisions of the Data Privacy Act of 2012 (R.A. 10173). Provided that the corporation shall not provide services to offshore gaming activities and will only engage in activities within the limits allowed by law."},
+  {name:"Business Process Outsourcing", text:"To operate, manage, and engage in the business of data processing, web hosting and related activities by providing infrastructure for these activities as well as provision of search facilities and other portals activities for the internet subject to the provisions of the Data Privacy Act of 2012 (R.A. 10173). Provided that the corporation shall not provide services to offshore gaming activities and will only engage in activities within the limits allowed by law."},
   {name:"Computer Programming", text:"To engage in computer programming activities, including the design, development, modification, testing, implementation, and support of systems software, software applications, databases, and web pages; to customize and configure existing applications to function within client-specific information system environments, as permitted by applicable laws, rules, and regulations."},
   {name:"Construction", text:"To engage in general construction and other allied activities including the constructing, enlarging, repairing, removing, developing or otherwise engaging in any work upon buildings, roads, highways, manufacturing plants, bridges, airfields, piers, docks, mines, shafts, waterworks, railroads, railway structures, all iron, wood, masonry and earth constructions, and to make, execute, bid for and take or receive any contracts or assignments of contract therefore, or in relation thereto, or connected therewith and to manufacture and furnish building materials and supplies connected therewith. Provided that the corporation shall not engage in the construction of defense-related structures and locally funded government projects."},
-  {name:"Electric Power Generation", text:"To operate, manage, and engage in the business of electric power generation which includes the operation of generation facilities."},
   {name:"Electric Power Generation, Transmission and Distribution", text:"To operate, manage, and engage in the business of electric power generation, transmission and distribution that includes operation of generation facilities, transmission and distribution systems as well as electricity and transmission capacity exchanges for sale of electricity to its end users except production of electricity through incineration of waste."},
   {name:"Funeral and Related Activities", text:"To provide funeral-related services including burial and cremation of human and animal remains; to prepare the deceased for burial or cremation through embalming and mortuary care; to offer rental of equipped spaces within funeral parlors; to sell or lease grave sites; to maintain graves and mausoleums; and to perform all related services, acts, and activities necessary or incidental to the accomplishment of the foregoing corporate purposes, as permitted by applicable laws, rules, and regulations."},
   {name:"Gas Station", text:"To engage in the business of marketing, distributing, trading import and export of petroleum and other related products including services, and operation of convenient store supplementary to the operation of gasoline station."},
   {name:"Hospital", text:"To establish, own, operate, maintain and manage diagnostics, dental and ambulatory clinic including facilities such as pharmacy, medical laboratory, cafeteria and other allied services. It shall provide surgical, nursing, therapeutic, paramedics and related medical services."},
   {name:"Hotel", text:"To engage in and carry on the business of hotel and resort; to operate and maintain any and all services and facilities thereto such as but not limited to the management, operation and maintenance of clubhouse, restaurant exclusively for its customers, bar, music lounge and other related activities including conference rooms, function rooms, training rooms and other facilities like gym and wellness center, except pension houses."},
-  {name:"IT - TNVs (Transport Network Company)", text:"To operate as a Transport Network Company (TNC) by providing a digital platform that is accessible through smartphones or other mobile devices, which connects, matches, and enables users and passengers to access Transport Network Vehicle Services (TNVS) offered by independent third-party providers utilizing four-wheel and two-wheel vehicles in accordance with the rules and regulations of the Department of Transportation (DOTr), the Land Transportation Franchising and Regulatory Board (LTFRB), and other relevant government agencies, boards, or commissions."},
   {name:"IT Software Applications", text:"To engage in the business of information technology products and services, such as but not limited to the research, software development, production, management, and operation of software and hardware technology, and other information technology applications, and to do all activities directly or indirectly connected therewith or incident thereto."},
   {name:"Land Transportation", text:"To operate, manage, and engage in the business of land transportation including the operating, carrying, transportation of passengers and forwarding of goods, wares, merchandise, valuables and any packages or parcels of any description whatsoever."},
   {name:"Logistics / Courier Services", text:"To operate, manage, and engage in the business of courier activities that includes pickup, sorting, transport and delivery (domestic or international) of letter-post and (mail-type) parcels and packages by firms not operating under a universal service obligation either self-owned (private) transport or via public transport."},
@@ -496,18 +561,12 @@ const PURPOSE_DB = [
   {name:"Printing and Publishing", text:"To engage in printing, publishing, and distribution of books, periodicals, newspapers, magazines, and other printed materials; to produce, design, and sell printed or digital media content; and to perform all related services necessary or incidental to the accomplishment of the foregoing corporate purposes, as permitted by applicable laws, rules, and regulations; provided, that the corporation shall not operate as a mass media entity, pursuant to DOJ Opinion No. 40, Series of 1998."},
   {name:"Real Estate", text:"To purchase or otherwise acquire, own, hold, use, sell, assign, transfer, mortgage, pledge, exchange or otherwise dispose of real property and while the owner or holder of any such real property, to receive, collect and dispose of the interest, dividends and income arising from such property, and to possess and exercise in receipt thereof all the rights, powers and privileges of ownership including all voting powers on any stock so owned."},
   {name:"Real Estate Development", text:"To engage in general construction and real estate development, to acquire by purchase, lease or otherwise, and to own, use, improve, develop, subdivide, sell, exchange, lease and hold for investment or otherwise, real estate of all kinds, whether improved or unimproved, and wheresoever situated."},
-  {name:"Recruitment", text:"To engage in the business of private employment agency involving the recruitment and placement of persons for local employment; to engage in the act of canvassing, enlisting, contracting, transporting, utilizing, hiring, procuring workers including referrals, contract services, promising or advertising for local employment."},
   {name:"Restaurant", text:"To establish and maintain restaurants, coffee shops, refreshment parlors, cocktail lounges; make, cook, arrange, serve and cater goods, drinks, refreshments, and other foods commonly served in such establishments, and to offer such other services to the public in connection with the operation of the restaurant and eatery enterprises."},
-  {name:"Retail Sales via Mail/Telephone Order Houses via the Internet", text:"To engage in, conduct, and carry on the business of buying, selling, distributing, marketing, exporting, and importing all types of general merchandise and related products of every kind and description, through retail sales conducted via mail order, telephone order, and internet-based platforms, including e-commerce websites and other digital marketplaces, insofar as may be permitted by law."},
   {name:"Retail Trading of Goods", text:"To engage in, conduct and carry on the business of buying, selling, distributing, marketing on retail basis insofar as may be permitted by law, all kinds of goods, wares and merchandise of every kind and description, and enter into all kinds of contracts for export, import, purchase, acquisition sale on retail basis and other disposition for its own account as principal or in representative capacity as main distributor, manufacturer's representative, merchandise broker, indentor, commission, merchant, factors or agents, upon consignment of all kinds of goods, services, merchandise or products whether natural or artificial, without engaging in investment solicitation nor investment taking activity from public investors."},
-  {name:"School - Collegiate", text:"To establish, maintain, operate and administer an educational institution providing post-secondary, non-tertiary and tertiary education, including granting of degrees in accordance with existing laws, rules and regulations of the Education Act of 1982, Department of Education (DepED) and Commission of Higher Education (CHED)."},
-  {name:"Sea Transportation", text:"To operate, manage, and engage in the business of domestic water transport including the operating, carrying, transportation of passengers and forwarding of goods, wares, merchandise, valuables and any packages or parcels of any description whatsoever."},
   {name:"Security Agency", text:"To engage in the business of a security agency by contracting, recruiting, posting of security guards, and to provide highly specialized security and investigation services like gangway security, catering security, passenger profiling, baggage examination, providing security onboard public utility transportation, or other security needs that the Philippine National Police may approve."},
-  {name:"Sports Activities", text:"To organize, operate, and provide formally structured instruction in sports and athletic activities to individuals and groups through camps, schools, academies, and other appropriate venues, covering disciplines such as basketball, volleyball, baseball, football, cricket, cheerleading, gymnastics, horseback riding, swimming, martial arts, yoga, and other physical and recreational training."},
-  {name:"Travel Agency (Travel Agency and Tour Operator Activities)", text:"To engage in land, sea and air transport, whether schedule, non-schedule or chartered, and whether domestic or foreign; to arrange, package and sell tours, inbound or outbound and to represent foreign tour operators in connection with the tours in the Philippines."},
+  {name:"Travel Agency", text:"To engage in land, sea and air transport, whether schedule, non-schedule or chartered, and whether domestic or foreign; to arrange, package and sell tours, inbound or outbound and to represent foreign tour operators in connection with the tours in the Philippines."},
   {name:"Waste Collection / Disposal / Management", text:"To engage in the business of providing sustainable and environmentally responsible solid waste management solutions that promote the health and safety of communities and contribute to environmental preservation by minimizing waste generation, maximizing resource recovery, and ensuring the proper and compliant disposal of solid waste."},
   {name:"Wholesale and Retail Trading", text:"To engage in, conduct and carry on the business of buying, selling, distributing, marketing on wholesale and retail basis insofar as may be permitted by law, all kinds of goods, wares and merchandise of every kind and description, and enter into all kinds of contracts for export, import, purchase, acquisition sale on wholesale and retail basis and other disposition for its own account as principal or in representative capacity as main distributor, manufacturer's representative, merchandise broker, indentor, commission, merchant, factors or agents, upon consignment of all kinds of goods, services, merchandise or products whether natural or artificial, without engaging in investment solicitation nor investment taking activity from public investors."},
-  {name:"Wholesale Trading of Goods", text:"To engage in, conduct and carry on the business of buying, selling, distributing, marketing on wholesale basis insofar as may be permitted by law, all kinds of goods, wares and merchandise of every kind and description, and enter into all kinds of contracts for export, import, purchase, acquisition sale on wholesale basis and other disposition for its own account as principal or in representative capacity as main distributor, manufacturer's representative, merchandise broker, indentor, commission, merchant, factors or agents, upon consignment of all kinds of goods, services, merchandise or products whether natural or artificial, without engaging in investment solicitation nor investment taking activity from public investors."},
 ];
 
 let selectedPrimary = null;
@@ -530,7 +589,7 @@ function setStatus(msg, type = 'info') {
 
 function showOverlay(msg, sub) {
     document.getElementById('extract-overlay').classList.add('show');
-    document.querySelector('.extract-msg').textContent = '🤖 ' + msg;
+    document.getElementById('overlay-msg').textContent = '🤖 ' + msg;
     if (sub) document.getElementById('overlay-sub').textContent = sub;
 }
 function hideOverlay() { document.getElementById('extract-overlay').classList.remove('show'); }
@@ -542,7 +601,7 @@ function formatDate(d) {
     return dt.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 }
 
-/* ─── Number to words (for director count, term) ─── */
+/* ─── Number to words ─── */
 function numToWords(n) {
     const ones = ['','ONE','TWO','THREE','FOUR','FIVE','SIX','SEVEN','EIGHT','NINE',
         'TEN','ELEVEN','TWELVE','THIRTEEN','FOURTEEN','FIFTEEN','SIXTEEN','SEVENTEEN','EIGHTEEN','NINETEEN'];
@@ -554,11 +613,11 @@ function numToWords(n) {
     return n.toString();
 }
 
-/* ─── Ordinal for term: lowercase for document use ─── */
-function termInWords(n) {
-    // Returns e.g. "fifty (50)" — no bold applied here, caller decides
-    if (n === 0 || !n) return null; // perpetual
-    return numToWords(parseInt(n)).charAt(0) + numToWords(parseInt(n)).slice(1).toLowerCase() + ' (' + n + ')';
+function numToWordsMixed(n) {
+    // Returns "Seven (7)" style for body text
+    if (!n || isNaN(n)) return '[N]';
+    const w = numToWords(parseInt(n));
+    return w.charAt(0) + w.slice(1).toLowerCase() + ' (' + n + ')';
 }
 
 /* ─── Table row builder ─── */
@@ -567,21 +626,10 @@ function addRow(tbodyId, cols, vals = []) {
     const tr = document.createElement('tr');
     cols.forEach((col, i) => {
         const td = document.createElement('td');
-        let inp;
-        if (col === 'Role') {
-            inp = document.createElement('select');
-            ['','President','Vice President','Treasurer','Corporate Secretary','Director'].forEach(o => {
-                const opt = document.createElement('option');
-                opt.value = o; opt.textContent = o || '— Select Role —';
-                inp.appendChild(opt);
-            });
-            inp.value = vals[i] || '';
-        } else {
-            inp = document.createElement('input');
-            inp.type = 'text';
-            inp.placeholder = col;
-            inp.value = vals[i] || '';
-        }
+        const inp = document.createElement('input');
+        inp.type = 'text';
+        inp.placeholder = col;
+        inp.value = vals[i] || '';
         td.appendChild(inp);
         tr.appendChild(td);
     });
@@ -609,12 +657,12 @@ function setField(id, val) {
     if (el && val !== undefined && val !== null && String(val).trim() !== '') el.value = String(val).trim();
 }
 
-/* ─── File upload & API ─── */
+/* ─── File upload ─── */
 async function handleFileUpload(event) {
     const file = event.target.files[0];
     if (!file) return;
-    if (!/\.(pdf|docx)$/i.test(file.name)) {
-        setStatus('Unsupported file type. Please upload a PDF or DOCX.', 'err'); return;
+    if (!/\.pdf$/i.test(file.name)) {
+        setStatus('Unsupported file type. Please upload a PDF.', 'err'); return;
     }
     showOverlay('Reading AOI Document...', `Processing "${file.name}" — extracting all fields. Please wait.`);
     setStatus(`Reading ${file.name}…`);
@@ -649,15 +697,29 @@ async function callExtractAPI(file) {
     } finally { clearTimeout(timeout); }
 }
 
+function isLikelyStreet(val) {
+    if (!val) return false;
+    const v = val.trim();
+    return /^\d/.test(v) ||
+        /\b(street|st\.|avenue|ave\.?|road|rd\.?|blvd|boulevard|drive|dr\.?|lane|ln\.?|highway|hwy|ext\.?|extension)\b/i.test(v);
+}
+
 function populateAllFields(data) {
     setField('base-name', data.corporateName);
     setField('base-purpose', data.primaryPurpose);
     setField('base-sec-purpose', data.secondaryPurposes);
-    // Address: only fill street if the value looks like a street (has number or "Street"/"Ave" etc.)
-    // Don't conflate barangay with street
-    if (data.street && isLikelyStreet(data.street)) {
-        setField('base-street', data.street);
-    }
+
+    // Amendment dates — auto-populate from extraction
+    // documentAmendedDate feeds Article I if no specific article1AmendedDate
+    const art1Date = data.article1AmendedDate || data.documentAmendedDate || '';
+    if (art1Date && /^\d{4}-\d{2}-\d{2}$/.test(art1Date)) setField('base-art1-amended-date', art1Date);
+    if (data.article2AmendedDate && /^\d{4}-\d{2}-\d{2}$/.test(data.article2AmendedDate)) setField('base-purpose-amended-date', data.article2AmendedDate);
+    if (data.article3AmendedDate && /^\d{4}-\d{2}-\d{2}$/.test(data.article3AmendedDate)) setField('base-art3-amended-date', data.article3AmendedDate);
+    if (data.article4AmendedDate && /^\d{4}-\d{2}-\d{2}$/.test(data.article4AmendedDate)) setField('base-art4-amended-date', data.article4AmendedDate);
+    if (data.article6AmendedDate && /^\d{4}-\d{2}-\d{2}$/.test(data.article6AmendedDate)) setField('base-art6-amended-date', data.article6AmendedDate);
+    if (data.article7AmendedDate && /^\d{4}-\d{2}-\d{2}$/.test(data.article7AmendedDate)) setField('base-art7-amended-date', data.article7AmendedDate);
+
+    if (data.street && isLikelyStreet(data.street)) setField('base-street', data.street);
     if (data.barangay) setField('base-brgy', data.barangay);
     setField('base-city', data.city);
     setField('base-prov', data.province);
@@ -675,49 +737,45 @@ function populateAllFields(data) {
     setField('base-sec', data.secRegistrationNo);
     if (data.dateOfRegistration && /^\d{4}-\d{2}-\d{2}$/.test(data.dateOfRegistration))
         setField('base-reg-date', data.dateOfRegistration);
+
     if (Array.isArray(data.incorporators) && data.incorporators.length > 0) {
         document.getElementById('base-incorp-body').innerHTML = '';
         data.incorporators.forEach(inc => addRow('base-incorp-body', baseIncorpCols, [inc.name||'', inc.nationality||'', inc.residence||'']));
     }
     if (Array.isArray(data.directors) && data.directors.length > 0) {
         document.getElementById('base-dir-body').innerHTML = '';
-        data.directors.forEach(dir => addRow('base-dir-body', baseDirCols, [dir.name||'', dir.nationality||'', dir.residence||'', dir.tin||'', dir.role||'']));
+        data.directors.forEach(dir => addRow('base-dir-body', baseDirCols, [dir.name||'', dir.nationality||'', dir.residence||'']));
         if (!data.numberOfDirectors) setField('base-dir-count', data.directors.length.toString());
     }
     if (Array.isArray(data.subscribers) && data.subscribers.length > 0) {
         document.getElementById('base-subs-body').innerHTML = '';
         data.subscribers.forEach(sub => addRow('base-subs-body', baseSubsCols, [sub.name||'', sub.citizenship||'', sub.sharesSubscribed||'', sub.amountSubscribed||'', sub.amountPaid||'']));
     }
-}
 
-/* 
-   Address heuristic: a value is "likely a street" if it contains a digit at the start,
-   or contains known street-type keywords. If it only looks like a place name / barangay, skip street field.
-*/
-function isLikelyStreet(val) {
-    if (!val) return false;
-    const v = val.trim();
-    // Has leading number or contains street-type words
-    return /^\d/.test(v) ||
-        /\b(street|st\.|avenue|ave\.?|road|rd\.?|blvd|boulevard|drive|dr\.?|lane|ln\.?|highway|hwy|ext\.?|extension)\b/i.test(v);
+    // Populate signatories from signature block extraction
+    if (Array.isArray(data.signatories) && data.signatories.length > 0) {
+        document.getElementById('signatories-body').innerHTML = '';
+        data.signatories.forEach(sig => addRow('signatories-body', signatoryCols, [sig.name||'', sig.role||'', sig.tin||'']));
+    }
 }
 
 function showExtractionSummary(data) {
     document.getElementById('extractSummary').style.display = 'block';
+    const art1Date = data.article1AmendedDate || data.documentAmendedDate || '';
     const checks = [
         ['Corporate Name', data.corporateName],
+        ['Document Amended Date', art1Date ? formatDate(art1Date) : ''],
         ['Primary Purpose', data.primaryPurpose ? data.primaryPurpose.substring(0,60)+'…' : ''],
         ['Address', [data.street, data.city].filter(Boolean).join(', ')],
         ['Term', data.term ? (data.term==='0'?'Perpetual':data.term+' years') : ''],
         ['No. of Directors', data.numberOfDirectors],
         ['Auth. Capital Stock', data.acsAmount],
-        ['No. of Shares', data.numberOfShares],
-        ['Par Value', data.parValue],
         ['Treasurer', data.treasurer],
         ['SEC Reg. No.', data.secRegistrationNo],
         ['Incorporators', Array.isArray(data.incorporators) ? data.incorporators.length+' row(s)' : ''],
         ['Directors', Array.isArray(data.directors) ? data.directors.length+' row(s)' : ''],
         ['Subscribers', Array.isArray(data.subscribers) ? data.subscribers.length+' row(s)' : ''],
+        ['Signatories', Array.isArray(data.signatories) ? data.signatories.length+' row(s)' : ''],
     ];
     document.getElementById('extractSummaryContent').innerHTML = checks.map(([label, val]) => {
         const ok = val && String(val).trim() !== '';
@@ -780,38 +838,38 @@ function renderSelectedSecondary() {
     });
 }
 
-/* ─── Helper: inline "as amended on" tag (not bold, underlined, italic) ─── */
+/* ─── Inline "As amended on" tag — bold underline, NOT italic ─── */
 function inlineAmended(dateStr) {
     if (!dateStr) return '';
     return ` <span class="inline-amended">(As amended on ${formatDate(dateStr)})</span>`;
 }
 
-/* ─── Helper: build person table ─── */
+/* ─── Build person table (Name/Nationality/Residence only) ─── */
 function buildPersonTable(rows, cols) {
     if (!rows || rows.length === 0)
         return `<div class="avoid-break"><table class="lt"><tr><th colspan="${cols.length}">[No data provided — REQUIRES CLIENT INPUT]</th></tr></table></div>`;
     return `<div class="avoid-break"><table class="lt"><tr>${cols.map(c=>`<th>${c.toUpperCase()}</th>`).join('')}</tr>${rows.map(r=>`<tr>${cols.map(c=>`<td>${r[c]||''}</td>`).join('')}</tr>`).join('')}</table></div>`;
 }
 
-/* ─── Helper: build cert resolution FROM/TO block ─── */
+/* ─── Build cert resolution FROM/TO block ─── */
 function buildCertRes(rn, title, resolved, from, to) {
     return `<div class="avoid-break"><p class="res-header">${rn}. ${title}</p><p>${resolved}</p><p class="doc-indent"><b>FROM:</b></p><p class="doc-deep-indent">${from}</p><p class="doc-indent"><b>TO:</b></p><p class="doc-deep-indent">${to}</p></div>`;
 }
 
-/* ─── Helper: build cert signatures ─── */
-function buildCertSignatures(dirs) {
-    if (!dirs || dirs.length === 0)
-        return `<p><b>CERTIFIED CORRECT BY:</b></p><div class="sig-grid"><div class="sig-box"><div class="sig-line">President and Director<br><span class="sig-tin">TIN No. _______________</span></div></div><div class="sig-box"><div class="sig-line">Corporate Secretary<br><span class="sig-tin">TIN No. _______________</span></div></div></div>`;
-    const ro = {'Corporate Secretary':0,'President':1,'Treasurer':2,'Vice President':3};
-    const sorted = [...dirs].sort((a,b) => (ro[a['Role']]??9) - (ro[b['Role']]??9));
-    return `<p><b>CERTIFIED CORRECT BY:</b></p><div class="sig-grid">${sorted.map(d=>`<div class="sig-box"><div class="sig-line">${(d['Name']||'').toUpperCase()}</div><div class="sig-role">${d['Role']||'Director'}</div><div class="sig-tin">TIN No. ${d['TIN']||'_______________'}</div></div>`).join('')}</div>`;
-}
-
-/* ─── Helper: build AOI signatures ─── */
-function buildAoiSignatures(dirs) {
-    if (!dirs || dirs.length === 0)
-        return `<div class="sig-box"><div class="sig-line">INCORPORATOR</div></div><div class="sig-box"><div class="sig-line">INCORPORATOR</div></div>`;
-    return dirs.map(d=>`<div class="sig-box"><div class="sig-line">${(d['Name']||'').toUpperCase()}</div><div class="sig-role">${d['Role']||'Director'}</div><div class="sig-tin">TIN: ${d['TIN']||'_______________'}</div></div>`).join('');
+/* ─── Build signatories block (from the Signatories section) ─── */
+function buildSignatoryBlock(sigs) {
+    if (!sigs || sigs.length === 0) {
+        return `<div class="sig-grid">
+            <div class="sig-box"><div class="sig-line">PRESIDENT AND DIRECTOR<br><span class="sig-role">Director and President</span><br><span class="sig-tin">TIN No. _______________</span></div></div>
+            <div class="sig-box"><div class="sig-line">CORPORATE SECRETARY<br><span class="sig-role">Corporate Secretary</span><br><span class="sig-tin">TIN No. _______________</span></div></div>
+        </div>`;
+    }
+    return `<div class="sig-grid">${sigs.map(s => `
+        <div class="sig-box">
+            <div class="sig-line">${(s['Name']||'').toUpperCase()}</div>
+            <div class="sig-role">${s['Role']||''}</div>
+            <div class="sig-tin">TIN No. ${s['TIN']||'_______________'}</div>
+        </div>`).join('')}</div>`;
 }
 
 /* ══════════════════════════════════════════════════
@@ -826,60 +884,64 @@ function generateDocs() {
     const bCity = document.getElementById('base-city').value.trim();
     const bProv = document.getElementById('base-prov').value.trim();
     const bZip  = document.getElementById('base-zip').value.trim();
-
-    // Build address string: street (if any), barangay, city, province, zip
     const baseAddrParts = [bSt, bBrgy, bCity, bProv].filter(Boolean);
     if (bZip) baseAddrParts.push(bZip);
     const baseFullAddress = baseAddrParts.join(', ');
 
     const b = {
-        name       : document.getElementById('base-name').value.trim() || '[CORPORATION NAME — REQUIRES CLIENT INPUT]',
-        origDate   : document.getElementById('base-orig-date').value,
-        purpose    : document.getElementById('base-purpose').value.trim(),
-        purposeAmdDate : document.getElementById('base-purpose-amended-date').value,
-        secPurp    : document.getElementById('base-sec-purpose').value.trim(),
-        secPurpAmdDate : document.getElementById('base-sec-purpose-amended-date').value,
-        address    : baseFullAddress || '[ADDRESS — REQUIRES CLIENT INPUT]',
-        term       : document.getElementById('base-term').value,
-        dirCount   : document.getElementById('base-dir-count').value || '[N]',
-        acsWords   : document.getElementById('base-acs-words').value.trim(),
-        acsAmt     : document.getElementById('base-acs-amount').value.trim(),
-        shares     : document.getElementById('base-shares').value.trim(),
-        par        : document.getElementById('base-par').value.trim(),
-        treasurer  : document.getElementById('base-treasurer').value.trim(),
-        treasurerTin : document.getElementById('base-treasurer-tin').value.trim(),
-        ninth      : document.getElementById('base-ninth').value.trim(),
-        sec        : document.getElementById('base-sec').value.trim() || '[SEC REG NO — REQUIRES CLIENT INPUT]',
-        regDate    : document.getElementById('base-reg-date').value,
-        baseIncorp : getTableData('base-incorp-body', baseIncorpCols),
-        baseDirs   : getTableData('base-dir-body', baseDirCols),
-        baseSubs   : getTableData('base-subs-body', baseSubsCols),
+        name             : document.getElementById('base-name').value.trim() || '[CORPORATION NAME — REQUIRES CLIENT INPUT]',
+        art1AmendedDate  : document.getElementById('base-art1-amended-date').value,
+        purpose          : document.getElementById('base-purpose').value.trim(),
+        purposeAmdDate   : document.getElementById('base-purpose-amended-date').value,
+        secPurp          : document.getElementById('base-sec-purpose').value.trim(),
+        secPurpAmdDate   : document.getElementById('base-sec-purpose-amended-date').value,
+        art3AmendedDate  : document.getElementById('base-art3-amended-date').value,
+        art4AmendedDate  : document.getElementById('base-art4-amended-date').value,
+        art6AmendedDate  : document.getElementById('base-art6-amended-date').value,
+        art7AmendedDate  : document.getElementById('base-art7-amended-date').value,
+        address          : baseFullAddress || '[ADDRESS — REQUIRES CLIENT INPUT]',
+        term             : document.getElementById('base-term').value,
+        dirCount         : document.getElementById('base-dir-count').value || '[N]',
+        acsWords         : document.getElementById('base-acs-words').value.trim(),
+        acsAmt           : document.getElementById('base-acs-amount').value.trim(),
+        shares           : document.getElementById('base-shares').value.trim(),
+        par              : document.getElementById('base-par').value.trim(),
+        treasurer        : document.getElementById('base-treasurer').value.trim(),
+        treasurerTin     : document.getElementById('base-treasurer-tin').value.trim(),
+        ninth            : document.getElementById('base-ninth').value.trim(),
+        sec              : document.getElementById('base-sec').value.trim() || '[SEC REG NO — REQUIRES CLIENT INPUT]',
+        regDate          : document.getElementById('base-reg-date').value,
+        baseIncorp       : getTableData('base-incorp-body', baseIncorpCols),
+        baseDirs         : getTableData('base-dir-body', baseDirCols),
+        baseSubs         : getTableData('base-subs-body', baseSubsCols),
     };
 
-    const mtgDate  = formatDate(document.getElementById('meeting-date').value);
+    const signatories = getTableData('signatories-body', signatoryCols);
+
+    const mtgDate    = formatDate(document.getElementById('meeting-date').value);
     const mtgDateRaw = document.getElementById('meeting-date').value;
-    const mtgPlace = document.getElementById('meeting-place').value.trim() || '[MEETING PLACE — REQUIRES CLIENT INPUT]';
+    const mtgPlace   = document.getElementById('meeting-place').value.trim() || '[MEETING PLACE — REQUIRES CLIENT INPUT]';
 
     const isArt = n => document.querySelector(`input[value="${n}"]`)?.checked || false;
 
-    /* ── Resolve final values (apply amendments over baseline) ── */
-    let finalName         = b.name;
-    let finalAddressSt    = bSt, finalAddressBrgy = bBrgy, finalAddressCity = bCity;
-    let finalAddressProv  = bProv, finalAddressZip = bZip;
-    let finalTerm         = b.term;
-    let finalDirCount     = b.dirCount;
-    let finalDirs         = b.baseDirs;
-    let finalIncorp       = b.baseIncorp;
-    let finalAcsWords     = b.acsWords, finalAcsAmt = b.acsAmt;
-    let finalShares       = b.shares,   finalPar    = b.par;
-    let finalTreasurer    = b.treasurer, finalTreasurerTin = b.treasurerTin;
-    let finalSubs         = b.baseSubs;
-    let finalNinth        = b.ninth;
-    let finalCompClause   = 'That the corporation manifests its willingness to change its corporate name in the event another person, firm, or entity has acquired a prior right to use the said firm name or one deceptively or confusingly similar to it.';
+    /* ── Resolve final values ── */
+    let finalName        = b.name;
+    let finalAddressSt   = bSt, finalAddressBrgy = bBrgy, finalAddressCity = bCity;
+    let finalAddressProv = bProv, finalAddressZip = bZip;
+    let finalTerm        = b.term;
+    let finalDirCount    = b.dirCount;
+    let finalDirs        = b.baseDirs;
+    let finalIncorp      = b.baseIncorp;
+    let finalAcsWords    = b.acsWords, finalAcsAmt = b.acsAmt;
+    let finalShares      = b.shares,   finalPar    = b.par;
+    let finalTreasurer   = b.treasurer, finalTreasurerTin = b.treasurerTin;
+    let finalSubs        = b.baseSubs;
+    let finalNinth       = b.ninth;
+    let finalCompClause  = 'That the corporation manifests its willingness to change its corporate name in the event another person, firm, or entity has acquired a prior right to use the said firm name or one deceptively or confusingly similar to it.';
 
     let certResolutions = '';
 
-    /* ──── Article I: Name ──── */
+    /* ──── Article I ──── */
     if (isArt(1)) {
         const nn = document.getElementById('new-name').value.trim() || '[NEW NAME — REQUIRES CLIENT INPUT]';
         certResolutions += buildCertRes(
@@ -891,27 +953,21 @@ function generateDocs() {
         finalName = nn;
     }
 
-    /* ──── Article II: Purpose ──── */
+    /* ──── Article II ──── */
     let finalPurposeHTML = '';
     const purposeAmended = isArt(2);
     if (purposeAmended) {
         const cp = document.getElementById('new-custom-purpose').value.trim();
         const newPrimaryText = cp || (selectedPrimary ? selectedPrimary.text : '');
         const newSecondaryList = selectedSecondary;
-
-        // Determine what is amended
         const primaryChanged   = !!newPrimaryText;
         const secondaryChanged = newSecondaryList.length > 0;
 
-        // Build purpose HTML for the AOI document
         finalPurposeHTML = `<p><b>SECOND:</b> That the purposes for which such corporation is incorporated are:</p>`;
-
-        // Primary purpose
         finalPurposeHTML += `<p class="doc-indent"><b>A. Primary Purpose:</b><br>${newPrimaryText || '[PRIMARY PURPOSE — REQUIRES CLIENT INPUT]'}`;
         if (primaryChanged) finalPurposeHTML += inlineAmended(mtgDateRaw);
         finalPurposeHTML += `</p>`;
 
-        // Secondary purpose(s)
         if (secondaryChanged) {
             finalPurposeHTML += `<p class="doc-indent"><b>B. Secondary Purpose(s):</b></p>`;
             newSecondaryList.forEach((sp, i) => {
@@ -919,7 +975,6 @@ function generateDocs() {
             });
             finalPurposeHTML += `<p class="doc-indent"><b>C.</b> That the corporation shall have all the express powers of a corporation as provided for under Section 36 of the Revised Corporation Code of the Philippines.</p>`;
         } else {
-            // Keep existing secondary if any
             if (b.secPurp) {
                 finalPurposeHTML += `<p class="doc-indent"><b>B. Secondary Purpose(s):</b><br>${b.secPurp}`;
                 if (b.secPurpAmdDate) finalPurposeHTML += inlineAmended(b.secPurpAmdDate);
@@ -933,11 +988,10 @@ function generateDocs() {
         certResolutions += buildCertRes(
             'II', 'AMENDMENT OF THE SECOND ARTICLE (PURPOSE)',
             'RESOLVED, that the Board hereby approves the amendment of the Second Article of the Articles of Incorporation:',
-            `SECOND: Primary Purpose: ${(b.purpose || '[previous purpose]').substring(0, 200)}…`,
-            `SECOND: Primary Purpose: ${(newPrimaryText || '[NEW PURPOSE — REQUIRES CLIENT INPUT]').substring(0, 200)}…`
+            `SECOND: Primary Purpose: ${(b.purpose || '[previous purpose]').substring(0,200)}…`,
+            `SECOND: Primary Purpose: ${(newPrimaryText || '[NEW PURPOSE — REQUIRES CLIENT INPUT]').substring(0,200)}…`
         );
     } else {
-        // Not amended — render existing purpose with its prior amendment dates if any
         finalPurposeHTML = `<p><b>SECOND:</b> That the purposes for which such corporation is incorporated are:</p>`;
         finalPurposeHTML += `<p class="doc-indent"><b>A. Primary Purpose:</b><br>${b.purpose || '[PRIMARY PURPOSE — REQUIRES CLIENT INPUT]'}`;
         if (b.purposeAmdDate) finalPurposeHTML += inlineAmended(b.purposeAmdDate);
@@ -952,33 +1006,29 @@ function generateDocs() {
         }
     }
 
-    /* ──── Article III: Office ──── */
+    /* ──── Article III ──── */
     if (isArt(3)) {
         finalAddressSt   = document.getElementById('new-street').value.trim();
         finalAddressBrgy = document.getElementById('new-brgy').value.trim();
         finalAddressCity = document.getElementById('new-city').value.trim();
         finalAddressProv = document.getElementById('new-prov').value.trim();
         finalAddressZip  = document.getElementById('new-zip').value.trim();
-        const prevAddr = b.address;
         const newAddrParts = [finalAddressSt, finalAddressBrgy, finalAddressCity, finalAddressProv].filter(Boolean);
         if (finalAddressZip) newAddrParts.push(finalAddressZip);
-        const newAddrFull = newAddrParts.join(', ');
         certResolutions += buildCertRes(
             'III', 'AMENDMENT OF THE THIRD ARTICLE (PRINCIPAL OFFICE)',
             'RESOLVED, that the Board hereby approves the amendment of the Third Article of the Articles of Incorporation:',
-            `THIRD: That the principal office of the corporation is located in ${prevAddr}`,
-            `THIRD: That the principal office of the corporation is located in ${newAddrFull || '[NEW ADDRESS — REQUIRES CLIENT INPUT]'}`
+            `THIRD: That the principal office of the corporation is located in ${b.address}`,
+            `THIRD: That the principal office of the corporation is located in ${newAddrParts.join(', ') || '[NEW ADDRESS — REQUIRES CLIENT INPUT]'}`
         );
     }
 
-    // Build final address string
     const finalAddrParts = [finalAddressSt, finalAddressBrgy, finalAddressCity, finalAddressProv].filter(Boolean);
     if (finalAddressZip) finalAddrParts.push(finalAddressZip);
     const finalAddressFull = finalAddrParts.join(', ') || '[ADDRESS — REQUIRES CLIENT INPUT]';
-    // For inline doc display: bold+underline the address text per the picture
     const finalAddressDisplay = `<strong><u>${finalAddressFull.toUpperCase()}</u></strong>`;
 
-    /* ──── Article IV: Term ──── */
+    /* ──── Article IV ──── */
     let termText = '';
     if (isArt(4)) {
         const nt = document.getElementById('new-term').value;
@@ -988,26 +1038,27 @@ function generateDocs() {
             'IV', 'AMENDMENT OF THE FOURTH ARTICLE (CORPORATE TERM)',
             'RESOLVED, that the Board hereby approves the amendment of the Fourth Article of the Articles of Incorporation:',
             `FOURTH: Term is ${b.term && b.term !== '0' ? b.term + ' years' : 'perpetual'}.`,
-            isPerpetual ? 'FOURTH: The corporation shall have perpetual existence.' : `FOURTH: The term is ${numToWords(parseInt(nt))} (${nt}) years.`
+            isPerpetual ? 'FOURTH: The corporation shall have perpetual existence.' : `FOURTH: The term is ${numToWordsMixed(parseInt(nt))} years.`
         );
         if (isPerpetual) {
             termText = `The corporation shall have perpetual existence.${inlineAmended(mtgDateRaw)}`;
         } else {
-            termText = `That the term for which said corporation is to exist is ${numToWords(parseInt(nt))} (${nt}) years from and after the date of issuance of the certificate of incorporation.${inlineAmended(mtgDateRaw)}`;
+            termText = `That the term for which said corporation is to exist is ${numToWordsMixed(parseInt(nt))} years from and after the date of issuance of the certificate of incorporation.${inlineAmended(mtgDateRaw)}`;
         }
     } else {
-        // Not amended — render from baseline
         const bt = parseInt(b.term);
         if (!b.term || b.term === '0' || bt === 0) {
             termText = 'The corporation shall have perpetual existence.';
+            if (b.art4AmendedDate) termText += inlineAmended(b.art4AmendedDate);
         } else if (!isNaN(bt)) {
-            termText = `That the term for which said corporation is to exist is ${numToWords(bt)} (${bt}) years from and after the date of issuance of the certificate of incorporation.`;
+            termText = `That the term for which said corporation is to exist is ${numToWordsMixed(bt)} years from and after the date of issuance of the certificate of incorporation.`;
+            if (b.art4AmendedDate) termText += inlineAmended(b.art4AmendedDate);
         } else {
             termText = '[CORPORATE TERM — REQUIRES CLIENT INPUT]';
         }
     }
 
-    /* ──── Article V: Incorporators ──── */
+    /* ──── Article V ──── */
     if (isArt(5)) {
         finalIncorp = getTableData('new-incorp-body', newIncorpCols);
         certResolutions += buildCertRes(
@@ -1018,7 +1069,7 @@ function generateDocs() {
         );
     }
 
-    /* ──── Article VI: Directors ──── */
+    /* ──── Article VI ──── */
     let sixthAmendedTag = '';
     if (isArt(6)) {
         const nc = document.getElementById('new-dir-count').value || '[N]';
@@ -1030,28 +1081,34 @@ function generateDocs() {
             <p>RESOLVED, that the Board hereby approves the change in the number of directors and the corresponding amendment of the Sixth Article of the Articles of Incorporation:</p>
             <p class="doc-indent"><b>FROM:</b></p>
             <p class="doc-indent">SIXTH: Number of directors: ${b.dirCount}</p>
-            ${buildPersonTable(b.baseDirs, ['Name','Nationality','Residence','TIN','Role'])}
+            ${buildPersonTable(b.baseDirs, ['Name','Nationality','Residence'])}
             <p class="doc-indent"><b>TO:</b></p>
             <p class="doc-indent">SIXTH: Number of directors: ${nc}</p>
-            ${buildPersonTable(finalDirs, ['Name','Nationality','Residence','TIN','Role'])}
+            ${buildPersonTable(finalDirs, ['Name','Nationality','Residence'])}
         </div>`;
+    } else if (b.art6AmendedDate) {
+        sixthAmendedTag = inlineAmended(b.art6AmendedDate);
     }
 
-    /* ──── Article VII: Capital ──── */
+    /* ──── Article VII ──── */
+    let seventhAmendedTag = '';
     if (isArt(7)) {
         finalAcsWords = document.getElementById('new-acs-words').value.trim() || b.acsWords;
         finalAcsAmt   = document.getElementById('new-acs-amount').value.trim() || b.acsAmt;
         finalShares   = document.getElementById('new-shares').value.trim() || b.shares;
         finalPar      = document.getElementById('new-par').value.trim() || b.par;
+        seventhAmendedTag = inlineAmended(mtgDateRaw);
         certResolutions += buildCertRes(
             'VII', 'AMENDMENT OF THE SEVENTH ARTICLE (AUTHORIZED CAPITAL STOCK)',
             'RESOLVED, that the Board hereby approves the amendment of the Seventh Article of the Articles of Incorporation:',
             `SEVENTH: Authorized capital stock is ${b.acsWords} (₱${b.acsAmt}), divided into ${b.shares} shares at ₱${b.par} par value per share.`,
             `SEVENTH: Authorized capital stock is ${finalAcsWords} (₱${finalAcsAmt}), divided into ${finalShares} shares at ₱${finalPar} par value per share.`
         );
+    } else if (b.art7AmendedDate) {
+        seventhAmendedTag = inlineAmended(b.art7AmendedDate);
     }
 
-    /* ──── Articles VIII/IX: Subscriptions ──── */
+    /* ──── Articles VIII/IX ──── */
     if (isArt(89)) {
         finalSubs = getTableData('new-subs-body', newSubsCols);
         certResolutions += buildCertRes(
@@ -1062,7 +1119,7 @@ function generateDocs() {
         );
     }
 
-    /* ──── Article X: Treasurer ──── */
+    /* ──── Article X ──── */
     if (isArt(10)) {
         finalTreasurer    = document.getElementById('new-treasurer').value.trim() || b.treasurer;
         finalTreasurerTin = document.getElementById('new-treasurer-tin').value.trim() || b.treasurerTin;
@@ -1074,7 +1131,7 @@ function generateDocs() {
         );
     }
 
-    /* ──── Article XI: Amendment Clause ──── */
+    /* ──── Article XI ──── */
     if (isArt(11)) {
         const cc = document.getElementById('new-comp-clause').value.trim();
         const chosen = [...document.querySelectorAll('input[name="comp-clause"]')].find(r => r.checked);
@@ -1089,7 +1146,7 @@ function generateDocs() {
 
     if (!certResolutions) certResolutions = '<p style="text-align:center;font-style:italic;">[No amendments were selected.]</p>';
 
-    /* ──── Build SEVENTH + EIGHTH HTML (connected, percentage computed) ──── */
+    /* ──── Subscription table ──── */
     const acsAmtNum = parseFloat(String(finalAcsAmt || '0').replace(/,/g, '')) || 0;
     let subsTableHTML = '';
     if (finalSubs.length > 0) {
@@ -1099,17 +1156,13 @@ function generateDocs() {
             totalSubscribed += parseFloat(String(r['Amount Subscribed (₱)'] || 0).replace(/,/g,'')) || 0;
             totalPaid       += parseFloat(String(r['Amount Paid (₱)'] || 0).replace(/,/g,'')) || 0;
         });
-        // Compute percentage: subscribed / ACS × 100
         const pct = acsAmtNum > 0 ? Math.round((totalSubscribed / acsAmtNum) * 100) : 25;
         subsTableHTML = `<div class="avoid-break">
             <p><b>EIGHTH:</b> That at least ${pct}% of the authorized capital stock has been subscribed and at least twenty-five percent (25%) of the total subscription has been fully paid to the Treasurer-in-Trust, as follows:</p>
             <table class="lt">
                 <tr>
-                    <th>Name of Subscriber</th>
-                    <th>Citizenship</th>
-                    <th>No. of Shares Subscribed</th>
-                    <th>Amount Subscribed (₱)</th>
-                    <th>Amount Paid (₱)</th>
+                    <th>Name of Subscriber</th><th>Citizenship</th>
+                    <th>No. of Shares Subscribed</th><th>Amount Subscribed (₱)</th><th>Amount Paid (₱)</th>
                 </tr>
                 ${finalSubs.map(r => `<tr>
                     <td>${r['Name of Subscriber']||''}</td>
@@ -1130,43 +1183,32 @@ function generateDocs() {
         subsTableHTML = `<p><b>EIGHTH:</b> That at least twenty-five percent (25%) of the authorized capital stock has been subscribed and at least twenty-five percent (25%) of the total subscription has been fully paid to the Treasurer-in-Trust. [REQUIRES CLIENT INPUT — subscription table is empty]</p>`;
     }
 
-    /* ──── Incorporator table ──── */
+    /* ──── Signatories block ──── */
+    const sigBlock = buildSignatoryBlock(signatories);
+
+    /* ──── Article I display block ──── */
+    // Per the reference image: FIRST text says "That the name of said corporation shall be:"
+    // then the name is centered bold on next line, with "As amended on" below it (bold underline, not italic)
+    let firstArticleBlock = '';
+    const art1AmdDate = isArt(1) ? mtgDateRaw : b.art1AmendedDate;
+    firstArticleBlock = `<p><b>FIRST:</b> That the name of said corporation shall be:</p>
+    <div class="art1-name-block">
+        <span class="art1-name-text">${finalName.toUpperCase()}</span>
+        ${art1AmdDate ? `<span class="art1-amended-tag">(As amended on ${formatDate(art1AmdDate)})</span>` : ''}
+    </div>`;
+
+    /* ──── Article III amended tag ──── */
+    const thirdAmendedTag = isArt(3) ? inlineAmended(mtgDateRaw) : (b.art3AmendedDate ? inlineAmended(b.art3AmendedDate) : '');
+
+    /* ──── Director table (Name/Nationality/Residence only) ──── */
+    const dirTableHTML = buildPersonTable(finalDirs, ['Name','Nationality','Residence']);
     const incorpTableHTML = buildPersonTable(finalIncorp, ['Name','Nationality','Residence']);
 
-    /* ──── Director table ──── */
-    // For Art VI: only use table data, never pull from signatories
-    const dirTableHTML = buildPersonTable(finalDirs, ['Name','Nationality','Residence','TIN','Role']);
-
-    /* ──── Cert signatures ──── */
-    const certSigHTML = buildCertSignatures(isArt(6) ? finalDirs : b.baseDirs);
-
-    /* ──── Article I "as amended" inline tag ──── */
-    // If Art I is being amended now → show new amendment date inline
-    // If Art I was previously amended (base-orig-date filled) but NOT being amended now → show prior date
-    let firstArticleAmendedTag = '';
-    if (isArt(1) && b.name) {
-        firstArticleAmendedTag = inlineAmended(mtgDateRaw);
-    } else if (!isArt(1) && b.origDate) {
-        firstArticleAmendedTag = inlineAmended(b.origDate);
-    }
-
-    /* ──── Article III "as amended" ──── */
-    const thirdAmendedTag = isArt(3) ? inlineAmended(mtgDateRaw) : '';
-
-    /* ──── Article IV "as amended" ──── */
-    // termText already includes the inline tag if amended
-
-    /* ──── Article VI "as amended" inline (appended to the SIXTH sentence) ──── */
-    // sixthAmendedTag set above
-
-    /* ──── SEVENTH "as amended" ──── */
-    const seventhAmendedTag = isArt(7) ? inlineAmended(mtgDateRaw) : '';
-
-    /* ══════════ BUILD THE HTML ══════════ */
+    /* ══════════ BUILD HTML ══════════ */
     document.getElementById('export-content').innerHTML = `
 
-    <!-- PAGE 1: DIRECTORS' CERTIFICATE -->
-    <div class="document-page">
+    <!-- ══ DIRECTORS' CERTIFICATE ══ -->
+    <div class="document-page" id="page-cert">
         <p>REPUBLIC OF THE PHILIPPINES)</p>
         <p style="padding-left:1.2in;">S.S.</p>
         <br>
@@ -1186,7 +1228,7 @@ function generateDocs() {
         <div class="avoid-break">
             <p><b>IN WITNESS WHEREOF</b>, we have hereunto set our hands and signed this Directors' Certificate, this _______________ day of _______________ in the City/Municipality of _____________________, Province of ___________________________, Republic of the Philippines.</p>
             <br>
-            ${certSigHTML}
+            ${sigBlock}
         </div>
         <div class="notary-block avoid-break">
             <p>SUBSCRIBED AND SWORN to before me this <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u> at <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>, affiants exhibiting to me their Taxpayer Identification Numbers (TIN) as indicated below their respective signatures.</p>
@@ -1199,8 +1241,11 @@ function generateDocs() {
         </div>
     </div>
 
-    <!-- PAGE 2: AMENDED AOI -->
-    <div class="document-page">
+    <!-- ══ PAGE BREAK ══ -->
+    <div style="page-break-after:always;break-after:page;height:0;display:block;"></div>
+
+    <!-- ══ AMENDED AOI ══ -->
+    <div class="document-page" id="page-aoi">
         <div class="doc-title-block">
             <span class="doc-title-main">AMENDED ARTICLES OF INCORPORATION</span>
             <span class="doc-title-of">OF</span>
@@ -1210,52 +1255,43 @@ function generateDocs() {
 
         <p><b>KNOW ALL MEN BY THESE PRESENTS:</b></p>
         <p>The undersigned incorporators, all of legal age and majority of whom are residents of the Philippines, have this day voluntarily agreed to form a stock corporation under the laws of the Republic of the Philippines.</p>
-        <p><b>AND WE HEREBY CERTIFY:</b></p>
+        <p style="text-align:center;"><b>THAT WE HEREBY CERTIFY:</b></p>
         <br>
 
-        <!-- FIRST -->
-        <p><b>FIRST:</b> That the name of the corporation shall be: <b>${finalName.toUpperCase()}</b>${firstArticleAmendedTag}</p>
+        ${firstArticleBlock}
+        <br>
 
-        <!-- SECOND -->
         ${finalPurposeHTML}
 
-        <!-- THIRD -->
         <p><b>THIRD:</b> That the place where the principal office of the corporation is to be established or located is at ${finalAddressDisplay}${thirdAmendedTag};</p>
 
-        <!-- FOURTH -->
         <p><b>FOURTH:</b> ${termText}</p>
 
-        <!-- FIFTH -->
         <div class="avoid-break">
             <p><b>FIFTH:</b> That the names, nationalities, and residences of the incorporators of the corporation are as follows:</p>
             ${incorpTableHTML}
         </div>
 
-        <!-- SIXTH -->
         <div class="avoid-break">
-            <p><b>SIXTH:</b> That the number of directors of the corporation shall be <b>${numToWords(parseInt(finalDirCount)||0).charAt(0)}${numToWords(parseInt(finalDirCount)||0).slice(1).toLowerCase()} (${finalDirCount})</b>; and that the names, nationalities, and residences of the directors who are to serve until their successors are duly elected and qualified as provided by the by-laws are as follows:${sixthAmendedTag}</p>
+            <p><b>SIXTH:</b> That the number of directors of the corporation shall be <b>${numToWordsMixed(parseInt(finalDirCount)||0)}</b>; and that the names, nationalities, and residences of the directors who are to serve until their successors are duly elected and qualified as provided by the by-laws are as follows:${sixthAmendedTag}</p>
             ${dirTableHTML}
         </div>
 
-        <!-- SEVENTH + EIGHTH (connected) -->
         <p><b>SEVENTH:</b> That the authorized capital stock of the Corporation is ${finalAcsWords || '[REQUIRES CLIENT INPUT]'} (${finalAcsAmt ? '₱' + finalAcsAmt : '[AMOUNT]'}) pesos in lawful money of the Philippines, divided into ${finalShares || '[SHARES]'} shares with the par value of ${finalPar ? '₱' + finalPar : '[PAR]'} pesos per share.${seventhAmendedTag}</p>
 
         ${subsTableHTML}
 
-        <!-- NINTH -->
         <p><b>NINTH:</b> ${finalNinth || '[NINTH ARTICLE PROVISION — REQUIRES CLIENT INPUT]'}</p>
 
-        <!-- TENTH -->
         <p><b>TENTH:</b> That <b>${finalTreasurer || '[TREASURER — REQUIRES CLIENT INPUT]'}</b> has been elected by the subscribers as Treasurer of the Corporation to act as such until his/her successor is duly elected and qualified in accordance with the by-laws, and that as such Treasurer, he/she has been authorized to receive for and in the name and for the benefit of the Corporation all subscriptions paid by the subscribers.</p>
 
-        <!-- ELEVENTH -->
         <p><b>ELEVENTH:</b> ${finalCompClause}</p>
         <br>
 
-        <!-- Signatures -->
         <div class="avoid-break">
             <p><b>IN WITNESS WHEREOF</b>, we have hereunto set our hands and signed these Amended Articles of Incorporation, this _______________ day of _______________ in the City/Municipality of _____________________, Republic of the Philippines.</p>
-            <div class="sig-grid">${buildAoiSignatures(finalDirs.length > 0 ? finalDirs : b.baseDirs)}</div>
+            <br>
+            ${sigBlock}
         </div>
 
         <div class="notary-block avoid-break">
@@ -1272,21 +1308,35 @@ function generateDocs() {
     goTab('tab-preview', document.querySelectorAll('.nav-links button')[2]);
 }
 
-/* ─── PDF export ─── */
+/* ─── PDF export — proper legal-size, page-faithful rendering ─── */
 function exportPDF() {
-    html2pdf().set({
-        margin     : [0,0,0,0],
-        filename   : `Amended_AOI_${new Date().toISOString().split('T')[0]}.pdf`,
-        image      : { type:'jpeg', quality:0.98 },
-        html2canvas: { scale:2, useCORS:true, letterRendering:true },
-        jsPDF      : { unit:'in', format:'legal', orientation:'portrait' },
-        pagebreak  : { mode:['css','avoid-all'] }
-    }).from(document.getElementById('export-content')).save();
-}
-
+    const element = document.getElementById('export-content');
+    const opt = {
+        margin       : 0,
+        filename     : `Amended_AOI_${new Date().toISOString().split('T')[0]}.pdf`,
+        image        : { type: 'jpeg', quality: 1.0 },
+        html2canvas  : {
+            scale        : 2,
+            useCORS      : true,
+            letterRendering : true,
+            windowWidth  : 816,   // 8.5in @ 96dpi
+        },
+        jsPDF        : {
+            unit        : 'in',
+            format      : 'legal',   // 8.5 x 14
+            orientation : 'portrait',
+            compress    : false,
+        },
+        pagebreak    : {
+            mode   : ['css', 'legacy'],
+            before : '#page-aoi',
+            avoid  : ['.avoid-break', 'table', '.sig-grid', '.notary-block'],
+        },
+    };
+  }
 /* ─── Init ─── */
 document.addEventListener('DOMContentLoaded', () => {
-    ['base-incorp-body','base-dir-body','base-subs-body'].forEach(id => {
+    ['base-incorp-body','base-dir-body','base-subs-body','signatories-body'].forEach(id => {
         document.getElementById(id).innerHTML = '';
     });
 });
