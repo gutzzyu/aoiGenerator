@@ -20,22 +20,15 @@ app.add_middleware(
 
 groq_client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
-# ---------------------------------------------------------------------------
-# Model priority — all free on Groq, fastest first
-# llama-3.3-70b is the best for structured extraction on Groq free tier
-# ---------------------------------------------------------------------------
 MODEL_PRIORITY = [
-    "llama-3.3-70b-versatile",   # Best quality, still fast on Groq
-    "llama3-70b-8192",            # Fallback
-    "mixtral-8x7b-32768",         # Fallback if above are busy
+    "llama-3.3-70b-versatile",
+    "llama3-70b-8192",
+    "mixtral-8x7b-32768",
 ]
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
-# ---------------------------------------------------------------------------
-# Serve HTML
-# ---------------------------------------------------------------------------
 @app.get("/", response_class=HTMLResponse)
 async def root():
     for candidate in [
@@ -49,9 +42,6 @@ async def root():
     raise HTTPException(status_code=404, detail=f"index.html not found. Files: {files}")
 
 
-# ---------------------------------------------------------------------------
-# JSON repair
-# ---------------------------------------------------------------------------
 def repair_and_parse_json(raw: str) -> dict:
     text = raw.strip()
     text = re.sub(r"^```(?:json)?\s*", "", text, flags=re.MULTILINE)
@@ -100,18 +90,32 @@ def repair_and_parse_json(raw: str) -> dict:
     return json.loads(text[start:end + 1])
 
 
-# ---------------------------------------------------------------------------
-# Prompt builder
-# ---------------------------------------------------------------------------
 def build_extraction_prompt(extracted_text: str) -> str:
     return (
         "You are a precise legal document data extractor for Philippine Articles of Incorporation (AOI).\n"
         "Extract ALL information from the document text below.\n"
         "Return ONLY a single valid JSON object — no markdown, no explanation, no preamble.\n"
         "Use EXACTLY the keys listed. Leave a field as empty string \"\" if not found — never omit a key.\n\n"
+        "IMPORTANT INSTRUCTIONS FOR AMENDMENT DATES:\n"
+        "- Look for phrases like 'As amended on', 'as amended on', '(As amended on ...)'.\n"
+        "- Extract the date from the TITLE BLOCK (e.g. 'RIZAL POULTRY FARM CORPORATION (As amended on October 24, 2025)').\n"
+        "- Also extract per-article amendment dates if present inline in the text.\n"
+        "- All dates must be in YYYY-MM-DD format.\n\n"
+        "IMPORTANT INSTRUCTIONS FOR SIGNATORIES:\n"
+        "- The 'signatories' array must be extracted from the SIGNATURE BLOCK at the END of the document.\n"
+        "- These are the people who physically sign the AOI — they have a printed name, a role/title below, and a TIN.\n"
+        "- Do NOT confuse with the directors table. Signatories are only those listed under 'IN WITNESS WHEREOF'.\n"
+        "- Example signatory: name='ALEXANDRA S. ANGLIONGTO', role='Director and President', tin='106-265-745'.\n\n"
         "REQUIRED JSON SCHEMA:\n"
         "{\n"
         '  "corporateName": "Full registered name in ALL CAPS",\n'
+        '  "documentAmendedDate": "Date the entire AOI was last amended, YYYY-MM-DD or empty",\n'
+        '  "article1AmendedDate": "Amendment date for Article I specifically, YYYY-MM-DD or empty",\n'
+        '  "article2AmendedDate": "Amendment date for Article II specifically, YYYY-MM-DD or empty",\n'
+        '  "article3AmendedDate": "Amendment date for Article III specifically, YYYY-MM-DD or empty",\n'
+        '  "article4AmendedDate": "Amendment date for Article IV specifically, YYYY-MM-DD or empty",\n'
+        '  "article6AmendedDate": "Amendment date for Article VI specifically, YYYY-MM-DD or empty",\n'
+        '  "article7AmendedDate": "Amendment date for Article VII specifically, YYYY-MM-DD or empty",\n'
         '  "primaryPurpose": "Full verbatim primary purpose clause",\n'
         '  "secondaryPurposes": "Secondary purposes if any, else empty string",\n'
         '  "street": "Street number and name of principal office",\n'
@@ -134,12 +138,14 @@ def build_extraction_prompt(extracted_text: str) -> str:
         '    {"name": "Full name", "nationality": "e.g. Filipino", "residence": "Full address"}\n'
         '  ],\n'
         '  "directors": [\n'
-        '    {"name": "Full name", "nationality": "e.g. Filipino", "residence": "Full address", '
-        '"tin": "TIN number", "role": "e.g. President"}\n'
+        '    {"name": "Full name", "nationality": "e.g. Filipino", "residence": "Full address"}\n'
         '  ],\n'
         '  "subscribers": [\n'
         '    {"name": "Full name", "citizenship": "e.g. Filipino", "sharesSubscribed": "number", '
         '"amountSubscribed": "amount", "amountPaid": "amount"}\n'
+        '  ],\n'
+        '  "signatories": [\n'
+        '    {"name": "Full printed name e.g. ALEXANDRA S. ANGLIONGTO", "role": "e.g. Director and President", "tin": "e.g. 106-265-745"}\n'
         '  ]\n'
         "}\n\n"
         "DOCUMENT TEXT:\n"
@@ -147,9 +153,6 @@ def build_extraction_prompt(extracted_text: str) -> str:
     )
 
 
-# ---------------------------------------------------------------------------
-# Model call with fallback
-# ---------------------------------------------------------------------------
 def call_model_with_fallback(prompt: str) -> dict:
     last_error = None
     for model_id in MODEL_PRIORITY:
@@ -170,7 +173,7 @@ def call_model_with_fallback(prompt: str) -> dict:
                 ],
                 max_tokens=4096,
                 temperature=0.1,
-                response_format={"type": "json_object"},  # Groq supports this natively
+                response_format={"type": "json_object"},
             )
 
             raw = response.choices[0].message.content
@@ -192,9 +195,6 @@ def call_model_with_fallback(prompt: str) -> dict:
     raise ValueError(f"All models failed. Last error: {last_error}")
 
 
-# ---------------------------------------------------------------------------
-# Extract endpoint
-# ---------------------------------------------------------------------------
 @app.post("/api/extract")
 async def extract_document(file: UploadFile = File(...)):
     try:
@@ -206,7 +206,6 @@ async def extract_document(file: UploadFile = File(...)):
         if len(pdf_bytes) == 0:
             raise HTTPException(status_code=400, detail="Uploaded file is empty.")
 
-        # Extract text from PDF
         extracted_text = ""
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
             tmp.write(pdf_bytes)
@@ -238,9 +237,11 @@ async def extract_document(file: UploadFile = File(...)):
         prompt = build_extraction_prompt(extracted_text)
         result = call_model_with_fallback(prompt)
 
-        # Guarantee all scalar keys present
         for key in [
-            "corporateName", "primaryPurpose", "secondaryPurposes",
+            "corporateName", "documentAmendedDate",
+            "article1AmendedDate", "article2AmendedDate", "article3AmendedDate",
+            "article4AmendedDate", "article6AmendedDate", "article7AmendedDate",
+            "primaryPurpose", "secondaryPurposes",
             "street", "barangay", "city", "province", "term",
             "numberOfDirectors", "acsWords", "acsAmount", "numberOfShares",
             "parValue", "treasurer", "treasurerTIN", "treasurerAddress",
@@ -249,7 +250,7 @@ async def extract_document(file: UploadFile = File(...)):
             if key not in result:
                 result[key] = ""
 
-        for arr_key in ("incorporators", "directors", "subscribers"):
+        for arr_key in ("incorporators", "directors", "subscribers", "signatories"):
             if arr_key not in result or not isinstance(result[arr_key], list):
                 result[arr_key] = []
 
@@ -262,9 +263,6 @@ async def extract_document(file: UploadFile = File(...)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# ---------------------------------------------------------------------------
-# Static files
-# ---------------------------------------------------------------------------
 static_dir = os.path.join(BASE_DIR, "static")
 if os.path.isdir(static_dir):
     app.mount("/static", StaticFiles(directory=static_dir), name="static")
