@@ -1,0 +1,5 @@
+fastapi
+uvicorn[standard]
+python-multipart
+pypdf>=4.0.0
+groq
