@@ -84,7 +84,6 @@
             color:#000;
             width:8.5in;
             min-height:11in;
-            /* 1in top/bottom, 1in left/right — matches @page margins exactly */
             padding:1in 1in;
             font-family:'Times New Roman',Times,serif;
             font-size:12pt;
@@ -102,7 +101,9 @@
         .doc-title-main{font-size:13pt;font-weight:bold;text-transform:uppercase;font-family:'Times New Roman',Times,serif;display:block;line-height:1.5;}
         .doc-title-of{font-size:12pt;font-weight:bold;text-transform:uppercase;display:block;line-height:1.5;margin:4pt 0;}
         .doc-title-name{font-size:12pt;font-weight:bold;text-decoration:underline;display:block;line-height:1.4;}
-        .doc-title-amended{font-size:11pt;font-weight:bold;text-decoration:underline;display:block;line-height:1.4;margin-top:2pt;}
+        /* title amended — bold+underline when new amendment, plain when retained prior */
+        .doc-title-amended-new{font-size:11pt;font-weight:bold;text-decoration:underline;display:block;line-height:1.4;margin-top:2pt;}
+        .doc-title-amended-prior{font-size:11pt;font-weight:normal;text-decoration:none;display:block;line-height:1.4;margin-top:2pt;}
 
         .document-page h3{text-align:center;font-size:12pt;text-transform:uppercase;margin:0 0 6pt 0;line-height:1.45;color:#000;font-family:'Times New Roman',Times,serif;}
         .document-page p{margin:0 0 9pt 0;text-align:justify;}
@@ -110,15 +111,33 @@
         .doc-deep-indent{margin:0 0 6pt 0;padding-left:0.75in;text-align:justify;}
         .doc-center{text-align:center!important;}
 
+        /* Art I name block — new amendment: bold+underline; retained prior: plain */
         .art1-name-block{text-align:center;margin:8pt 0;}
-        .art1-name-text{font-weight:bold;text-decoration:underline;font-size:12pt;display:block;}
-        .art1-amended-tag{font-size:10.5pt;text-decoration:underline;font-weight:bold;display:block;margin-top:2pt;}
-        .inline-amended{font-size:10.5pt;text-decoration:underline;font-weight:bold;font-style:normal;}
+        .art1-name-text-new{font-weight:bold;text-decoration:underline;font-size:12pt;display:block;}
+        .art1-name-text-prior{font-weight:normal;text-decoration:none;font-size:12pt;display:block;}
+        .art1-amended-tag-new{font-size:10.5pt;text-decoration:underline;font-weight:bold;display:block;margin-top:2pt;}
+        .art1-amended-tag-prior{font-size:10.5pt;text-decoration:none;font-weight:normal;display:block;margin-top:2pt;}
+
+        /* inline amended — new: bold+underline; retained prior: plain */
+        .inline-amended-new{font-size:10.5pt;text-decoration:underline;font-weight:bold;font-style:normal;}
+        .inline-amended-prior{font-size:10.5pt;text-decoration:none;font-weight:normal;font-style:normal;}
 
         /* ── Tables ── */
-        table.lt{width:100%;border-collapse:collapse;margin:8pt 0 10pt 0;font-size:10.5pt;}
-        table.lt th,table.lt td{border:1px solid #000;padding:5pt 8pt;vertical-align:top;text-align:left;}
+        table.lt{width:100%;border-collapse:collapse;margin:8pt 0 10pt 0;font-size:10.5pt;table-layout:fixed;}
+        table.lt th,table.lt td{border:1px solid #000;padding:5pt 8pt;vertical-align:top;text-align:left;word-wrap:break-word;overflow-wrap:break-word;}
         table.lt th{background:#f0f0f0;font-weight:bold;text-align:center;}
+
+        /* ── Subscription table column widths ── */
+        table.lt.subs-table th:nth-child(1),table.lt.subs-table td:nth-child(1){width:28%;}
+        table.lt.subs-table th:nth-child(2),table.lt.subs-table td:nth-child(2){width:14%;}
+        table.lt.subs-table th:nth-child(3),table.lt.subs-table td:nth-child(3){width:16%;}
+        table.lt.subs-table th:nth-child(4),table.lt.subs-table td:nth-child(4){width:20%;}
+        table.lt.subs-table th:nth-child(5),table.lt.subs-table td:nth-child(5){width:22%;}
+
+        /* ── Person table column widths ── */
+        table.lt.person-table th:nth-child(1),table.lt.person-table td:nth-child(1){width:35%;}
+        table.lt.person-table th:nth-child(2),table.lt.person-table td:nth-child(2){width:18%;}
+        table.lt.person-table th:nth-child(3),table.lt.person-table td:nth-child(3){width:47%;}
 
         /* ── Signature grid ── */
         .sig-grid{display:grid;grid-template-columns:1fr 1fr;gap:30pt 40pt;margin-top:20pt;}
@@ -133,7 +152,7 @@
         @media print {
             @page {
                 size: 8.5in 13in;
-                margin: 1in 1in; /* 1in all sides */
+                margin: 1in 1in;
             }
 
             nav,
@@ -204,6 +223,16 @@
                 break-inside: avoid;
                 orphans: 3;
                 widows: 3;
+            }
+
+            table.lt {
+                table-layout: fixed !important;
+                width: 100% !important;
+            }
+
+            table.lt th, table.lt td {
+                word-wrap: break-word !important;
+                overflow-wrap: break-word !important;
             }
 
             p, .doc-indent, .doc-deep-indent {
@@ -283,7 +312,7 @@
 
     <div class="card">
         <h3>Article III — Principal Office</h3>
-        <p style="font-size:.78rem;color:#8b949e;margin:0 0 8px 0;">Only fill No./Street if the document explicitly states a street address. Leave blank if the document only lists barangay/city.</p>
+        <p style="font-size:.78rem;color:#8b949e;margin:0 0 8px 0;">Only fill No./Street if the document explicitly states a street address with a number or street type keyword. Leave blank if the document only lists barangay/city.</p>
         <div class="input-grid">
             <div class="full"><label class="field-label">No. / Street (leave blank if not explicitly in document)</label>
             <input type="text" id="base-street" placeholder="e.g. 293 General Ordonez Street — leave blank if not stated"></div>
@@ -676,13 +705,18 @@ function setField(id, val) {
     if (el && val !== undefined && val !== null && String(val).trim() !== '') el.value = String(val).trim();
 }
 
-/* ─── Street detection — must have a number OR explicit street keyword ─── */
+/* ─── Street detection ──────────────────────────────────────────────────────
+   Must start with a digit  OR  contain an explicit street-type keyword.
+   Words like "Barangay", "Brgy", "Purok", "Zone" are NOT streets.
+   ───────────────────────────────────────────────────────────────────────── */
 function isExplicitStreet(val) {
     if (!val) return false;
     const v = val.trim();
-    /* Must start with a digit OR contain an explicit street-type word */
-    return /^\d/.test(v) ||
-        /\b(street|st\.|avenue|ave\.?|road|rd\.?|blvd|boulevard|drive|dr\.?|lane|ln\.?|highway|hwy|extension|ext\.?)\b/i.test(v);
+    /* Starts with a number (house/lot/unit number) */
+    if (/^\d/.test(v)) return true;
+    /* Contains an explicit street-type word — must be a standalone word/abbrev */
+    if (/\b(street|st\.|avenue|ave\.?|road|rd\.?|blvd\.?|boulevard|drive|dr\.?|lane|ln\.?|highway|hwy\.?|extension|ext\.?|corner|cor\.?)\b/i.test(v)) return true;
+    return false;
 }
 
 /* ─── File upload ─── */
@@ -734,8 +768,11 @@ function populateAllFields(data) {
     if (data.article6AmendedDate && /^\d{4}-\d{2}-\d{2}$/.test(data.article6AmendedDate)) setField('base-art6-amended-date', data.article6AmendedDate);
     if (data.article7AmendedDate && /^\d{4}-\d{2}-\d{2}$/.test(data.article7AmendedDate)) setField('base-art7-amended-date', data.article7AmendedDate);
 
-    /* Only populate street if it looks like an actual street address */
-    if (data.street && isExplicitStreet(data.street)) setField('base-street', data.street);
+    /* Only populate street if it looks like an actual street address (number or street keyword) */
+    if (data.street && isExplicitStreet(data.street)) {
+        setField('base-street', data.street);
+    }
+    /* Barangay: only populate if it doesn't duplicate the street field we just rejected */
     if (data.barangay) setField('base-brgy', data.barangay);
     setField('base-city', data.city);
     setField('base-prov', data.province);
@@ -848,17 +885,21 @@ function renderSelectedSecondary() {
     });
 }
 
-/* ─── Inline "As amended on" tag ─── */
-function inlineAmended(dateStr) {
+/* ─── Inline "As amended on" tag ────────────────────────────────────────────
+   isNew = true  → bold + underline (this amendment was just made today)
+   isNew = false → plain text (retained prior amendment date, no styling)
+   ───────────────────────────────────────────────────────────────────────── */
+function inlineAmended(dateStr, isNew) {
     if (!dateStr) return '';
-    return ` <span class="inline-amended">(As amended on ${formatDate(dateStr)})</span>`;
+    const cls = isNew ? 'inline-amended-new' : 'inline-amended-prior';
+    return ` <span class="${cls}">(As amended on ${formatDate(dateStr)})</span>`;
 }
 
 /* ─── Build person table ─── */
 function buildPersonTable(rows, cols) {
     if (!rows || rows.length === 0)
-        return `<table class="lt"><tr><th colspan="${cols.length}">[No data provided — REQUIRES CLIENT INPUT]</th></tr></table>`;
-    return `<table class="lt"><tr>${cols.map(c=>`<th>${c.toUpperCase()}</th>`).join('')}</tr>${rows.map(r=>`<tr>${cols.map(c=>`<td>${r[c]||''}</td>`).join('')}</tr>`).join('')}</table>`;
+        return `<table class="lt person-table"><tr><th colspan="${cols.length}">[No data provided — REQUIRES CLIENT INPUT]</th></tr></table>`;
+    return `<table class="lt person-table"><tr>${cols.map(c=>`<th>${c.toUpperCase()}</th>`).join('')}</tr>${rows.map(r=>`<tr>${cols.map(c=>`<td>${r[c]||''}</td>`).join('')}</tr>`).join('')}</table>`;
 }
 
 /* ─── Build signatories block ─── */
@@ -889,7 +930,6 @@ function generateDocs() {
     const bProv = document.getElementById('base-prov').value.trim();
     const bZip  = document.getElementById('base-zip').value.trim();
 
-    /* Build address — only include street if it was explicitly filled */
     const baseAddrParts = [bSt, bBrgy, bCity, bProv].filter(Boolean);
     if (bZip) baseAddrParts.push(bZip);
     const baseFullAddress = baseAddrParts.join(', ');
@@ -940,44 +980,53 @@ function generateDocs() {
     let finalNinth       = b.ninth;
     let finalCompClause  = 'That the corporation manifests its willingness to change its corporate name in the event another person, firm, or entity has acquired a prior right to use the said firm name or one deceptively or confusingly similar to it.';
 
-    /* Article I */
-    if (isArt(1)) {
+    /* ── Article I ── */
+    const art1IsAmended = isArt(1);
+    if (art1IsAmended) {
         const nn = document.getElementById('new-name').value.trim() || '[NEW NAME — REQUIRES CLIENT INPUT]';
         finalName = nn;
     }
 
-    /* Article II */
+    /* ── Title block date logic ──────────────────────────────────────────────
+       - If Art I IS being amended now → show meeting date (new amendment)
+       - If Art I is NOT being amended  → show the prior amendment date from Step 1
+         (or nothing if there's no prior date)
+       ──────────────────────────────────────────────────────────────────────── */
+    const titleAmendedDate = art1IsAmended ? mtgDateRaw : b.art1AmendedDate;
+    const titleAmendedIsNew = art1IsAmended; // true = bold+underline; false = plain
+
+    /* ── Article II ── */
     let finalPurposeHTML = '';
     if (isArt(2)) {
         const cp = document.getElementById('new-custom-purpose').value.trim();
         const newPrimaryText = cp || (selectedPrimary ? selectedPrimary.text : '');
         const newSecondaryList = selectedSecondary;
         finalPurposeHTML = `<p><b>SECOND:</b> That the purposes for which such corporation is incorporated are:</p>`;
-        finalPurposeHTML += `<p class="doc-indent"><b>A. Primary Purpose:</b><br>${newPrimaryText || '[PRIMARY PURPOSE — REQUIRES CLIENT INPUT]'}${inlineAmended(mtgDateRaw)}</p>`;
+        finalPurposeHTML += `<p class="doc-indent"><b>A. Primary Purpose:</b><br>${newPrimaryText || '[PRIMARY PURPOSE — REQUIRES CLIENT INPUT]'}${inlineAmended(mtgDateRaw, true)}</p>`;
         if (newSecondaryList.length > 0) {
             finalPurposeHTML += `<p class="doc-indent"><b>B. Secondary Purpose(s):</b></p>`;
             newSecondaryList.forEach((sp,i) => {
-                finalPurposeHTML += `<p class="doc-deep-indent">${i+1}. ${sp.text}${inlineAmended(mtgDateRaw)}</p>`;
+                finalPurposeHTML += `<p class="doc-deep-indent">${i+1}. ${sp.text}${inlineAmended(mtgDateRaw, true)}</p>`;
             });
             finalPurposeHTML += `<p class="doc-indent"><b>C.</b> That the corporation shall have all the express powers of a corporation as provided for under Section 36 of the Revised Corporation Code of the Philippines.</p>`;
         } else if (b.secPurp) {
-            finalPurposeHTML += `<p class="doc-indent"><b>B. Secondary Purpose(s):</b><br>${b.secPurp}${b.secPurpAmdDate?inlineAmended(b.secPurpAmdDate):''}</p>`;
+            finalPurposeHTML += `<p class="doc-indent"><b>B. Secondary Purpose(s):</b><br>${b.secPurp}${b.secPurpAmdDate ? inlineAmended(b.secPurpAmdDate, false) : ''}</p>`;
             finalPurposeHTML += `<p class="doc-indent"><b>C.</b> That the corporation shall have all the express powers of a corporation as provided for under Section 36 of the Revised Corporation Code of the Philippines.</p>`;
         } else {
             finalPurposeHTML += `<p class="doc-indent"><b>B.</b> That the corporation shall have all the express powers of a corporation as provided for under Section 36 of the Revised Corporation Code of the Philippines.</p>`;
         }
     } else {
         finalPurposeHTML = `<p><b>SECOND:</b> That the purposes for which such corporation is incorporated are:</p>`;
-        finalPurposeHTML += `<p class="doc-indent"><b>A. Primary Purpose:</b><br>${b.purpose || '[PRIMARY PURPOSE — REQUIRES CLIENT INPUT]'}${b.purposeAmdDate?inlineAmended(b.purposeAmdDate):''}</p>`;
+        finalPurposeHTML += `<p class="doc-indent"><b>A. Primary Purpose:</b><br>${b.purpose || '[PRIMARY PURPOSE — REQUIRES CLIENT INPUT]'}${b.purposeAmdDate ? inlineAmended(b.purposeAmdDate, false) : ''}</p>`;
         if (b.secPurp) {
-            finalPurposeHTML += `<p class="doc-indent"><b>B. Secondary Purpose(s):</b><br>${b.secPurp}${b.secPurpAmdDate?inlineAmended(b.secPurpAmdDate):''}</p>`;
+            finalPurposeHTML += `<p class="doc-indent"><b>B. Secondary Purpose(s):</b><br>${b.secPurp}${b.secPurpAmdDate ? inlineAmended(b.secPurpAmdDate, false) : ''}</p>`;
             finalPurposeHTML += `<p class="doc-indent"><b>C.</b> That the corporation shall have all the express powers of a corporation as provided for under Section 36 of the Revised Corporation Code of the Philippines.</p>`;
         } else {
             finalPurposeHTML += `<p class="doc-indent"><b>B.</b> That the corporation shall have all the express powers of a corporation as provided for under Section 36 of the Revised Corporation Code of the Philippines.</p>`;
         }
     }
 
-    /* Article III */
+    /* ── Article III ── */
     if (isArt(3)) {
         finalAddressSt   = document.getElementById('new-street').value.trim();
         finalAddressBrgy = document.getElementById('new-brgy').value.trim();
@@ -990,70 +1039,72 @@ function generateDocs() {
     if (finalAddressZip) finalAddrParts.push(finalAddressZip);
     const finalAddressFull    = finalAddrParts.join(', ') || '[ADDRESS — REQUIRES CLIENT INPUT]';
     const finalAddressDisplay = `<strong><u>${finalAddressFull.toUpperCase()}</u></strong>`;
-    const thirdAmendedTag     = isArt(3) ? inlineAmended(mtgDateRaw) : (b.art3AmendedDate ? inlineAmended(b.art3AmendedDate) : '');
+    const thirdAmendedTag     = isArt(3)
+        ? inlineAmended(mtgDateRaw, true)
+        : (b.art3AmendedDate ? inlineAmended(b.art3AmendedDate, false) : '');
 
-    /* Article IV */
+    /* ── Article IV ── */
     let termText = '';
     if (isArt(4)) {
         const nt = document.getElementById('new-term').value;
         const isPerpetual = !nt || nt === '0';
         finalTerm = isPerpetual ? 'perpetual' : nt;
         termText = isPerpetual
-            ? `The corporation shall have perpetual existence.${inlineAmended(mtgDateRaw)}`
-            : `That the term for which said corporation is to exist is ${numToWordsMixed(parseInt(nt))} years from and after the date of issuance of the certificate of incorporation.${inlineAmended(mtgDateRaw)}`;
+            ? `The corporation shall have perpetual existence.${inlineAmended(mtgDateRaw, true)}`
+            : `That the term for which said corporation is to exist is ${numToWordsMixed(parseInt(nt))} years from and after the date of issuance of the certificate of incorporation.${inlineAmended(mtgDateRaw, true)}`;
     } else {
         const bt = parseInt(b.term);
         if (!b.term || b.term === '0' || bt === 0) {
-            termText = 'The corporation shall have perpetual existence.' + (b.art4AmendedDate ? inlineAmended(b.art4AmendedDate) : '');
+            termText = 'The corporation shall have perpetual existence.' + (b.art4AmendedDate ? inlineAmended(b.art4AmendedDate, false) : '');
         } else if (!isNaN(bt)) {
-            termText = `That the term for which said corporation is to exist is ${numToWordsMixed(bt)} years from and after the date of issuance of the certificate of incorporation.` + (b.art4AmendedDate ? inlineAmended(b.art4AmendedDate) : '');
+            termText = `That the term for which said corporation is to exist is ${numToWordsMixed(bt)} years from and after the date of issuance of the certificate of incorporation.` + (b.art4AmendedDate ? inlineAmended(b.art4AmendedDate, false) : '');
         } else {
             termText = '[CORPORATE TERM — REQUIRES CLIENT INPUT]';
         }
     }
 
-    /* Article V */
+    /* ── Article V ── */
     if (isArt(5)) finalIncorp = getTableData('new-incorp-body', newIncorpCols);
 
-    /* Article VI */
+    /* ── Article VI ── */
     let sixthAmendedTag = '';
     if (isArt(6)) {
         const nc = document.getElementById('new-dir-count').value || '[N]';
         finalDirs = getTableData('new-dir-body', newDirCols);
         finalDirCount = nc;
-        sixthAmendedTag = inlineAmended(mtgDateRaw);
+        sixthAmendedTag = inlineAmended(mtgDateRaw, true);
     } else if (b.art6AmendedDate) {
-        sixthAmendedTag = inlineAmended(b.art6AmendedDate);
+        sixthAmendedTag = inlineAmended(b.art6AmendedDate, false);
     }
 
-    /* Article VII */
+    /* ── Article VII ── */
     let seventhAmendedTag = '';
     if (isArt(7)) {
         finalAcsWords = document.getElementById('new-acs-words').value.trim() || b.acsWords;
         finalAcsAmt   = document.getElementById('new-acs-amount').value.trim() || b.acsAmt;
         finalShares   = document.getElementById('new-shares').value.trim() || b.shares;
         finalPar      = document.getElementById('new-par').value.trim() || b.par;
-        seventhAmendedTag = inlineAmended(mtgDateRaw);
+        seventhAmendedTag = inlineAmended(mtgDateRaw, true);
     } else if (b.art7AmendedDate) {
-        seventhAmendedTag = inlineAmended(b.art7AmendedDate);
+        seventhAmendedTag = inlineAmended(b.art7AmendedDate, false);
     }
 
-    /* Articles VIII/IX */
+    /* ── Articles VIII/IX ── */
     if (isArt(89)) finalSubs = getTableData('new-subs-body', newSubsCols);
 
-    /* Article X */
+    /* ── Article X ── */
     if (isArt(10)) {
         finalTreasurer = document.getElementById('new-treasurer').value.trim() || b.treasurer;
     }
 
-    /* Article XI */
+    /* ── Article XI ── */
     if (isArt(11)) {
         const cc = document.getElementById('new-comp-clause').value.trim();
         const chosen = [...document.querySelectorAll('input[name="comp-clause"]')].find(r => r.checked);
         if (chosen && chosen.value === 'custom' && cc) finalCompClause = cc;
     }
 
-    /* ─── Subscription table with COMPUTED percentage ─── */
+    /* ─── Subscription table ─── */
     const acsAmtNum = parseFloat(String(finalAcsAmt || '0').replace(/,/g,'')) || 0;
     let subsTableHTML = '';
 
@@ -1065,21 +1116,26 @@ function generateDocs() {
             totalPaid       += parseFloat(String(r['Amount Paid (₱)'] || 0).replace(/,/g,'')) || 0;
         });
 
-        /*
-         * Compute the actual subscribed percentage vs authorized capital.
-         * Formula: (totalSubscribed / acsAmtNum) * 100, rounded to nearest whole number.
-         * If ACS is unknown or zero, show the raw subscribed amount without a percentage claim.
-         */
-        let eighthIntroText = '';
-        if (acsAmtNum > 0) {
-            const computedPct = Math.round((totalSubscribed / acsAmtNum) * 100);
-            eighthIntroText = `That at least ${computedPct}% of the authorized capital stock has been subscribed and at least twenty-five percent (25%) of the total subscription has been fully paid to the Treasurer-in-Trust, as follows:`;
-        } else {
-            eighthIntroText = `That the following subscriptions and payments have been made, representing the amount subscribed and paid to the Treasurer-in-Trust, as follows:`;
+        /* Compute the actual subscribed % vs total paid (25% of subscribed = fully paid threshold) */
+        let paidPct = 0;
+        if (totalSubscribed > 0) {
+            paidPct = Math.round((totalPaid / totalSubscribed) * 100);
         }
 
-        subsTableHTML = `<p><b>EIGHTH:</b> ${eighthIntroText}</p>
-            <table class="lt">
+        /* Convert paidPct to words for the sentence */
+        function pctToWords(pct) {
+            const ones=['','one','two','three','four','five','six','seven','eight','nine',
+                'ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen'];
+            const tens=['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];
+            if (pct === 0) return 'zero';
+            if (pct < 20) return ones[pct];
+            if (pct < 100) return tens[Math.floor(pct/10)] + (pct%10 ? '-'+ones[pct%10] : '');
+            return pct.toString();
+        }
+        const paidPctWords = pctToWords(paidPct);
+
+        subsTableHTML = `<p><b>EIGHTH:</b> That the authorized capital stock above has been subscribed and paid as follows, and that at least ${paidPctWords} percent (${paidPct}%) of the total subscription has been fully paid to the Treasurer-in-Trust, as follows:</p>
+            <table class="lt subs-table">
                 <tr>
                     <th>Name of Subscriber</th><th>Citizenship</th>
                     <th>No. of Shares Subscribed</th><th>Amount Subscribed (₱)</th><th>Amount Paid (₱)</th>
@@ -1099,30 +1155,45 @@ function generateDocs() {
                 </tr>
             </table>`;
     } else {
-        subsTableHTML = `<p><b>EIGHTH:</b> That at least twenty-five percent (25%) of the authorized capital stock has been subscribed and at least twenty-five percent (25%) of the total subscription has been fully paid to the Treasurer-in-Trust. [REQUIRES CLIENT INPUT — subscription table is empty]</p>`;
+        subsTableHTML = `<p><b>EIGHTH:</b> That the authorized capital stock above has been subscribed and paid as follows, and that at least twenty-five percent (25%) of the total subscription has been fully paid to the Treasurer-in-Trust. [REQUIRES CLIENT INPUT — subscription table is empty]</p>`;
     }
 
     const sigBlock = buildSignatoryBlock(signatories);
 
-    /* Article I display */
-    const art1AmdDate = isArt(1) ? mtgDateRaw : b.art1AmendedDate;
+    /* ── Article I display ──────────────────────────────────────────────────
+       New amendment  → bold + underline on both name and "as amended on"
+       Retained prior → plain (no bold, no underline) on both
+       ──────────────────────────────────────────────────────────────────── */
+    const art1NameClass    = art1IsAmended ? 'art1-name-text-new'    : 'art1-name-text-prior';
+    const art1AmdTagClass  = art1IsAmended ? 'art1-amended-tag-new'  : 'art1-amended-tag-prior';
+    const art1AmdDate      = art1IsAmended ? mtgDateRaw : b.art1AmendedDate;
+
     const firstArticleBlock = `<p><b>FIRST:</b> That the name of said corporation shall be:</p>
     <div class="art1-name-block">
-        <span class="art1-name-text">${finalName.toUpperCase()}</span>
-        ${art1AmdDate ? `<span class="art1-amended-tag">(As amended on ${formatDate(art1AmdDate)})</span>` : ''}
+        <span class="${art1NameClass}">${finalName.toUpperCase()}</span>
+        ${art1AmdDate ? `<span class="${art1AmdTagClass}">(As amended on ${formatDate(art1AmdDate)})</span>` : ''}
     </div>`;
 
-    const dirTableHTML   = buildPersonTable(finalDirs, ['Name','Nationality','Residence']);
+    /* ── Title block ─────────────────────────────────────────────────────────
+       New amendment on Art I  → corp name bold+underline, "as amended" bold+underline
+       No Art I amendment      → corp name bold+underline (retained), "as amended" plain
+       (the corp name in the title always stays bold but underline only on new amendment)
+       ──────────────────────────────────────────────────────────────────────── */
+    const titleNameStyle = art1IsAmended
+        ? 'font-size:12pt;font-weight:bold;text-decoration:underline;display:block;line-height:1.4;'
+        : 'font-size:12pt;font-weight:bold;text-decoration:none;display:block;line-height:1.4;';
+    const titleAmendedClass = titleAmendedIsNew ? 'doc-title-amended-new' : 'doc-title-amended-prior';
+
+    const dirTableHTML    = buildPersonTable(finalDirs, ['Name','Nationality','Residence']);
     const incorpTableHTML = buildPersonTable(finalIncorp, ['Name','Nationality','Residence']);
 
-    /* ══════════ OUTPUT: AOI ONLY — no Directors' Cert, no notary block ══════════ */
     document.getElementById('export-content').innerHTML = `
     <div class="document-page" id="page-aoi">
         <div class="doc-title-block">
             <span class="doc-title-main">AMENDED ARTICLES OF INCORPORATION</span>
             <span class="doc-title-of">OF</span>
-            <span class="doc-title-name">${finalName.toUpperCase()}</span>
-            <span class="doc-title-amended">(As amended on ${mtgDate})</span>
+            <span style="${titleNameStyle}">${finalName.toUpperCase()}</span>
+            ${titleAmendedDate ? `<span class="${titleAmendedClass}">(As amended on ${formatDate(titleAmendedDate)})</span>` : ''}
         </div>
 
         <p><b>KNOW ALL MEN BY THESE PRESENTS:</b></p>
@@ -1165,11 +1236,7 @@ function generateDocs() {
 }
 
 /* ══════════════════════════════════════════════════
-   PDF EXPORT — iframe-based print for pixel-perfect output
-   Opens a hidden iframe containing only the AOI document,
-   then triggers the browser's print-to-PDF on that iframe.
-   This avoids the left-lean caused by the app chrome being
-   in the same viewport as the document during window.print().
+   PDF EXPORT — iframe-based print (FIXED FOR BORDER CLIPPING)
 ══════════════════════════════════════════════════ */
 function exportPDF() {
     const content = document.getElementById('export-content');
@@ -1178,7 +1245,6 @@ function exportPDF() {
         return;
     }
 
-    /* Collect all <link> and <style> tags from the current page */
     const styleLinks = [...document.querySelectorAll('link[rel="stylesheet"]')]
         .map(l => `<link rel="stylesheet" href="${l.href}">`)
         .join('\n');
@@ -1187,7 +1253,6 @@ function exportPDF() {
         .map(s => `<style>${s.textContent}</style>`)
         .join('\n');
 
-    /* Build the print document — only the AOI page, no app chrome */
     const printHTML = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1195,19 +1260,22 @@ function exportPDF() {
 ${styleLinks}
 ${inlineStyles}
 <style>
-/* Override — strip all screen chrome for this print frame */
+/* FIX 1: Ensure borders do not expand beyond 100% */
+*, *:before, *:after {
+    box-sizing: border-box !important;
+}
+
 html, body {
     margin: 0 !important;
     padding: 0 !important;
     background: #fff !important;
     overflow: visible !important;
 }
-/* The document page fills the print area exactly.
-   @page margin = 1in all sides, so padding:0 here is correct. */
+
 .document-page {
     width: 100% !important;
     min-height: 0 !important;
-    padding: 0 !important;
+    padding: 0 4px !important; /* 4px buffer keeps children away from the edge */
     margin: 0 !important;
     box-shadow: none !important;
     font-family: 'Times New Roman', Times, serif !important;
@@ -1217,19 +1285,43 @@ html, body {
     background: #fff !important;
     page-break-inside: auto !important;
 }
+
 @page {
     size: 8.5in 13in;
     margin: 1in 1in;
 }
-/* Prevent widows/orphans */
+
 p, .doc-indent, .doc-deep-indent {
     orphans: 3;
     widows: 3;
 }
+
 .avoid-break, table.lt, .sig-grid {
     page-break-inside: avoid;
     break-inside: avoid;
 }
+
+/* FIX 2: Pull the table inward by exactly 1px on each side so it escapes the print margin clip */
+table.lt {
+    table-layout: fixed !important;
+    width: 99% !important; 
+    margin: 0 auto 10pt auto !important; 
+    border-collapse: collapse !important;
+}
+
+table.lt th, table.lt td {
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+}
+
+table.lt.subs-table th:nth-child(1),table.lt.subs-table td:nth-child(1){width:28%;}
+table.lt.subs-table th:nth-child(2),table.lt.subs-table td:nth-child(2){width:14%;}
+table.lt.subs-table th:nth-child(3),table.lt.subs-table td:nth-child(3){width:16%;}
+table.lt.subs-table th:nth-child(4),table.lt.subs-table td:nth-child(4){width:20%;}
+table.lt.subs-table th:nth-child(5),table.lt.subs-table td:nth-child(5){width:22%;}
+table.lt.person-table th:nth-child(1),table.lt.person-table td:nth-child(1){width:35%;}
+table.lt.person-table th:nth-child(2),table.lt.person-table td:nth-child(2){width:18%;}
+table.lt.person-table th:nth-child(3),table.lt.person-table td:nth-child(3){width:47%;}
 </style>
 </head>
 <body>
@@ -1237,7 +1329,6 @@ ${content.innerHTML}
 </body>
 </html>`;
 
-    /* Create hidden iframe, write content, print */
     const iframe = document.createElement('iframe');
     iframe.style.cssText = 'position:fixed;top:0;left:0;width:0;height:0;border:none;visibility:hidden;';
     document.body.appendChild(iframe);
@@ -1247,7 +1338,6 @@ ${content.innerHTML}
     iframeDoc.write(printHTML);
     iframeDoc.close();
 
-    /* Wait for fonts and layout to settle, then print */
     iframe.onload = function () {
         setTimeout(() => {
             try {
@@ -1256,16 +1346,12 @@ ${content.innerHTML}
             } catch (e) {
                 console.error('Print error:', e);
             }
-            /* Remove iframe after print dialog closes */
             setTimeout(() => document.body.removeChild(iframe), 2000);
         }, 600);
     };
 }
 
-/* ─── Print button — uses same iframe approach for consistency ─── */
-function printDoc() {
-    exportPDF();
-}
+function printDoc() { exportPDF(); }
 
 /* ─── Init ─── */
 document.addEventListener('DOMContentLoaded', () => {
