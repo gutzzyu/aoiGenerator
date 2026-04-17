@@ -67,7 +67,6 @@
         .extract-msg{color:var(--gold);font-size:1rem;font-weight:700;letter-spacing:1px;}
         .extract-sub{color:#8b949e;font-size:.82rem;max-width:380px;text-align:center;}
 
-        /* ── Screen preview wrapper ── */
         #legal-preview{
             background:#525659;
             padding:30px 0;
@@ -78,7 +77,6 @@
             border-radius:8px;
         }
 
-        /* ── Screen document page ── */
         .document-page{
             background:#fff;
             color:#000;
@@ -96,14 +94,15 @@
             word-break:break-word;
         }
 
-        /* ── Title block ── */
         .doc-title-block{text-align:center;margin-bottom:18pt;}
         .doc-title-main{font-size:13pt;font-weight:bold;text-transform:uppercase;font-family:'Times New Roman',Times,serif;display:block;line-height:1.5;}
         .doc-title-of{font-size:12pt;font-weight:bold;text-transform:uppercase;display:block;line-height:1.5;margin:4pt 0;}
         .doc-title-name{font-size:12pt;font-weight:bold;text-decoration:underline;display:block;line-height:1.4;}
-        /* title amended — bold+underline when new amendment, plain when retained prior */
         .doc-title-amended-new{font-size:11pt;font-weight:bold;text-decoration:underline;display:block;line-height:1.4;margin-top:2pt;}
         .doc-title-amended-prior{font-size:11pt;font-weight:normal;text-decoration:none;display:block;line-height:1.4;margin-top:2pt;}
+        /* Formerly line in title block */
+        .doc-title-formerly-new{font-size:10.5pt;font-weight:bold;text-decoration:underline;display:block;line-height:1.4;margin-top:2pt;font-style:italic;}
+        .doc-title-formerly-prior{font-size:10.5pt;font-weight:normal;text-decoration:none;display:block;line-height:1.4;margin-top:2pt;font-style:italic;}
 
         .document-page h3{text-align:center;font-size:12pt;text-transform:uppercase;margin:0 0 6pt 0;line-height:1.45;color:#000;font-family:'Times New Roman',Times,serif;}
         .document-page p{margin:0 0 9pt 0;text-align:justify;}
@@ -111,50 +110,43 @@
         .doc-deep-indent{margin:0 0 6pt 0;padding-left:0.75in;text-align:justify;}
         .doc-center{text-align:center!important;}
 
-        /* Art I name block — new amendment: bold+underline; retained prior: plain */
         .art1-name-block{text-align:center;margin:8pt 0;}
         .art1-name-text-new{font-weight:bold;text-decoration:underline;font-size:12pt;display:block;}
         .art1-name-text-prior{font-weight:normal;text-decoration:none;font-size:12pt;display:block;}
         .art1-amended-tag-new{font-size:10.5pt;text-decoration:underline;font-weight:bold;display:block;margin-top:2pt;}
         .art1-amended-tag-prior{font-size:10.5pt;text-decoration:none;font-weight:normal;display:block;margin-top:2pt;}
+        /* Formerly in art1 block */
+        .art1-formerly-new{font-size:10.5pt;font-weight:bold;text-decoration:underline;font-style:italic;display:block;margin-top:2pt;}
+        .art1-formerly-prior{font-size:10.5pt;font-weight:normal;text-decoration:none;font-style:italic;display:block;margin-top:2pt;}
 
-        /* inline amended — new: bold+underline; retained prior: plain */
         .inline-amended-new{font-size:10.5pt;text-decoration:underline;font-weight:bold;font-style:normal;}
         .inline-amended-prior{font-size:10.5pt;text-decoration:none;font-weight:normal;font-style:normal;}
 
-        /* ── Tables ── */
         table.lt{width:100%;border-collapse:collapse;margin:8pt 0 10pt 0;font-size:10.5pt;table-layout:fixed;}
         table.lt th,table.lt td{border:1px solid #000;padding:5pt 8pt;vertical-align:top;text-align:left;word-wrap:break-word;overflow-wrap:break-word;}
         table.lt th{background:#f0f0f0;font-weight:bold;text-align:center;}
 
-        /* ── Subscription table column widths ── */
         table.lt.subs-table th:nth-child(1),table.lt.subs-table td:nth-child(1){width:28%;}
         table.lt.subs-table th:nth-child(2),table.lt.subs-table td:nth-child(2){width:14%;}
         table.lt.subs-table th:nth-child(3),table.lt.subs-table td:nth-child(3){width:16%;}
         table.lt.subs-table th:nth-child(4),table.lt.subs-table td:nth-child(4){width:20%;}
         table.lt.subs-table th:nth-child(5),table.lt.subs-table td:nth-child(5){width:22%;}
 
-        /* ── Person table column widths ── */
         table.lt.person-table th:nth-child(1),table.lt.person-table td:nth-child(1){width:35%;}
         table.lt.person-table th:nth-child(2),table.lt.person-table td:nth-child(2){width:18%;}
         table.lt.person-table th:nth-child(3),table.lt.person-table td:nth-child(3){width:47%;}
 
-        /* ── Signature grid ── */
         .sig-grid{display:grid;grid-template-columns:1fr 1fr;gap:30pt 40pt;margin-top:20pt;}
         .sig-box{text-align:center;}
         .sig-line{border-top:1px solid #000;padding-top:3pt;font-weight:bold;text-transform:uppercase;margin-top:50pt;font-size:10pt;font-family:'Times New Roman',Times,serif;}
         .sig-role{font-size:9.5pt;font-weight:normal;font-style:italic;}
         .sig-tin{font-size:9pt;}
 
-        /* ══════════════════════════════════════
-           PRINT STYLESHEET
-           ══════════════════════════════════════ */
         @media print {
             @page {
                 size: 8.5in 13in;
                 margin: 1in 1in;
             }
-
             nav,
             #export-bar,
             .btn,
@@ -163,7 +155,6 @@
             #preview-placeholder {
                 display: none !important;
             }
-
             body {
                 display: block !important;
                 background: #fff !important;
@@ -171,27 +162,23 @@
                 overflow: visible !important;
                 height: auto !important;
             }
-
             .main-view {
                 padding: 0 !important;
                 overflow: visible !important;
                 height: auto !important;
             }
-
             #tab-preview {
                 display: block !important;
                 max-width: 100% !important;
                 margin: 0 !important;
                 padding: 0 !important;
             }
-
             #legal-preview {
                 background: none !important;
                 padding: 0 !important;
                 display: block !important;
                 box-shadow: none !important;
             }
-
             .document-page {
                 width: 100% !important;
                 min-height: 0 !important;
@@ -208,14 +195,12 @@
                 break-inside: auto;
                 display: block;
             }
-
             #page-aoi {
                 page-break-before: auto;
                 break-before: auto;
                 page-break-after: auto;
                 break-after: auto;
             }
-
             .avoid-break,
             table.lt,
             .sig-grid {
@@ -224,17 +209,14 @@
                 orphans: 3;
                 widows: 3;
             }
-
             table.lt {
                 table-layout: fixed !important;
                 width: 100% !important;
             }
-
             table.lt th, table.lt td {
                 word-wrap: break-word !important;
                 overflow-wrap: break-word !important;
             }
-
             p, .doc-indent, .doc-deep-indent {
                 orphans: 3;
                 widows: 3;
@@ -294,6 +276,11 @@
             <div class="full">
                 <label class="field-label">Article I — Prior Amendment Date (if previously amended)</label>
                 <input type="date" id="base-art1-amended-date">
+            </div>
+            <div class="full">
+                <label class="field-label">Former Name (if current name was previously changed — leave blank if original name)</label>
+                <input type="text" id="base-formerly" placeholder="e.g. RIZAL POULTRY FARM CORPORATION — leave blank if no name change history">
+                <p style="font-size:.72rem;color:#555;margin:4px 0 0 0;">Only fill this if the corporation was previously known by a different name. This will appear as "Formerly: [NAME]" in the document.</p>
             </div>
         </div>
     </div>
@@ -464,6 +451,7 @@
         <p style="font-size:.8rem;color:#8b949e;margin:0 0 8px 0;">Current name: <b id="prev-name-display">—</b></p>
         <label class="field-label">New Corporate Name (ALL CAPS)</label>
         <input type="text" id="new-name" placeholder="e.g. RIZAL POULTRY INTEGRATED FOOD CORPORATION" oninput="this.value=this.value.toUpperCase()">
+        <p style="font-size:.75rem;color:#555;margin:8px 0 0 0;">The current name will automatically appear as "Formerly: [CURRENT NAME]" under the new name in the generated document.</p>
     </div>
 
     <div id="form-art2" class="form-block card" style="display:none;">
@@ -654,21 +642,59 @@ function formatDate(d) {
     return dt.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 }
 
-/* ─── Number to words ─── */
+/* ─── Number to words (full large numbers) ─── */
 function numToWords(n) {
+    if (n === 0) return 'ZERO';
     const ones = ['','ONE','TWO','THREE','FOUR','FIVE','SIX','SEVEN','EIGHT','NINE',
         'TEN','ELEVEN','TWELVE','THIRTEEN','FOURTEEN','FIFTEEN','SIXTEEN','SEVENTEEN','EIGHTEEN','NINETEEN'];
     const tens = ['','','TWENTY','THIRTY','FORTY','FIFTY','SIXTY','SEVENTY','EIGHTY','NINETY'];
-    if (n === 0) return 'ZERO';
-    if (n < 20) return ones[n];
-    if (n < 100) return tens[Math.floor(n/10)] + (n % 10 ? ' ' + ones[n % 10] : '');
-    if (n < 1000) return ones[Math.floor(n/100)] + ' HUNDRED' + (n % 100 ? ' ' + numToWords(n % 100) : '');
-    return n.toString();
+
+    function helper(num) {
+        if (num === 0) return '';
+        if (num < 20) return ones[num];
+        if (num < 100) return tens[Math.floor(num/10)] + (num % 10 ? ' ' + ones[num % 10] : '');
+        if (num < 1000) return ones[Math.floor(num/100)] + ' HUNDRED' + (num % 100 ? ' ' + helper(num % 100) : '');
+        if (num < 1000000) return helper(Math.floor(num/1000)) + ' THOUSAND' + (num % 1000 ? ' ' + helper(num % 1000) : '');
+        if (num < 1000000000) return helper(Math.floor(num/1000000)) + ' MILLION' + (num % 1000000 ? ' ' + helper(num % 1000000) : '');
+        return helper(Math.floor(num/1000000000)) + ' BILLION' + (num % 1000000000 ? ' ' + helper(num % 1000000000) : '');
+    }
+    return helper(n);
 }
+
 function numToWordsMixed(n) {
     if (!n || isNaN(n)) return '[N]';
     const w = numToWords(parseInt(n));
+    // Title-case
     return w.charAt(0) + w.slice(1).toLowerCase() + ' (' + n + ')';
+}
+
+/* ─── Amount to words for subscribed capital ─── */
+function amountToWords(amount) {
+    // amount is a float representing pesos (may have centavos)
+    const wholePesos = Math.floor(amount);
+    const centavos = Math.round((amount - wholePesos) * 100);
+    let result = numToWords(wholePesos);
+    if (centavos > 0) {
+        result += ' AND ' + numToWords(centavos) + '/100';
+    }
+    // Title-case first letter only
+    return result.charAt(0) + result.slice(1).toLowerCase();
+}
+
+/* ─── Format number with commas ─── */
+function formatMoney(amount) {
+    return amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+/* ─── Percentage to words ─── */
+function pctToWords(pct) {
+    const ones = ['','one','two','three','four','five','six','seven','eight','nine',
+        'ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen'];
+    const tens = ['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];
+    if (pct === 0) return 'zero';
+    if (pct < 20) return ones[pct];
+    if (pct < 100) return tens[Math.floor(pct/10)] + (pct%10 ? '-'+ones[pct%10] : '');
+    return pct.toString();
 }
 
 /* ─── Table row builder ─── */
@@ -705,16 +731,11 @@ function setField(id, val) {
     if (el && val !== undefined && val !== null && String(val).trim() !== '') el.value = String(val).trim();
 }
 
-/* ─── Street detection ──────────────────────────────────────────────────────
-   Must start with a digit  OR  contain an explicit street-type keyword.
-   Words like "Barangay", "Brgy", "Purok", "Zone" are NOT streets.
-   ───────────────────────────────────────────────────────────────────────── */
+/* ─── Street detection ─── */
 function isExplicitStreet(val) {
     if (!val) return false;
     const v = val.trim();
-    /* Starts with a number (house/lot/unit number) */
     if (/^\d/.test(v)) return true;
-    /* Contains an explicit street-type word — must be a standalone word/abbrev */
     if (/\b(street|st\.|avenue|ave\.?|road|rd\.?|blvd\.?|boulevard|drive|dr\.?|lane|ln\.?|highway|hwy\.?|extension|ext\.?|corner|cor\.?)\b/i.test(v)) return true;
     return false;
 }
@@ -768,11 +789,9 @@ function populateAllFields(data) {
     if (data.article6AmendedDate && /^\d{4}-\d{2}-\d{2}$/.test(data.article6AmendedDate)) setField('base-art6-amended-date', data.article6AmendedDate);
     if (data.article7AmendedDate && /^\d{4}-\d{2}-\d{2}$/.test(data.article7AmendedDate)) setField('base-art7-amended-date', data.article7AmendedDate);
 
-    /* Only populate street if it looks like an actual street address (number or street keyword) */
     if (data.street && isExplicitStreet(data.street)) {
         setField('base-street', data.street);
     }
-    /* Barangay: only populate if it doesn't duplicate the street field we just rejected */
     if (data.barangay) setField('base-brgy', data.barangay);
     setField('base-city', data.city);
     setField('base-prov', data.province);
@@ -885,10 +904,7 @@ function renderSelectedSecondary() {
     });
 }
 
-/* ─── Inline "As amended on" tag ────────────────────────────────────────────
-   isNew = true  → bold + underline (this amendment was just made today)
-   isNew = false → plain text (retained prior amendment date, no styling)
-   ───────────────────────────────────────────────────────────────────────── */
+/* ─── Inline "As amended on" tag ─── */
 function inlineAmended(dateStr, isNew) {
     if (!dateStr) return '';
     const cls = isNew ? 'inline-amended-new' : 'inline-amended-prior';
@@ -919,7 +935,7 @@ function buildSignatoryBlock(sigs) {
 }
 
 /* ══════════════════════════════════════════════════
-   MAIN DOCUMENT GENERATOR — AOI ONLY
+   MAIN DOCUMENT GENERATOR
 ══════════════════════════════════════════════════ */
 function generateDocs() {
     document.getElementById('preview-placeholder').style.display = 'none';
@@ -934,8 +950,12 @@ function generateDocs() {
     if (bZip) baseAddrParts.push(bZip);
     const baseFullAddress = baseAddrParts.join(', ');
 
+    /* Read the "formerly" field from Step 1 */
+    const baseFormerly = document.getElementById('base-formerly').value.trim();
+
     const b = {
         name            : document.getElementById('base-name').value.trim() || '[CORPORATION NAME — REQUIRES CLIENT INPUT]',
+        formerly        : baseFormerly,
         art1AmendedDate : document.getElementById('base-art1-amended-date').value,
         purpose         : document.getElementById('base-purpose').value.trim(),
         purposeAmdDate  : document.getElementById('base-purpose-amended-date').value,
@@ -967,6 +987,7 @@ function generateDocs() {
     const isArt = n => document.querySelector(`input[value="${n}"]`)?.checked || false;
 
     let finalName        = b.name;
+    let finalFormerly    = b.formerly; // the "formerly known as" name — from Step 1 baseline or derived from name change
     let finalAddressSt   = bSt, finalAddressBrgy = bBrgy;
     let finalAddressCity = bCity, finalAddressProv = bProv, finalAddressZip = bZip;
     let finalTerm        = b.term;
@@ -984,16 +1005,19 @@ function generateDocs() {
     const art1IsAmended = isArt(1);
     if (art1IsAmended) {
         const nn = document.getElementById('new-name').value.trim() || '[NEW NAME — REQUIRES CLIENT INPUT]';
+        /* When name changes, the CURRENT name becomes the "formerly" */
+        finalFormerly = b.name;
         finalName = nn;
     }
+    /* finalFormerly logic summary:
+       - If Art I is amended now  → finalFormerly = old base name (auto-set above)
+       - If Art I NOT amended but base-formerly is filled in → finalFormerly = base-formerly (retained from prior history)
+       - If Art I NOT amended and base-formerly is blank     → finalFormerly = '' (no formerly line rendered)
+    */
 
-    /* ── Title block date logic ──────────────────────────────────────────────
-       - If Art I IS being amended now → show meeting date (new amendment)
-       - If Art I is NOT being amended  → show the prior amendment date from Step 1
-         (or nothing if there's no prior date)
-       ──────────────────────────────────────────────────────────────────────── */
-    const titleAmendedDate = art1IsAmended ? mtgDateRaw : b.art1AmendedDate;
-    const titleAmendedIsNew = art1IsAmended; // true = bold+underline; false = plain
+    /* ── Title block date logic ── */
+    const titleAmendedDate  = art1IsAmended ? mtgDateRaw : b.art1AmendedDate;
+    const titleAmendedIsNew = art1IsAmended;
 
     /* ── Article II ── */
     let finalPurposeHTML = '';
@@ -1104,7 +1128,7 @@ function generateDocs() {
         if (chosen && chosen.value === 'custom' && cc) finalCompClause = cc;
     }
 
-    /* ─── Subscription table ─── */
+    /* ─── Subscription table and Eighth article ─── */
     const acsAmtNum = parseFloat(String(finalAcsAmt || '0').replace(/,/g,'')) || 0;
     let subsTableHTML = '';
 
@@ -1116,25 +1140,33 @@ function generateDocs() {
             totalPaid       += parseFloat(String(r['Amount Paid (₱)'] || 0).replace(/,/g,'')) || 0;
         });
 
-        /* Compute the actual subscribed % vs total paid (25% of subscribed = fully paid threshold) */
-        let paidPct = 0;
-        if (totalSubscribed > 0) {
-            paidPct = Math.round((totalPaid / totalSubscribed) * 100);
+        /*
+         * Eighth Article wording:
+         * "That at least X percent (X%) of the authorized capital stock above stated
+         *  or [Amount in Words] ([₱Amount]) Pesos has been subscribed as follows:"
+         *
+         * The "X%" = totalSubscribed / acsAmtNum * 100, rounded to nearest integer.
+         * If acsAmtNum is zero or missing, fall back to showing totalSubscribed directly.
+         */
+        let eighthIntroHTML = '';
+
+        if (acsAmtNum > 0 && totalSubscribed > 0) {
+            const subscribedPct = Math.round((totalSubscribed / acsAmtNum) * 100);
+            const subscribedPctWords = pctToWords(subscribedPct);
+            const subscribedAmtWords = amountToWords(totalSubscribed);
+            const subscribedAmtFormatted = formatMoney(totalSubscribed);
+
+            eighthIntroHTML = `<p><b>EIGHTH:</b> That at least ${subscribedPctWords} percent (${subscribedPct}%) of the authorized capital stock above stated or ${subscribedAmtWords} (₱${subscribedAmtFormatted}) Pesos has been subscribed as follows:</p>`;
+        } else if (totalSubscribed > 0) {
+            /* Fallback: ACS not provided but subscribed amount is known */
+            const subscribedAmtWords = amountToWords(totalSubscribed);
+            const subscribedAmtFormatted = formatMoney(totalSubscribed);
+            eighthIntroHTML = `<p><b>EIGHTH:</b> That the amount of ${subscribedAmtWords} (₱${subscribedAmtFormatted}) Pesos of the authorized capital stock above stated has been subscribed as follows:</p>`;
+        } else {
+            eighthIntroHTML = `<p><b>EIGHTH:</b> That the authorized capital stock above stated has been subscribed as follows: [REQUIRES CLIENT INPUT — subscription amounts not provided]</p>`;
         }
 
-        /* Convert paidPct to words for the sentence */
-        function pctToWords(pct) {
-            const ones=['','one','two','three','four','five','six','seven','eight','nine',
-                'ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen'];
-            const tens=['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];
-            if (pct === 0) return 'zero';
-            if (pct < 20) return ones[pct];
-            if (pct < 100) return tens[Math.floor(pct/10)] + (pct%10 ? '-'+ones[pct%10] : '');
-            return pct.toString();
-        }
-        const paidPctWords = pctToWords(paidPct);
-
-        subsTableHTML = `<p><b>EIGHTH:</b> That the authorized capital stock above has been subscribed and paid as follows, and that at least ${paidPctWords} percent (${paidPct}%) of the total subscription has been fully paid to the Treasurer-in-Trust, as follows:</p>
+        subsTableHTML = eighthIntroHTML + `
             <table class="lt subs-table">
                 <tr>
                     <th>Name of Subscriber</th><th>Citizenship</th>
@@ -1150,35 +1182,46 @@ function generateDocs() {
                 <tr>
                     <td colspan="2"><b>TOTAL</b></td>
                     <td style="text-align:right"><b>${totalShares.toLocaleString()}</b></td>
-                    <td style="text-align:right"><b>${totalSubscribed.toLocaleString('en-US',{minimumFractionDigits:2})}</b></td>
-                    <td style="text-align:right"><b>${totalPaid.toLocaleString('en-US',{minimumFractionDigits:2})}</b></td>
+                    <td style="text-align:right"><b>${formatMoney(totalSubscribed)}</b></td>
+                    <td style="text-align:right"><b>${formatMoney(totalPaid)}</b></td>
                 </tr>
             </table>`;
     } else {
-        subsTableHTML = `<p><b>EIGHTH:</b> That the authorized capital stock above has been subscribed and paid as follows, and that at least twenty-five percent (25%) of the total subscription has been fully paid to the Treasurer-in-Trust. [REQUIRES CLIENT INPUT — subscription table is empty]</p>`;
+        subsTableHTML = `<p><b>EIGHTH:</b> That the authorized capital stock above stated has been subscribed. [REQUIRES CLIENT INPUT — subscription table is empty]</p>`;
     }
 
     const sigBlock = buildSignatoryBlock(signatories);
 
-    /* ── Article I display ──────────────────────────────────────────────────
-       New amendment  → bold + underline on both name and "as amended on"
-       Retained prior → plain (no bold, no underline) on both
+    /* ── "Formerly" line renderer ──────────────────────────────────────────
+       Rules:
+       1. art1IsAmended = true  → name changed NOW → show formerly (bold+underline = new)
+       2. art1IsAmended = false AND finalFormerly not empty → retained from prior history → show (plain)
+       3. finalFormerly is empty → do not render the formerly line at all
        ──────────────────────────────────────────────────────────────────── */
-    const art1NameClass    = art1IsAmended ? 'art1-name-text-new'    : 'art1-name-text-prior';
-    const art1AmdTagClass  = art1IsAmended ? 'art1-amended-tag-new'  : 'art1-amended-tag-prior';
-    const art1AmdDate      = art1IsAmended ? mtgDateRaw : b.art1AmendedDate;
+    function buildFormerlyLine(cls) {
+        if (!finalFormerly) return '';
+        return `<span class="${cls}">(Formerly: ${finalFormerly.toUpperCase()})</span>`;
+    }
+
+    /* Title block formerly: new amendment uses bold+underline, prior history uses plain */
+    const titleFormerlyClass = art1IsAmended ? 'doc-title-formerly-new' : 'doc-title-formerly-prior';
+
+    /* Article I name block formerly: same logic */
+    const art1FormerlyClass = art1IsAmended ? 'art1-formerly-new' : 'art1-formerly-prior';
+
+    /* ── Article I name styling ── */
+    const art1NameClass   = art1IsAmended ? 'art1-name-text-new'   : 'art1-name-text-prior';
+    const art1AmdTagClass = art1IsAmended ? 'art1-amended-tag-new' : 'art1-amended-tag-prior';
+    const art1AmdDate     = art1IsAmended ? mtgDateRaw : b.art1AmendedDate;
 
     const firstArticleBlock = `<p><b>FIRST:</b> That the name of said corporation shall be:</p>
     <div class="art1-name-block">
         <span class="${art1NameClass}">${finalName.toUpperCase()}</span>
         ${art1AmdDate ? `<span class="${art1AmdTagClass}">(As amended on ${formatDate(art1AmdDate)})</span>` : ''}
+        ${buildFormerlyLine(art1FormerlyClass)}
     </div>`;
 
-    /* ── Title block ─────────────────────────────────────────────────────────
-       New amendment on Art I  → corp name bold+underline, "as amended" bold+underline
-       No Art I amendment      → corp name bold+underline (retained), "as amended" plain
-       (the corp name in the title always stays bold but underline only on new amendment)
-       ──────────────────────────────────────────────────────────────────────── */
+    /* ── Title block name styling ── */
     const titleNameStyle = art1IsAmended
         ? 'font-size:12pt;font-weight:bold;text-decoration:underline;display:block;line-height:1.4;'
         : 'font-size:12pt;font-weight:bold;text-decoration:none;display:block;line-height:1.4;';
@@ -1194,6 +1237,7 @@ function generateDocs() {
             <span class="doc-title-of">OF</span>
             <span style="${titleNameStyle}">${finalName.toUpperCase()}</span>
             ${titleAmendedDate ? `<span class="${titleAmendedClass}">(As amended on ${formatDate(titleAmendedDate)})</span>` : ''}
+            ${buildFormerlyLine(titleFormerlyClass)}
         </div>
 
         <p><b>KNOW ALL MEN BY THESE PRESENTS:</b></p>
@@ -1236,7 +1280,7 @@ function generateDocs() {
 }
 
 /* ══════════════════════════════════════════════════
-   PDF EXPORT — iframe-based print (FIXED FOR BORDER CLIPPING)
+   PDF EXPORT
 ══════════════════════════════════════════════════ */
 function exportPDF() {
     const content = document.getElementById('export-content');
@@ -1260,22 +1304,19 @@ function exportPDF() {
 ${styleLinks}
 ${inlineStyles}
 <style>
-/* FIX 1: Ensure borders do not expand beyond 100% */
 *, *:before, *:after {
     box-sizing: border-box !important;
 }
-
 html, body {
     margin: 0 !important;
     padding: 0 !important;
     background: #fff !important;
     overflow: visible !important;
 }
-
 .document-page {
     width: 100% !important;
     min-height: 0 !important;
-    padding: 0 4px !important; /* 4px buffer keeps children away from the edge */
+    padding: 0 4px !important;
     margin: 0 !important;
     box-shadow: none !important;
     font-family: 'Times New Roman', Times, serif !important;
@@ -1285,35 +1326,28 @@ html, body {
     background: #fff !important;
     page-break-inside: auto !important;
 }
-
 @page {
     size: 8.5in 13in;
     margin: 1in 1in;
 }
-
 p, .doc-indent, .doc-deep-indent {
     orphans: 3;
     widows: 3;
 }
-
 .avoid-break, table.lt, .sig-grid {
     page-break-inside: avoid;
     break-inside: avoid;
 }
-
-/* FIX 2: Pull the table inward by exactly 1px on each side so it escapes the print margin clip */
 table.lt {
     table-layout: fixed !important;
-    width: 99% !important; 
-    margin: 0 auto 10pt auto !important; 
+    width: 99% !important;
+    margin: 0 auto 10pt auto !important;
     border-collapse: collapse !important;
 }
-
 table.lt th, table.lt td {
     word-wrap: break-word !important;
     overflow-wrap: break-word !important;
 }
-
 table.lt.subs-table th:nth-child(1),table.lt.subs-table td:nth-child(1){width:28%;}
 table.lt.subs-table th:nth-child(2),table.lt.subs-table td:nth-child(2){width:14%;}
 table.lt.subs-table th:nth-child(3),table.lt.subs-table td:nth-child(3){width:16%;}
