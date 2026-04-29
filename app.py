@@ -101,6 +101,12 @@ def build_extraction_prompt(extracted_text: str) -> str:
         "- Extract the date from the TITLE BLOCK (e.g. 'RIZAL POULTRY FARM CORPORATION (As amended on October 24, 2025)').\n"
         "- Also extract per-article amendment dates if present inline in the text.\n"
         "- All dates must be in YYYY-MM-DD format.\n\n"
+        "IMPORTANT INSTRUCTIONS FOR TRADE NAMES:\n"
+        "- Look for the phrase 'doing business under the name/s and style/s of' or similar variants such as "
+        "'doing business as', 'also known as', 'trading as', 'under the trade name'.\n"
+        "- Extract ALL trade names listed after such a phrase as an array of strings.\n"
+        "- Trade names are typically in ALL CAPS or quoted immediately after the triggering phrase.\n"
+        "- If no trade names are found, return an empty array [].\n\n"
         "IMPORTANT INSTRUCTIONS FOR SIGNATORIES:\n"
         "- The 'signatories' array must be extracted from the SIGNATURE BLOCK at the END of the document.\n"
         "- These are the people who physically sign the AOI — they have a printed name, a role/title below, and a TIN.\n"
@@ -109,6 +115,7 @@ def build_extraction_prompt(extracted_text: str) -> str:
         "REQUIRED JSON SCHEMA:\n"
         "{\n"
         '  "corporateName": "Full registered name in ALL CAPS",\n'
+        '  "tradeNames": ["TRADE NAME ONE", "TRADE NAME TWO"],\n'
         '  "documentAmendedDate": "Date the entire AOI was last amended, YYYY-MM-DD or empty",\n'
         '  "article1AmendedDate": "Amendment date for Article I specifically, YYYY-MM-DD or empty",\n'
         '  "article2AmendedDate": "Amendment date for Article II specifically, YYYY-MM-DD or empty",\n'
