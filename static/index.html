@@ -60,6 +60,12 @@
         .sel-purpose-tag{background:#1a1500;border:1px solid var(--gold);border-radius:5px;padding:8px 12px;font-size:.8rem;display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
         .sel-purpose-tag span{flex:1;}
         .sel-purpose-tag button{background:none;border:none;color:var(--danger);cursor:pointer;font-size:1rem;padding:0;line-height:1;}
+        /* Trade name tag */
+        .trade-name-tag{background:#0d1117;border:1px solid var(--border);border-radius:5px;padding:7px 11px;font-size:.82rem;display:flex;align-items:center;gap:8px;margin-top:6px;}
+        .trade-name-tag span{flex:1;color:#fff;font-weight:600;}
+        .trade-name-tag button{background:none;border:none;color:var(--danger);cursor:pointer;font-size:1rem;padding:0;line-height:1;}
+        .trade-name-add-row{display:flex;gap:8px;margin-top:8px;align-items:center;}
+        .trade-name-add-row input{flex:1;margin-top:0;}
         #extract-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;align-items:center;justify-content:center;flex-direction:column;gap:18px;}
         #extract-overlay.show{display:flex;}
         .extract-spinner{width:54px;height:54px;border:5px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite;}
@@ -100,6 +106,9 @@
         .doc-title-name{font-size:12pt;font-weight:bold;text-decoration:underline;display:block;line-height:1.4;}
         .doc-title-amended-new{font-size:11pt;font-weight:bold;text-decoration:underline;display:block;line-height:1.4;margin-top:2pt;}
         .doc-title-amended-prior{font-size:11pt;font-weight:normal;text-decoration:none;display:block;line-height:1.4;margin-top:2pt;}
+        /* Trade name lines in title / art1 block */
+        .doc-title-tradename-new{font-size:11pt;font-weight:bold;text-decoration:underline;display:block;line-height:1.5;margin-top:1pt;}
+        .doc-title-tradename-prior{font-size:11pt;font-weight:normal;text-decoration:none;display:block;line-height:1.5;margin-top:1pt;}
         /* Formerly line in title block */
         .doc-title-formerly-new{font-size:10.5pt;font-weight:bold;text-decoration:underline;display:block;line-height:1.4;margin-top:2pt;font-style:italic;}
         .doc-title-formerly-prior{font-size:10.5pt;font-weight:normal;text-decoration:none;display:block;line-height:1.4;margin-top:2pt;font-style:italic;}
@@ -115,6 +124,9 @@
         .art1-name-text-prior{font-weight:normal;text-decoration:none;font-size:12pt;display:block;}
         .art1-amended-tag-new{font-size:10.5pt;text-decoration:underline;font-weight:bold;display:block;margin-top:2pt;}
         .art1-amended-tag-prior{font-size:10.5pt;text-decoration:none;font-weight:normal;display:block;margin-top:2pt;}
+        /* Trade name lines in art1 block */
+        .art1-tradename-new{font-size:11pt;font-weight:bold;text-decoration:underline;display:block;line-height:1.5;margin-top:1pt;}
+        .art1-tradename-prior{font-size:11pt;font-weight:normal;text-decoration:none;display:block;line-height:1.5;margin-top:1pt;}
         /* Formerly in art1 block */
         .art1-formerly-new{font-size:10.5pt;font-weight:bold;text-decoration:underline;font-style:italic;display:block;margin-top:2pt;}
         .art1-formerly-prior{font-size:10.5pt;font-weight:normal;text-decoration:none;font-style:italic;display:block;margin-top:2pt;}
@@ -282,6 +294,15 @@
                 <input type="text" id="base-formerly" placeholder="e.g. RIZAL POULTRY FARM CORPORATION — leave blank if no name change history">
                 <p style="font-size:.72rem;color:#555;margin:4px 0 0 0;">Only fill this if the corporation was previously known by a different name. This will appear as "Formerly: [NAME]" in the document.</p>
             </div>
+            <div class="full">
+                <label class="field-label">Trade Name(s) — "Doing Business Under the Name/s and Style/s of"</label>
+                <p style="font-size:.72rem;color:#555;margin:4px 0 6px 0;">Auto-extracted from AOI. Add, edit, or remove trade names as needed. Each entry will appear after the corporate name with the standard bridge phrase.</p>
+                <div id="base-trade-names-list"></div>
+                <div class="trade-name-add-row">
+                    <input type="text" id="base-trade-name-input" placeholder="e.g. RIZAL FARMS" onkeydown="if(event.key==='Enter'){addBaseTradeNameFromInput();event.preventDefault();}">
+                    <button class="btn btn-sm btn-gold" onclick="addBaseTradeNameFromInput()" style="margin-top:0;">+ Add</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -446,12 +467,35 @@
         </div>
     </div>
 
+    <!-- ART I FORM — includes trade name sub-section -->
     <div id="form-art1" class="form-block card" style="display:none;">
         <h3 style="color:var(--gold);">Article I — Change of Corporate Name</h3>
         <p style="font-size:.8rem;color:#8b949e;margin:0 0 8px 0;">Current name: <b id="prev-name-display">—</b></p>
         <label class="field-label">New Corporate Name (ALL CAPS)</label>
         <input type="text" id="new-name" placeholder="e.g. RIZAL POULTRY INTEGRATED FOOD CORPORATION" oninput="this.value=this.value.toUpperCase()">
-        <p style="font-size:.75rem;color:#555;margin:8px 0 0 0;">The current name will automatically appear as "Formerly: [CURRENT NAME]" under the new name in the generated document.</p>
+        <p style="font-size:.75rem;color:#555;margin:8px 0 12px 0;">The current name will automatically appear as "Formerly: [CURRENT NAME]" under the new name in the generated document.</p>
+
+        <!-- Trade name amendment sub-section -->
+        <div style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px;">
+            <label class="field-label" style="margin-top:0;">Also Amend Trade Name(s)?</label>
+            <p style="font-size:.78rem;color:#8b949e;margin:4px 0 10px 0;">
+                Current trade names from Step 1 are shown below. Toggle whether to amend them as part of this Article I amendment.
+                If you amend them here, the updated list will appear in the document with the amendment date. If you leave this off,
+                the baseline trade names will carry over unchanged.
+            </p>
+            <label style="display:flex;align-items:center;gap:10px;font-size:.85rem;cursor:pointer;margin-bottom:12px;">
+                <input type="checkbox" id="amend-trade-names-toggle" style="width:auto;margin:0;" onchange="toggleTradeNameAmendment(this.checked)">
+                <span style="color:var(--gold);font-weight:700;">Yes — amend trade names as part of this Article I amendment</span>
+            </label>
+            <div id="trade-name-amendment-block" style="display:none;">
+                <p style="font-size:.78rem;color:#8b949e;margin:0 0 8px 0;">Edit the list below. The final list here will be the new trade names. Remove all to have no trade names.</p>
+                <div id="new-trade-names-list"></div>
+                <div class="trade-name-add-row">
+                    <input type="text" id="new-trade-name-input" placeholder="e.g. RIZAL INTEGRATED FARMS" onkeydown="if(event.key==='Enter'){addNewTradeNameFromInput();event.preventDefault();}">
+                    <button class="btn btn-sm btn-gold" onclick="addNewTradeNameFromInput()" style="margin-top:0;">+ Add</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div id="form-art2" class="form-block card" style="display:none;">
@@ -590,6 +634,91 @@ const newDirCols     = ['Name','Nationality','Residence'];
 const newSubsCols    = ['Name of Subscriber','Citizenship','No. of Shares Subscribed','Amount Subscribed (₱)','Amount Paid (₱)'];
 const signatoryCols  = ['Name','Role','TIN'];
 
+/* ─── Trade name state ─── */
+// baseTradeNames: the extracted / manually entered baseline trade names (Step 1)
+// newTradeNames:  the amended trade names (Step 2, only relevant if toggle is on)
+let baseTradeNames = [];   // array of strings
+let newTradeNames  = [];   // array of strings
+
+/* ══════════════════════════════════════════════════
+   TRADE NAME HELPERS
+══════════════════════════════════════════════════ */
+
+/** Render the baseline trade name tag list in Step 1 */
+function renderBaseTradeNames() {
+    const container = document.getElementById('base-trade-names-list');
+    container.innerHTML = '';
+    baseTradeNames.forEach((name, i) => {
+        const div = document.createElement('div');
+        div.className = 'trade-name-tag';
+        div.innerHTML = `<span>${name}</span>
+            <button title="Remove" onclick="removeBaseTradeName(${i})">✕</button>`;
+        container.appendChild(div);
+    });
+    if (baseTradeNames.length === 0) {
+        container.innerHTML = '<p style="font-size:.78rem;color:#555;margin:4px 0;">No trade names added yet.</p>';
+    }
+}
+
+function addBaseTradeNameFromInput() {
+    const inp = document.getElementById('base-trade-name-input');
+    const val = inp.value.trim().toUpperCase();
+    if (!val) return;
+    if (!baseTradeNames.includes(val)) {
+        baseTradeNames.push(val);
+        renderBaseTradeNames();
+    }
+    inp.value = '';
+}
+
+function removeBaseTradeName(index) {
+    baseTradeNames.splice(index, 1);
+    renderBaseTradeNames();
+}
+
+/** Render the amended trade name tag list in Step 2 */
+function renderNewTradeNames() {
+    const container = document.getElementById('new-trade-names-list');
+    container.innerHTML = '';
+    newTradeNames.forEach((name, i) => {
+        const div = document.createElement('div');
+        div.className = 'trade-name-tag';
+        div.innerHTML = `<span>${name}</span>
+            <button title="Remove" onclick="removeNewTradeName(${i})">✕</button>`;
+        container.appendChild(div);
+    });
+    if (newTradeNames.length === 0) {
+        container.innerHTML = '<p style="font-size:.78rem;color:#555;margin:4px 0;">No trade names — all will be removed if saved.</p>';
+    }
+}
+
+function addNewTradeNameFromInput() {
+    const inp = document.getElementById('new-trade-name-input');
+    const val = inp.value.trim().toUpperCase();
+    if (!val) return;
+    if (!newTradeNames.includes(val)) {
+        newTradeNames.push(val);
+        renderNewTradeNames();
+    }
+    inp.value = '';
+}
+
+function removeNewTradeName(index) {
+    newTradeNames.splice(index, 1);
+    renderNewTradeNames();
+}
+
+/** Called when the "amend trade names" toggle changes */
+function toggleTradeNameAmendment(checked) {
+    const block = document.getElementById('trade-name-amendment-block');
+    block.style.display = checked ? 'block' : 'none';
+    if (checked) {
+        // Pre-populate the new list with a copy of the current baseline
+        newTradeNames = [...baseTradeNames];
+        renderNewTradeNames();
+    }
+}
+
 /* ─── Purpose database ─── */
 const PURPOSE_DB = [
   {name:"Accommodation And Food Services Activities (Bakeshop)", text:"To engage, undertake, carry on the business of operating a bakery, bakeshop, coffeeshop, cafeteria, stores, foodhouse, snackhouse, refreshment parlors, carenderia, restaurants and any other similar parlor or establishment engaged in food servicing and in connection thereto; to engage in the manufacturing, production or processing of bakery products such as but not limited to bread, pies, cakes and pastries and other products cooked to dry heat or hardened by dry heat or steam or any other means of the manufacture of food from naked ground grain, or the processing of any of kind of food for commercial purposes, for sale locally or for export."},
@@ -642,13 +771,12 @@ function formatDate(d) {
     return dt.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 }
 
-/* ─── Number to words (full large numbers) ─── */
+/* ─── Number to words ─── */
 function numToWords(n) {
     if (n === 0) return 'ZERO';
     const ones = ['','ONE','TWO','THREE','FOUR','FIVE','SIX','SEVEN','EIGHT','NINE',
         'TEN','ELEVEN','TWELVE','THIRTEEN','FOURTEEN','FIFTEEN','SIXTEEN','SEVENTEEN','EIGHTEEN','NINETEEN'];
     const tens = ['','','TWENTY','THIRTY','FORTY','FIFTY','SIXTY','SEVENTY','EIGHTY','NINETY'];
-
     function helper(num) {
         if (num === 0) return '';
         if (num < 20) return ones[num];
@@ -664,29 +792,21 @@ function numToWords(n) {
 function numToWordsMixed(n) {
     if (!n || isNaN(n)) return '[N]';
     const w = numToWords(parseInt(n));
-    // Title-case
     return w.charAt(0) + w.slice(1).toLowerCase() + ' (' + n + ')';
 }
 
-/* ─── Amount to words for subscribed capital ─── */
 function amountToWords(amount) {
-    // amount is a float representing pesos (may have centavos)
     const wholePesos = Math.floor(amount);
     const centavos = Math.round((amount - wholePesos) * 100);
     let result = numToWords(wholePesos);
-    if (centavos > 0) {
-        result += ' AND ' + numToWords(centavos) + '/100';
-    }
-    // Title-case first letter only
+    if (centavos > 0) result += ' AND ' + numToWords(centavos) + '/100';
     return result.charAt(0) + result.slice(1).toLowerCase();
 }
 
-/* ─── Format number with commas ─── */
 function formatMoney(amount) {
     return amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
-/* ─── Percentage to words ─── */
 function pctToWords(pct) {
     const ones = ['','one','two','three','four','five','six','seven','eight','nine',
         'ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen'];
@@ -789,9 +909,7 @@ function populateAllFields(data) {
     if (data.article6AmendedDate && /^\d{4}-\d{2}-\d{2}$/.test(data.article6AmendedDate)) setField('base-art6-amended-date', data.article6AmendedDate);
     if (data.article7AmendedDate && /^\d{4}-\d{2}-\d{2}$/.test(data.article7AmendedDate)) setField('base-art7-amended-date', data.article7AmendedDate);
 
-    if (data.street && isExplicitStreet(data.street)) {
-        setField('base-street', data.street);
-    }
+    if (data.street && isExplicitStreet(data.street)) setField('base-street', data.street);
     if (data.barangay) setField('base-brgy', data.barangay);
     setField('base-city', data.city);
     setField('base-prov', data.province);
@@ -809,6 +927,12 @@ function populateAllFields(data) {
     setField('base-treasurer-citizenship', data.treasurerCitizenship);
     setField('base-sec', data.secRegistrationNo);
     if (data.dateOfRegistration && /^\d{4}-\d{2}-\d{2}$/.test(data.dateOfRegistration)) setField('base-reg-date', data.dateOfRegistration);
+
+    /* Populate trade names from extraction */
+    if (Array.isArray(data.tradeNames) && data.tradeNames.length > 0) {
+        baseTradeNames = data.tradeNames.map(t => String(t).trim().toUpperCase()).filter(Boolean);
+        renderBaseTradeNames();
+    }
 
     if (Array.isArray(data.incorporators) && data.incorporators.length > 0) {
         document.getElementById('base-incorp-body').innerHTML = '';
@@ -832,9 +956,13 @@ function populateAllFields(data) {
 function showExtractionSummary(data) {
     document.getElementById('extractSummary').style.display = 'block';
     const art1Date = data.article1AmendedDate || data.documentAmendedDate || '';
+    const tradeNamesDisplay = Array.isArray(data.tradeNames) && data.tradeNames.length > 0
+        ? data.tradeNames.join(', ')
+        : '';
     const checks = [
         ['Corporate Name', data.corporateName],
         ['Document Amended Date', art1Date ? formatDate(art1Date) : ''],
+        ['Trade Name(s)', tradeNamesDisplay],
         ['Primary Purpose', data.primaryPurpose ? data.primaryPurpose.substring(0,60)+'…' : ''],
         ['Address', [data.street, data.city].filter(Boolean).join(', ')],
         ['Term', data.term ? (data.term==='0'?'Perpetual':data.term+' years') : ''],
@@ -860,7 +988,13 @@ function toggleArt(artNum, cb) {
     const chip = document.getElementById(`chip-${artNum}`);
     if (cb.checked) {
         form.style.display = 'block'; chip.classList.add('checked');
-        if (artNum === 1) document.getElementById('prev-name-display').textContent = document.getElementById('base-name').value || '—';
+        if (artNum === 1) {
+            document.getElementById('prev-name-display').textContent = document.getElementById('base-name').value || '—';
+            // Reset trade name amendment toggle when form opens
+            const toggle = document.getElementById('amend-trade-names-toggle');
+            toggle.checked = false;
+            document.getElementById('trade-name-amendment-block').style.display = 'none';
+        }
         if (artNum === 2) renderPurposeLists();
     } else {
         form.style.display = 'none'; chip.classList.remove('checked');
@@ -935,6 +1069,64 @@ function buildSignatoryBlock(sigs) {
 }
 
 /* ══════════════════════════════════════════════════
+   TRADE NAME DOCUMENT RENDER HELPERS
+══════════════════════════════════════════════════ */
+
+/**
+ * Build the "doing business under the name/s and style/s of" line(s).
+ * @param {string[]} names  - array of trade name strings
+ * @param {boolean}  isNew  - true if this is a fresh amendment (bold+underline), false if prior state
+ * @returns {string} HTML string, or empty string if no trade names
+ */
+function buildTradeNameLines(names, isNew) {
+    if (!names || names.length === 0) return '';
+    const cls = isNew ? 'doc-title-tradename-new' : 'doc-title-tradename-prior';
+    // First line: bridge phrase + first trade name (or all if single)
+    if (names.length === 1) {
+        return `<span class="${cls}">doing business under the name and style of ${names[0]}</span>`;
+    }
+    // Multiple: bridge phrase + all joined
+    const joined = names.join(', ');
+    return `<span class="${cls}">doing business under the names and styles of ${joined}</span>`;
+}
+
+/**
+ * Same but for the Article I body block (uses art1-tradename-* classes).
+ */
+function buildArt1TradeNameLines(names, isNew) {
+    if (!names || names.length === 0) return '';
+    const cls = isNew ? 'art1-tradename-new' : 'art1-tradename-prior';
+    if (names.length === 1) {
+        return `<span class="${cls}">doing business under the name and style of ${names[0]}</span>`;
+    }
+    const joined = names.join(', ');
+    return `<span class="${cls}">doing business under the names and styles of ${joined}</span>`;
+}
+
+/**
+ * Build the "formerly" line including old trade names when the corporate name changes.
+ * Format: (Formerly: OLD CORP NAME doing business under the name/s and style/s of OLD TRADE NAME)
+ * @param {string}   formerlyName       - the old corporate name
+ * @param {string[]} formerlyTradeNames - the old trade names (at the time of the name change)
+ * @param {boolean}  isNew              - whether this is a fresh amendment
+ * @param {string}   cssPrefix          - 'doc-title' or 'art1'
+ */
+function buildFormerlyLineWithTrades(formerlyName, formerlyTradeNames, isNew, cssPrefix) {
+    if (!formerlyName) return '';
+    const cls = isNew ? `${cssPrefix}-formerly-new` : `${cssPrefix}-formerly-prior`;
+    let text = `(Formerly: ${formerlyName.toUpperCase()}`;
+    if (formerlyTradeNames && formerlyTradeNames.length > 0) {
+        if (formerlyTradeNames.length === 1) {
+            text += ` doing business under the name and style of ${formerlyTradeNames[0]}`;
+        } else {
+            text += ` doing business under the names and styles of ${formerlyTradeNames.join(', ')}`;
+        }
+    }
+    text += ')';
+    return `<span class="${cls}">${text}</span>`;
+}
+
+/* ══════════════════════════════════════════════════
    MAIN DOCUMENT GENERATOR
 ══════════════════════════════════════════════════ */
 function generateDocs() {
@@ -950,7 +1142,6 @@ function generateDocs() {
     if (bZip) baseAddrParts.push(bZip);
     const baseFullAddress = baseAddrParts.join(', ');
 
-    /* Read the "formerly" field from Step 1 */
     const baseFormerly = document.getElementById('base-formerly').value.trim();
 
     const b = {
@@ -987,7 +1178,9 @@ function generateDocs() {
     const isArt = n => document.querySelector(`input[value="${n}"]`)?.checked || false;
 
     let finalName        = b.name;
-    let finalFormerly    = b.formerly; // the "formerly known as" name — from Step 1 baseline or derived from name change
+    let finalFormerly    = b.formerly;
+    // Track what the trade names were BEFORE the Art I amendment (for the formerly line)
+    let formerlyTradeNames = [...baseTradeNames];
     let finalAddressSt   = bSt, finalAddressBrgy = bBrgy;
     let finalAddressCity = bCity, finalAddressProv = bProv, finalAddressZip = bZip;
     let finalTerm        = b.term;
@@ -1001,19 +1194,37 @@ function generateDocs() {
     let finalNinth       = b.ninth;
     let finalCompClause  = 'That the corporation manifests its willingness to change its corporate name in the event another person, firm, or entity has acquired a prior right to use the said firm name or one deceptively or confusingly similar to it.';
 
-    /* ── Article I ── */
+    /* ── Determine final trade names ── */
     const art1IsAmended = isArt(1);
+    const tradeNameAmendToggle = document.getElementById('amend-trade-names-toggle').checked;
+
+    let finalTradeNames;      // what prints in the current name block / title
+    let tradeNamesAreNew;     // true = bold+underline, false = plain
+    let formerlyTradeNamesForDoc; // trade names that go into the "formerly" line
+
+    if (art1IsAmended && tradeNameAmendToggle) {
+        // Art I changed + trade names also changed
+        finalTradeNames = [...newTradeNames];
+        tradeNamesAreNew = true;
+        formerlyTradeNamesForDoc = [...baseTradeNames]; // old corp name had old trade names
+    } else if (art1IsAmended && !tradeNameAmendToggle) {
+        // Art I changed but trade names unchanged — trade names carry over, not new
+        finalTradeNames = [...baseTradeNames];
+        tradeNamesAreNew = false; // they were not amended now, so plain style
+        formerlyTradeNamesForDoc = [...baseTradeNames]; // same in formerly line
+    } else {
+        // Art I not amended — use baseline trade names (plain, not new)
+        finalTradeNames = [...baseTradeNames];
+        tradeNamesAreNew = false;
+        formerlyTradeNamesForDoc = []; // no name change → no formerly line → irrelevant
+    }
+
+    /* ── Article I name change ── */
     if (art1IsAmended) {
         const nn = document.getElementById('new-name').value.trim() || '[NEW NAME — REQUIRES CLIENT INPUT]';
-        /* When name changes, the CURRENT name becomes the "formerly" */
-        finalFormerly = b.name;
+        finalFormerly = b.name; // current name becomes "formerly"
         finalName = nn;
     }
-    /* finalFormerly logic summary:
-       - If Art I is amended now  → finalFormerly = old base name (auto-set above)
-       - If Art I NOT amended but base-formerly is filled in → finalFormerly = base-formerly (retained from prior history)
-       - If Art I NOT amended and base-formerly is blank     → finalFormerly = '' (no formerly line rendered)
-    */
 
     /* ── Title block date logic ── */
     const titleAmendedDate  = art1IsAmended ? mtgDateRaw : b.art1AmendedDate;
@@ -1128,7 +1339,7 @@ function generateDocs() {
         if (chosen && chosen.value === 'custom' && cc) finalCompClause = cc;
     }
 
-    /* ─── Subscription table and Eighth article ─── */
+    /* ─── Subscription table ─── */
     const acsAmtNum = parseFloat(String(finalAcsAmt || '0').replace(/,/g,'')) || 0;
     let subsTableHTML = '';
 
@@ -1140,25 +1351,14 @@ function generateDocs() {
             totalPaid       += parseFloat(String(r['Amount Paid (₱)'] || 0).replace(/,/g,'')) || 0;
         });
 
-        /*
-         * Eighth Article wording:
-         * "That at least X percent (X%) of the authorized capital stock above stated
-         *  or [Amount in Words] ([₱Amount]) Pesos has been subscribed as follows:"
-         *
-         * The "X%" = totalSubscribed / acsAmtNum * 100, rounded to nearest integer.
-         * If acsAmtNum is zero or missing, fall back to showing totalSubscribed directly.
-         */
         let eighthIntroHTML = '';
-
         if (acsAmtNum > 0 && totalSubscribed > 0) {
             const subscribedPct = Math.round((totalSubscribed / acsAmtNum) * 100);
             const subscribedPctWords = pctToWords(subscribedPct);
             const subscribedAmtWords = amountToWords(totalSubscribed);
             const subscribedAmtFormatted = formatMoney(totalSubscribed);
-
             eighthIntroHTML = `<p><b>EIGHTH:</b> That at least ${subscribedPctWords} percent (${subscribedPct}%) of the authorized capital stock above stated or ${subscribedAmtWords} (₱${subscribedAmtFormatted}) Pesos has been subscribed as follows:</p>`;
         } else if (totalSubscribed > 0) {
-            /* Fallback: ACS not provided but subscribed amount is known */
             const subscribedAmtWords = amountToWords(totalSubscribed);
             const subscribedAmtFormatted = formatMoney(totalSubscribed);
             eighthIntroHTML = `<p><b>EIGHTH:</b> That the amount of ${subscribedAmtWords} (₱${subscribedAmtFormatted}) Pesos of the authorized capital stock above stated has been subscribed as follows:</p>`;
@@ -1192,40 +1392,35 @@ function generateDocs() {
 
     const sigBlock = buildSignatoryBlock(signatories);
 
-    /* ── "Formerly" line renderer ──────────────────────────────────────────
-       Rules:
-       1. art1IsAmended = true  → name changed NOW → show formerly (bold+underline = new)
-       2. art1IsAmended = false AND finalFormerly not empty → retained from prior history → show (plain)
-       3. finalFormerly is empty → do not render the formerly line at all
-       ──────────────────────────────────────────────────────────────────── */
-    function buildFormerlyLine(cls) {
-        if (!finalFormerly) return '';
-        return `<span class="${cls}">(Formerly: ${finalFormerly.toUpperCase()})</span>`;
-    }
-
-    /* Title block formerly: new amendment uses bold+underline, prior history uses plain */
-    const titleFormerlyClass = art1IsAmended ? 'doc-title-formerly-new' : 'doc-title-formerly-prior';
-
-    /* Article I name block formerly: same logic */
-    const art1FormerlyClass = art1IsAmended ? 'art1-formerly-new' : 'art1-formerly-prior';
-
-    /* ── Article I name styling ── */
-    const art1NameClass   = art1IsAmended ? 'art1-name-text-new'   : 'art1-name-text-prior';
-    const art1AmdTagClass = art1IsAmended ? 'art1-amended-tag-new' : 'art1-amended-tag-prior';
-    const art1AmdDate     = art1IsAmended ? mtgDateRaw : b.art1AmendedDate;
-
-    const firstArticleBlock = `<p><b>FIRST:</b> That the name of said corporation shall be:</p>
-    <div class="art1-name-block">
-        <span class="${art1NameClass}">${finalName.toUpperCase()}</span>
-        ${art1AmdDate ? `<span class="${art1AmdTagClass}">(As amended on ${formatDate(art1AmdDate)})</span>` : ''}
-        ${buildFormerlyLine(art1FormerlyClass)}
-    </div>`;
-
-    /* ── Title block name styling ── */
+    /* ── Title block name style ── */
     const titleNameStyle = art1IsAmended
         ? 'font-size:12pt;font-weight:bold;text-decoration:underline;display:block;line-height:1.4;'
         : 'font-size:12pt;font-weight:bold;text-decoration:none;display:block;line-height:1.4;';
     const titleAmendedClass = titleAmendedIsNew ? 'doc-title-amended-new' : 'doc-title-amended-prior';
+
+    /* ── Article I name style ── */
+    const art1NameClass   = art1IsAmended ? 'art1-name-text-new'   : 'art1-name-text-prior';
+    const art1AmdTagClass = art1IsAmended ? 'art1-amended-tag-new' : 'art1-amended-tag-prior';
+    const art1AmdDate     = art1IsAmended ? mtgDateRaw : b.art1AmendedDate;
+
+    /* ── Render trade name lines for title block ── */
+    const titleTradeNameHTML = buildTradeNameLines(finalTradeNames, tradeNamesAreNew);
+
+    /* ── Render trade name lines for Article I body ── */
+    const art1TradeNameHTML = buildArt1TradeNameLines(finalTradeNames, tradeNamesAreNew);
+
+    /* ── Render formerly lines (with old trade names embedded) ── */
+    const titleFormerlyHTML = buildFormerlyLineWithTrades(finalFormerly, formerlyTradeNamesForDoc, art1IsAmended, 'doc-title');
+    const art1FormerlyHTML  = buildFormerlyLineWithTrades(finalFormerly, formerlyTradeNamesForDoc, art1IsAmended, 'art1');
+
+    /* ── First Article block ── */
+    const firstArticleBlock = `<p><b>FIRST:</b> That the name of said corporation shall be:</p>
+    <div class="art1-name-block">
+        <span class="${art1NameClass}">${finalName.toUpperCase()}</span>
+        ${art1TradeNameHTML}
+        ${art1AmdDate ? `<span class="${art1AmdTagClass}">(As amended on ${formatDate(art1AmdDate)})</span>` : ''}
+        ${art1FormerlyHTML}
+    </div>`;
 
     const dirTableHTML    = buildPersonTable(finalDirs, ['Name','Nationality','Residence']);
     const incorpTableHTML = buildPersonTable(finalIncorp, ['Name','Nationality','Residence']);
@@ -1236,8 +1431,9 @@ function generateDocs() {
             <span class="doc-title-main">AMENDED ARTICLES OF INCORPORATION</span>
             <span class="doc-title-of">OF</span>
             <span style="${titleNameStyle}">${finalName.toUpperCase()}</span>
+            ${titleTradeNameHTML}
             ${titleAmendedDate ? `<span class="${titleAmendedClass}">(As amended on ${formatDate(titleAmendedDate)})</span>` : ''}
-            ${buildFormerlyLine(titleFormerlyClass)}
+            ${titleFormerlyHTML}
         </div>
 
         <p><b>KNOW ALL MEN BY THESE PRESENTS:</b></p>
@@ -1392,6 +1588,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ['base-incorp-body','base-dir-body','base-subs-body','signatories-body'].forEach(id => {
         document.getElementById(id).innerHTML = '';
     });
+    renderBaseTradeNames(); // initialize empty state display
 });
 </script>
 </body>
